@@ -1,0 +1,9 @@
+{
+  "name": "jupiter",
+  "dependencies": {
+    "angular": "1.5.3",
+    "angular-animate": "^1.5.3",
+    "angular-aria": "^1.5.3",
+    "angular-material": "^1.0.6"
+  }
+}
