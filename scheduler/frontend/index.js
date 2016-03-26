@@ -1,4 +1,3 @@
-/**
- * Created by krister on 3/25/16.
- */
-document.write('it works');
+import angular from 'angular';
+
+angular.module('jupiter', []).controller('asdf', () => {this.thingie = 'asdf';});

@@ -1,0 +1,31 @@
+// https://gist.github.com/nkbt/9efd4facb391edbf8048#file-eslintrc-js
+{
+  "extends": "airbnb/base",
+  "rules": {
+    "no-mixed-spaces-and-tabs": 2,
+    "padded-blocks": 0,
+    "object-curly-spacing": 0,
+    "comma-dangle": 0,
+    "no-use-before-define": 0,
+    "no-unused-vars": 1
+  },
+  "globals": {
+    "afterEach": false,
+    "beforeEach": false,
+    "describe": false,
+    "xdescribe": false,
+    "fdescribe": false,
+    "it": false,
+    "xit": false,
+    "fit": false,
+    "expect": false,
+    "spyOn": false,
+    "globalRequestSection": true,
+    "globalProviderRole": true,
+    "baseProductUrlPrefix": true,
+    "jasmine": false
+  },
+  "ecmaFeatures": {
+     "modules": true
+  }
+}

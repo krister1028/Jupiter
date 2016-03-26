@@ -4,6 +4,19 @@
     "angular": "1.5.3",
     "angular-animate": "^1.5.3",
     "angular-aria": "^1.5.3",
-    "angular-material": "^1.0.6"
+    "angular-material": "^1.0.6",
+    "angular-messages": "^1.5.3"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.4.8",
+    "babel": "^6.3.13",
+    "babel-core": "^6.3.13",
+    "babel-eslint": "^5.0.0-beta6",
+    "babel-loader": "5.3.2",
+    "babel-runtime": "6.3.13",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^2.1.0",
+    "eslint-loader": "^1.1.1",
+    "eslint-plugin-react": "^3.11.3"
   }
 }

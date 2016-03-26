@@ -1,4 +1,4 @@
-{% load static from staticfiles %}
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +8,9 @@
     <script src="{% static "compiled/vendor-bundle.js" %}"></script>
     <script src="{% static "compiled/jupiter-bundle.js" %}"></script>
 </head>
-<body>
-    <div>Hello World</div>
+<body ng-app="jupiter">
+    {% verbatim %}
+    <div ng-controller="asdf">Hello World {{ thingie }}</div>
+    {% endverbatim %}
 </body>
 </html>
