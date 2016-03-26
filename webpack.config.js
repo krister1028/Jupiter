@@ -1,6 +1,5 @@
 module.exports = {
   entry: {
-    vendor: ['angular', 'angular-material'],
     jupiter: ['./scheduler/frontend/index.js']
   },
   output: {
