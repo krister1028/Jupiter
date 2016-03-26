@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <title>Title</title>
 
-    <script src="{% static "compiled/vendor-bundle.js" %}"></script>
-    <script src="{% static "compiled/jupiter-bundle.js" %}"></script>
+    <script src="{% static "vendor-bundle.js" %}"></script>
+    <script src="{% static "jupiter-bundle.js" %}"></script>
 </head>
 <body ng-app="jupiter">
-    {% verbatim %}
-    <div ng-controller="asdf">Hello World {{ thingie }}</div>
-    {% endverbatim %}
+    <div>Hello World</div>
 </body>
 </html>

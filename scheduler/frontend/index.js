@@ -1,3 +1,6 @@
 import angular from 'angular';
 
-angular.module('jupiter', []).controller('asdf', () => {this.thingie = 'asdf';});
+const jupiter = angular
+  .module('jupiter', []);
+
+export default jupiter.name;
