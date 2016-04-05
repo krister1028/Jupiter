@@ -16,6 +16,11 @@ module.exports = {
       test: /\.js$/,
       loader: 'babel-loader',
       exclude: /node_modules/
+    },
+    {
+      test: /\.html$/,
+      loader: 'ng-cache',
+      exclude: /node_modules/
     }]
   }
 };
