@@ -67579,7 +67579,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div>logging in {{ vm.message }}</div>";
+	var v1="<md-button class=\"md-fab md-primary md-button md-ink-ripple\" aria-label=\"Login\"> <md-icon class=\"material-icons\" style=\"color: white\">vpn_key</md-icon> </md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("login.html",v1)}]);
 	module.exports=v1;
 

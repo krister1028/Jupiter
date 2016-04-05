@@ -7,6 +7,7 @@
     "angular-material": "^1.0.6",
     "angular-messages": "^1.5.3",
     "angular-ui-router": "1.0.0",
+    "material-design-icons": "^2.2.3",
     "ng-cache-loader": "0.0.15"
   },
   "devDependencies": {
