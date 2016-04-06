@@ -1,8 +1,7 @@
 export default class HomeController {
-  constructor(userService, $state) {
-    userService.login().then(
-      user => this.user = user,
-      () => $state.go('loggedOut')
-    );
+  constructor(userService) {
+    this.user = userService.user;
+    this.loading = true;
+    userService.loading.then(() => this.loading = false);
   }
 }

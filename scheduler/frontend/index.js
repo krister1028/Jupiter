@@ -21,7 +21,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
       template: homeTemplate,
       controller: HomeController
     })
-    .state('loggedOut', {
+    .state('login', {
       url: '/login/',
       template: loginTemplate,
       controller: 'LoginController as vm'

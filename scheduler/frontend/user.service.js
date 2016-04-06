@@ -1,13 +1,34 @@
 export default class userService {
-  constructor($http) {
-    this.user = null;
-    this.isLoggedIn = false;
+  constructor($http, $state) {
+    this.user = {username: null, isSuperUser: false};
     this._$http = $http;
-    this._loginUrl = '/login/';
-    this._userUrl = '/api/users/';
+    this._$state = $state;
+    this._authUrl = '/authenticate/';
+    this.loading = this.getUser();
+  }
+
+  getUser() {
+    return this._$http.post(this._authUrl).then(
+      response => {
+        this.user.username = response.data.username;
+        this.user.isSuperUser = response.data.issuperuser;
+      },
+      response => {
+        if (response.status === 401) {
+          this._$state.go('login');
+        }
+      }
+    );
   }
 
   login(user) {
-    return this._$http.post(this._loginUrl, {username: user.username, password: user.password}).then(response => this.user = response.data);
+    const f = new FormData;
+    f.append('username', user.username);
+    return this._$http({
+      method: 'POST',
+      data: f,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      url: this._loginUrl
+    });
   }
 }
