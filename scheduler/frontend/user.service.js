@@ -8,6 +8,9 @@ export default class userService {
   }
 
   getUser() {
+    if (!this.user.username) {
+      return this._$state.go('login');
+    }
     return this._$http.post(this._authUrl, {username: this.user.username, password: this.user.password}).then(
       response => {
         this.user.username = response.data.username;
@@ -19,16 +22,5 @@ export default class userService {
         }
       }
     );
-  }
-
-  login(user) {
-    const f = new FormData;
-    f.append('username', user.username);
-    return this._$http({
-      method: 'POST',
-      data: f,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      url: this._loginUrl
-    });
   }
 }

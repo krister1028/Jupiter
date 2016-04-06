@@ -1,8 +1,10 @@
 export default class LoginModalController {
-  constructor($mdDialog, userService) {
+  constructor($mdDialog, userService, $state) {
     this._$mdDialog = $mdDialog;
+    this._$state = $state;
     this._userService = userService;
-    this.user = {};
+    this.username = null;
+    this.password = null;
   }
 
   cancel() {
@@ -10,6 +12,8 @@ export default class LoginModalController {
   }
 
   doLogin() {
-    this._userService.login(this.user);
+    this._userService.user.password = this.password;
+    this._userService.user.username = this.username;
+    this._userService.getUser().then(() => this._$state.go('home'));
   }
 }

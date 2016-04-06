@@ -19,7 +19,8 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
     .state('home', {
       url: '/',
       template: homeTemplate,
-      controller: HomeController
+      controller: HomeController,
+      controllerAs: 'vm'
     })
     .state('login', {
       url: '/login/',

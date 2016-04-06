@@ -31,4 +31,6 @@ class AuthView(APIView):
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
+        user = authenticate(username=request.data.get('username'), password=request.data.get('password'))
+        login(request, user)
         return Response(self.serializer_class(request.user).data)

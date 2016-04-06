@@ -71,23 +71,23 @@
 
 	var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 
-	var _loginLoginHtml = __webpack_require__(14);
+	var _loginLoginHtml = __webpack_require__(11);
 
 	var _loginLoginHtml2 = _interopRequireDefault(_loginLoginHtml);
 
-	var _loginLoginController = __webpack_require__(15);
+	var _loginLoginController = __webpack_require__(12);
 
 	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
 
-	var _userService = __webpack_require__(18);
+	var _userService = __webpack_require__(15);
 
 	var _userService2 = _interopRequireDefault(_userService);
 
-	var _homeController = __webpack_require__(19);
+	var _homeController = __webpack_require__(16);
 
 	var _homeController2 = _interopRequireDefault(_homeController);
 
-	var _homeTemplateHtml = __webpack_require__(20);
+	var _homeTemplateHtml = __webpack_require__(17);
 
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 
@@ -98,7 +98,8 @@
 	  $stateProvider.state('home', {
 	    url: '/',
 	    template: _homeTemplateHtml2['default'],
-	    controller: _homeController2['default']
+	    controller: _homeController2['default'],
+	    controllerAs: 'vm'
 	  }).state('login', {
 	    url: '/login/',
 	    template: _loginLoginHtml2['default'],
@@ -67593,10 +67594,7 @@
 	//# sourceMappingURL=angular-ui-router.js.map
 
 /***/ },
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */
+/* 11 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -67607,7 +67605,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 15 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67626,11 +67624,11 @@
 
 	var _angular2 = _interopRequireDefault(_angular);
 
-	var _loginModalTemplateHtml = __webpack_require__(16);
+	var _loginModalTemplateHtml = __webpack_require__(13);
 
 	var _loginModalTemplateHtml2 = _interopRequireDefault(_loginModalTemplateHtml);
 
-	var _loginModalController = __webpack_require__(17);
+	var _loginModalController = __webpack_require__(14);
 
 	var _loginModalController2 = _interopRequireDefault(_loginModalController);
 
@@ -67669,59 +67667,67 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 16 */
+/* 13 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Login Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Login</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Username</label> <input type=\"text\" required ng-model=\"vm.user.username\"/> </md-input-container> <md-input-container class=\"md-block\"> <label>Password</label> <input type=\"password\" required ng-model=\"vm.user.password\"/> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.doLogin()\" style=\"margin-right:20px\"> Login </md-button> </md-dialog-actions> </md-dialog>";
+	var v1="<md-dialog aria-label=\"Login Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Login</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Username</label> <input type=\"text\" required ng-model=\"vm.username\"/> </md-input-container> <md-input-container class=\"md-block\"> <label>Password</label> <input type=\"password\" required ng-model=\"vm.password\"/> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.doLogin()\" style=\"margin-right:20px\"> Login </md-button> </md-dialog-actions> </md-dialog>";
 	ngModule.run(["$templateCache",function(c){c.put("login-modal.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 17 */
+/* 14 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 	var LoginModalController = (function () {
-	  function LoginModalController($mdDialog, userService) {
+	  function LoginModalController($mdDialog, userService, $state) {
 	    _classCallCheck(this, LoginModalController);
 
 	    this._$mdDialog = $mdDialog;
+	    this._$state = $state;
 	    this._userService = userService;
-	    this.user = {};
+	    this.username = null;
+	    this.password = null;
 	  }
 
 	  _createClass(LoginModalController, [{
-	    key: "cancel",
+	    key: 'cancel',
 	    value: function cancel() {
 	      this._$mdDialog.cancel();
 	    }
 	  }, {
-	    key: "doLogin",
+	    key: 'doLogin',
 	    value: function doLogin() {
-	      this._userService.login(this.user);
+	      var _this = this;
+
+	      this._userService.user.password = this.password;
+	      this._userService.user.username = this.username;
+	      this._userService.getUser().then(function () {
+	        return _this._$state.go('home');
+	      });
 	    }
 	  }]);
 
 	  return LoginModalController;
 	})();
 
-	exports["default"] = LoginModalController;
-	module.exports = exports["default"];
+	exports['default'] = LoginModalController;
+	module.exports = exports['default'];
 
 /***/ },
-/* 18 */
+/* 15 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67750,6 +67756,9 @@
 	    value: function getUser() {
 	      var _this = this;
 
+	      if (!this.user.username) {
+	        return this._$state.go('login');
+	      }
 	      return this._$http.post(this._authUrl, { username: this.user.username, password: this.user.password }).then(function (response) {
 	        _this.user.username = response.data.username;
 	        _this.user.isSuperUser = response.data.is_superuser;
@@ -67757,18 +67766,6 @@
 	        if (response.status === 403) {
 	          _this._$state.go('login');
 	        }
-	      });
-	    }
-	  }, {
-	    key: 'login',
-	    value: function login(user) {
-	      var f = new FormData();
-	      f.append('username', user.username);
-	      return this._$http({
-	        method: 'POST',
-	        data: f,
-	        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-	        url: this._loginUrl
 	      });
 	    }
 	  }]);
@@ -67780,7 +67777,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -67807,7 +67804,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 20 */
+/* 17 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
