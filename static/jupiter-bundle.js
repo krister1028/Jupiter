@@ -71,25 +71,46 @@
 
 	var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 
-	var _loginHtml = __webpack_require__(11);
+	var _loginLoginHtml = __webpack_require__(14);
 
-	var _loginHtml2 = _interopRequireDefault(_loginHtml);
+	var _loginLoginHtml2 = _interopRequireDefault(_loginLoginHtml);
 
-	var _loginController = __webpack_require__(12);
+	var _loginLoginController = __webpack_require__(15);
 
-	var _loginController2 = _interopRequireDefault(_loginController);
+	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
 
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginController2['default']).config(configuration);
+	var _userService = __webpack_require__(18);
 
-	function configuration($stateProvider, $urlRouterProvider) {
+	var _userService2 = _interopRequireDefault(_userService);
+
+	var _homeController = __webpack_require__(19);
+
+	var _homeController2 = _interopRequireDefault(_homeController);
+
+	var _homeTemplateHtml = __webpack_require__(20);
+
+	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
+
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).service('userService', _userService2['default']).config(configuration);
+
+	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
 	  'ngInject';
-	  $stateProvider.state('login', {
+	  $stateProvider.state('home', {
 	    url: '/',
-	    template: _loginHtml2['default'],
+	    template: _homeTemplateHtml2['default'],
+	    controller: _homeController2['default'],
+	    controllerAs: 'vm'
+	  }).state('login', {
+	    url: '/login/',
+	    template: _loginLoginHtml2['default'],
 	    controller: 'LoginController as vm'
 	  });
 
 	  $urlRouterProvider.otherwise('/');
+
+	  // CSRF
+	  $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+	  $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 	}
 
 	exports['default'] = jupiter.name;
@@ -67573,18 +67594,94 @@
 	//# sourceMappingURL=angular-ui-router.js.map
 
 /***/ },
-/* 11 */
+/* 11 */,
+/* 12 */,
+/* 13 */,
+/* 14 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-button class=\"md-fab md-primary md-button md-ink-ripple\" aria-label=\"Login\"> <md-icon class=\"material-icons\" style=\"color: white\">vpn_key</md-icon> </md-button>";
+	var v1="<md-button class=\"md-fab md-primary md-button md-ink-ripple\" aria-label=\"Login\" ng-click=\"vm.showLogin()\"> <md-icon class=\"material-icons\" style=\"color: white\">vpn_key</md-icon> </md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("login.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 12 */
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _angular = __webpack_require__(2);
+
+	var _angular2 = _interopRequireDefault(_angular);
+
+	var _loginModalTemplateHtml = __webpack_require__(16);
+
+	var _loginModalTemplateHtml2 = _interopRequireDefault(_loginModalTemplateHtml);
+
+	var _loginModalController = __webpack_require__(17);
+
+	var _loginModalController2 = _interopRequireDefault(_loginModalController);
+
+	var LoginController = (function () {
+	  function LoginController($mdDialog) {
+	    _classCallCheck(this, LoginController);
+
+	    this._$mdDialog = $mdDialog;
+	  }
+
+	  _createClass(LoginController, [{
+	    key: 'showLogin',
+	    value: function showLogin(ev) {
+	      this._$mdDialog.show({
+	        // controller: this,
+	        template: _loginModalTemplateHtml2['default'],
+	        controller: _loginModalController2['default'],
+	        controllerAs: 'vm',
+	        parent: _angular2['default'].element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose: true
+	      });
+	    }
+	  }, {
+	    key: 'cancel',
+	    value: function cancel() {
+	      console.log('home');
+	      this._$mdDialog.cancel();
+	    }
+	  }]);
+
+	  return LoginController;
+	})();
+
+	exports['default'] = LoginController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-dialog aria-label=\"Login Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Login</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Username</label> <input type=\"text\" required ng-model=\"vm.username\"/> </md-input-container> <md-input-container class=\"md-block\"> <label>Password</label> <input type=\"password\" required ng-model=\"vm.password\"/> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.doLogin()\" style=\"margin-right:20px\"> Login </md-button> </md-dialog-actions> </md-dialog>";
+	ngModule.run(["$templateCache",function(c){c.put("login-modal.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67593,16 +67690,132 @@
 	  value: true
 	});
 
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var LoginController = function LoginController() {
-	  _classCallCheck(this, LoginController);
+	var LoginModalController = (function () {
+	  function LoginModalController($mdDialog, userService, $state) {
+	    _classCallCheck(this, LoginModalController);
 
-	  this.message = 'hi';
+	    this._$mdDialog = $mdDialog;
+	    this._$state = $state;
+	    this._userService = userService;
+	    this.username = null;
+	    this.password = null;
+	  }
+
+	  _createClass(LoginModalController, [{
+	    key: 'cancel',
+	    value: function cancel() {
+	      this._$mdDialog.cancel();
+	    }
+	  }, {
+	    key: 'doLogin',
+	    value: function doLogin() {
+	      var _this = this;
+
+	      this._userService.user.password = this.password;
+	      this._userService.user.username = this.username;
+	      this._userService.getUser().then(function () {
+	        return _this._$state.go('home');
+	      });
+	    }
+	  }]);
+
+	  return LoginModalController;
+	})();
+
+	exports['default'] = LoginModalController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var userService = (function () {
+	  function userService($http, $state) {
+	    _classCallCheck(this, userService);
+
+	    this.user = { username: null, isSuperUser: false, password: null };
+	    this._$http = $http;
+	    this._$state = $state;
+	    this._authUrl = '/authenticate/';
+	    this.loading = this.getUser();
+	  }
+
+	  _createClass(userService, [{
+	    key: 'getUser',
+	    value: function getUser() {
+	      var _this = this;
+
+	      if (!this.user.username) {
+	        return this._$state.go('login');
+	      }
+	      return this._$http.post(this._authUrl, { username: this.user.username, password: this.user.password }).then(function (response) {
+	        _this.user.username = response.data.username;
+	        _this.user.isSuperUser = response.data.is_superuser;
+	      }, function (response) {
+	        if (response.status === 403) {
+	          _this._$state.go('login');
+	        }
+	      });
+	    }
+	  }]);
+
+	  return userService;
+	})();
+
+	exports['default'] = userService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var HomeController = function HomeController(userService) {
+	  var _this = this;
+
+	  _classCallCheck(this, HomeController);
+
+	  this.user = userService.user;
+	  this.loading = true;
+	  userService.loading.then(function () {
+	    return _this.loading = false;
+	  });
 	};
 
-	exports['default'] = LoginController;
-	module.exports = exports['default'];
+	exports["default"] = HomeController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div>hello {{ vm.user.username }}</div>";
+	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
+	module.exports=v1;
 
 /***/ }
 /******/ ]);
