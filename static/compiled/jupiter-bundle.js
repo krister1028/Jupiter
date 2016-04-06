@@ -71,23 +71,23 @@
 
 	var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 
-	var _loginLoginHtml = __webpack_require__(11);
+	var _loginLoginHtml = __webpack_require__(14);
 
 	var _loginLoginHtml2 = _interopRequireDefault(_loginLoginHtml);
 
-	var _loginLoginController = __webpack_require__(12);
+	var _loginLoginController = __webpack_require__(15);
 
 	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
 
-	var _userService = __webpack_require__(15);
+	var _userService = __webpack_require__(18);
 
 	var _userService2 = _interopRequireDefault(_userService);
 
-	var _homeController = __webpack_require__(16);
+	var _homeController = __webpack_require__(19);
 
 	var _homeController2 = _interopRequireDefault(_homeController);
 
-	var _homeTemplateHtml = __webpack_require__(17);
+	var _homeTemplateHtml = __webpack_require__(20);
 
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 
@@ -67593,7 +67593,10 @@
 	//# sourceMappingURL=angular-ui-router.js.map
 
 /***/ },
-/* 11 */
+/* 11 */,
+/* 12 */,
+/* 13 */,
+/* 14 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -67604,7 +67607,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67623,11 +67626,11 @@
 
 	var _angular2 = _interopRequireDefault(_angular);
 
-	var _loginModalTemplateHtml = __webpack_require__(13);
+	var _loginModalTemplateHtml = __webpack_require__(16);
 
 	var _loginModalTemplateHtml2 = _interopRequireDefault(_loginModalTemplateHtml);
 
-	var _loginModalController = __webpack_require__(14);
+	var _loginModalController = __webpack_require__(17);
 
 	var _loginModalController2 = _interopRequireDefault(_loginModalController);
 
@@ -67666,7 +67669,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -67677,7 +67680,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -67718,7 +67721,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67735,7 +67738,7 @@
 	  function userService($http, $state) {
 	    _classCallCheck(this, userService);
 
-	    this.user = { username: null, isSuperUser: false };
+	    this.user = { username: null, isSuperUser: false, password: null };
 	    this._$http = $http;
 	    this._$state = $state;
 	    this._authUrl = '/authenticate/';
@@ -67747,11 +67750,11 @@
 	    value: function getUser() {
 	      var _this = this;
 
-	      return this._$http.post(this._authUrl).then(function (response) {
+	      return this._$http.post(this._authUrl, { username: this.user.username, password: this.user.password }).then(function (response) {
 	        _this.user.username = response.data.username;
-	        _this.user.isSuperUser = response.data.issuperuser;
+	        _this.user.isSuperUser = response.data.is_superuser;
 	      }, function (response) {
-	        if (response.status === 401) {
+	        if (response.status === 403) {
 	          _this._$state.go('login');
 	        }
 	      });
@@ -67777,7 +67780,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -67804,7 +67807,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;

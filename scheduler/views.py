@@ -4,10 +4,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from scheduler.authentication import QuietBasicAuthentication
 from scheduler.serializers import UserSerializer
 
 
@@ -27,7 +27,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class AuthView(APIView):
-    authentication_classes = (QuietBasicAuthentication,)
+    authentication_classes = (SessionAuthentication,)
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):

@@ -1,6 +1,6 @@
 export default class userService {
   constructor($http, $state) {
-    this.user = {username: null, isSuperUser: false};
+    this.user = {username: null, isSuperUser: false, password: null};
     this._$http = $http;
     this._$state = $state;
     this._authUrl = '/authenticate/';
@@ -8,13 +8,13 @@ export default class userService {
   }
 
   getUser() {
-    return this._$http.post(this._authUrl).then(
+    return this._$http.post(this._authUrl, {username: this.user.username, password: this.user.password}).then(
       response => {
         this.user.username = response.data.username;
-        this.user.isSuperUser = response.data.issuperuser;
+        this.user.isSuperUser = response.data.is_superuser;
       },
       response => {
-        if (response.status === 401) {
+        if (response.status === 403) {
           this._$state.go('login');
         }
       }
