@@ -11,8 +11,8 @@
     <md-dialog-content>
       <div class="md-dialog-content">
         <md-input-container class="md-block">
-          <label>Email</label>
-          <input type="text" required ng-model="vm.user.email" />
+          <label>Username</label>
+          <input type="text" required ng-model="vm.user.username" />
         </md-input-container>
         <md-input-container class="md-block">
           <label>Password</label>
@@ -21,10 +21,10 @@
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row">
-      <md-button ng-click="cancel()">
+      <md-button ng-click="vm.cancel()">
        Cancel
       </md-button>
-      <md-button ng-click="answer('useful')" style="margin-right:20px;">
+      <md-button ng-click="vm.doLogin()" style="margin-right:20px;">
         Login
       </md-button>
     </md-dialog-actions>

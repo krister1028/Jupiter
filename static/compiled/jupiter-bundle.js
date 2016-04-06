@@ -71,25 +71,45 @@
 
 	var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 
-	var _loginHtml = __webpack_require__(11);
+	var _loginLoginHtml = __webpack_require__(14);
 
-	var _loginHtml2 = _interopRequireDefault(_loginHtml);
+	var _loginLoginHtml2 = _interopRequireDefault(_loginLoginHtml);
 
-	var _loginController = __webpack_require__(12);
+	var _loginLoginController = __webpack_require__(15);
 
-	var _loginController2 = _interopRequireDefault(_loginController);
+	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
 
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginController2['default']).config(configuration);
+	var _userService = __webpack_require__(18);
 
-	function configuration($stateProvider, $urlRouterProvider) {
+	var _userService2 = _interopRequireDefault(_userService);
+
+	var _homeController = __webpack_require__(19);
+
+	var _homeController2 = _interopRequireDefault(_homeController);
+
+	var _homeTemplateHtml = __webpack_require__(20);
+
+	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
+
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).service('userService', _userService2['default']).config(configuration);
+
+	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
 	  'ngInject';
-	  $stateProvider.state('login', {
+	  $stateProvider.state('home', {
 	    url: '/',
-	    template: _loginHtml2['default'],
+	    template: _homeTemplateHtml2['default'],
+	    controller: _homeController2['default']
+	  }).state('loggedOut', {
+	    url: '/login/',
+	    template: _loginLoginHtml2['default'],
 	    controller: 'LoginController as vm'
 	  });
 
 	  $urlRouterProvider.otherwise('/');
+
+	  // CSRF
+	  $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+	  $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 	}
 
 	exports['default'] = jupiter.name;
@@ -67573,7 +67593,10 @@
 	//# sourceMappingURL=angular-ui-router.js.map
 
 /***/ },
-/* 11 */
+/* 11 */,
+/* 12 */,
+/* 13 */,
+/* 14 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -67584,7 +67607,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67603,9 +67626,13 @@
 
 	var _angular2 = _interopRequireDefault(_angular);
 
-	var _loginModalTemplateHtml = __webpack_require__(13);
+	var _loginModalTemplateHtml = __webpack_require__(16);
 
 	var _loginModalTemplateHtml2 = _interopRequireDefault(_loginModalTemplateHtml);
+
+	var _loginModalController = __webpack_require__(17);
+
+	var _loginModalController2 = _interopRequireDefault(_loginModalController);
 
 	var LoginController = (function () {
 	  function LoginController($mdDialog) {
@@ -67620,6 +67647,8 @@
 	      this._$mdDialog.show({
 	        // controller: this,
 	        template: _loginModalTemplateHtml2['default'],
+	        controller: _loginModalController2['default'],
+	        controllerAs: 'vm',
 	        parent: _angular2['default'].element(document.body),
 	        targetEvent: ev,
 	        clickOutsideToClose: true
@@ -67628,7 +67657,8 @@
 	  }, {
 	    key: 'cancel',
 	    value: function cancel() {
-	      this._$mdDialog.hide();
+	      console.log('home');
+	      this._$mdDialog.cancel();
 	    }
 	  }]);
 
@@ -67639,14 +67669,135 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Login Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Login</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Email</label> <input type=\"text\" required ng-model=\"vm.user.email\"/> </md-input-container> <md-input-container class=\"md-block\"> <label>Password</label> <input type=\"password\" required ng-model=\"vm.user.password\"/> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"cancel()\"> Cancel </md-button> <md-button ng-click=\"answer('useful')\" style=\"margin-right:20px\"> Login </md-button> </md-dialog-actions> </md-dialog>";
+	var v1="<md-dialog aria-label=\"Login Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Login</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Username</label> <input type=\"text\" required ng-model=\"vm.user.username\"/> </md-input-container> <md-input-container class=\"md-block\"> <label>Password</label> <input type=\"password\" required ng-model=\"vm.user.password\"/> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.doLogin()\" style=\"margin-right:20px\"> Login </md-button> </md-dialog-actions> </md-dialog>";
 	ngModule.run(["$templateCache",function(c){c.put("login-modal.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var LoginModalController = (function () {
+	  function LoginModalController($mdDialog, userService) {
+	    _classCallCheck(this, LoginModalController);
+
+	    this._$mdDialog = $mdDialog;
+	    this._userService = userService;
+	    this.user = {};
+	  }
+
+	  _createClass(LoginModalController, [{
+	    key: "cancel",
+	    value: function cancel() {
+	      this._$mdDialog.cancel();
+	    }
+	  }, {
+	    key: "doLogin",
+	    value: function doLogin() {
+	      this._userService.login(this.user);
+	    }
+	  }]);
+
+	  return LoginModalController;
+	})();
+
+	exports["default"] = LoginModalController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var userService = (function () {
+	  function userService($http) {
+	    _classCallCheck(this, userService);
+
+	    this.user = null;
+	    this.isLoggedIn = false;
+	    this._$http = $http;
+	    this._loginUrl = '/login/';
+	    this._userUrl = '/api/users/';
+	  }
+
+	  _createClass(userService, [{
+	    key: 'login',
+	    value: function login(user) {
+	      var _this = this;
+
+	      return this._$http.post(this._loginUrl, { username: user.username, password: user.password }).then(function (response) {
+	        return _this.user = response.data;
+	      });
+	    }
+	  }]);
+
+	  return userService;
+	})();
+
+	exports['default'] = userService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var HomeController = function HomeController(userService, $state) {
+	  var _this = this;
+
+	  _classCallCheck(this, HomeController);
+
+	  userService.login().then(function (user) {
+	    return _this.user = user;
+	  }, function () {
+	    return $state.go('loggedOut');
+	  });
+	};
+
+	exports['default'] = HomeController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div>you're home!</div>";
+	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ }

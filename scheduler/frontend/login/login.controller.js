@@ -1,5 +1,6 @@
 import angular from 'angular';
 import loginModalTemplate from './login-modal.template.html';
+import LoginModalController from './login-modal.controller';
 
 export default class LoginController {
   constructor($mdDialog) {
@@ -10,6 +11,8 @@ export default class LoginController {
     this._$mdDialog.show({
       // controller: this,
       template: loginModalTemplate,
+      controller: LoginModalController,
+      controllerAs: 'vm',
       parent: angular.element(document.body),
       targetEvent: ev,
       clickOutsideToClose: true
@@ -17,6 +20,7 @@ export default class LoginController {
   }
 
   cancel() {
-    this._$mdDialog.hide();
+    console.log('home');
+    this._$mdDialog.cancel();
   }
 }
