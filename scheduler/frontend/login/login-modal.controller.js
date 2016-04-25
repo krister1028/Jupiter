@@ -12,6 +12,7 @@ export default class LoginModalController {
   }
 
   doLogin() {
+    this._$mdDialog.cancel();
     this._userService.user.password = this.password;
     this._userService.user.username = this.username;
     this._userService.getUser().then(() => this._$state.go('home'));

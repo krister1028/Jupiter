@@ -71,23 +71,23 @@
 
 	var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 
-	var _loginLoginHtml = __webpack_require__(14);
+	var _loginLoginHtml = __webpack_require__(11);
 
 	var _loginLoginHtml2 = _interopRequireDefault(_loginLoginHtml);
 
-	var _loginLoginController = __webpack_require__(15);
+	var _loginLoginController = __webpack_require__(12);
 
 	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
 
-	var _userService = __webpack_require__(18);
+	var _userService = __webpack_require__(15);
 
 	var _userService2 = _interopRequireDefault(_userService);
 
-	var _homeController = __webpack_require__(19);
+	var _homeController = __webpack_require__(16);
 
 	var _homeController2 = _interopRequireDefault(_homeController);
 
-	var _homeTemplateHtml = __webpack_require__(20);
+	var _homeTemplateHtml = __webpack_require__(17);
 
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 
@@ -67594,10 +67594,7 @@
 	//# sourceMappingURL=angular-ui-router.js.map
 
 /***/ },
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */
+/* 11 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -67608,7 +67605,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 15 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67627,11 +67624,11 @@
 
 	var _angular2 = _interopRequireDefault(_angular);
 
-	var _loginModalTemplateHtml = __webpack_require__(16);
+	var _loginModalTemplateHtml = __webpack_require__(13);
 
 	var _loginModalTemplateHtml2 = _interopRequireDefault(_loginModalTemplateHtml);
 
-	var _loginModalController = __webpack_require__(17);
+	var _loginModalController = __webpack_require__(14);
 
 	var _loginModalController2 = _interopRequireDefault(_loginModalController);
 
@@ -67670,7 +67667,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 16 */
+/* 13 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -67681,7 +67678,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 17 */
+/* 14 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67715,6 +67712,7 @@
 	    value: function doLogin() {
 	      var _this = this;
 
+	      this._$mdDialog.cancel();
 	      this._userService.user.password = this.password;
 	      this._userService.user.username = this.username;
 	      this._userService.getUser().then(function () {
@@ -67730,7 +67728,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 18 */
+/* 15 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67780,7 +67778,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -67807,7 +67805,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 20 */
+/* 17 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
