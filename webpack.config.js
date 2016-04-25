@@ -1,4 +1,4 @@
-const ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
+const NgAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -27,7 +27,7 @@ module.exports = {
   },
 
   plugins: [
-    new ngAnnotatePlugin({
+    new NgAnnotatePlugin({
       add: true
     })
   ]
