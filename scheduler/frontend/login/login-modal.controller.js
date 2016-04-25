@@ -1,4 +1,5 @@
 export default class LoginModalController {
+  /* @ngInject */
   constructor($mdDialog, userService, $state) {
     this._$mdDialog = $mdDialog;
     this._$state = $state;

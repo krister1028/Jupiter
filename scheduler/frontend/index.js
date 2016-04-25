@@ -5,7 +5,7 @@ import loginTemplate from './login/login.html';
 import LoginController from './login/login.controller';
 import userService from './user.service';
 import HomeController from './home.controller';
-import homeTemplate from './home.template.html'
+import homeTemplate from './home.template.html';
 
 const jupiter = angular
   .module('jupiter', [angularMaterial, uiRouter])
@@ -13,8 +13,8 @@ const jupiter = angular
   .service('userService', userService)
   .config(configuration);
 
+/* @ngInject */
 function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
-  'ngInject';
   $stateProvider
     .state('home', {
       url: '/',

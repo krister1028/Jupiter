@@ -1,4 +1,5 @@
 export default class userService {
+  /* @ngInject */
   constructor($http, $state) {
     this.user = {username: null, isSuperUser: false, password: null};
     this._$http = $http;

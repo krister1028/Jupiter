@@ -1,3 +1,5 @@
+const ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
+
 module.exports = {
   entry: {
     jupiter: ['./scheduler/frontend/index.js']
@@ -22,5 +24,11 @@ module.exports = {
       loader: 'ng-cache',
       exclude: /node_modules/
     }]
-  }
+  },
+
+  plugins: [
+    new ngAnnotatePlugin({
+      add: true
+    })
+  ]
 };

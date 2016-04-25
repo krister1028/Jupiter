@@ -3,6 +3,7 @@ import loginModalTemplate from './login-modal.template.html';
 import LoginModalController from './login-modal.controller';
 
 export default class LoginController {
+  /* @ngInject */
   constructor($mdDialog) {
     this._$mdDialog = $mdDialog;
   }
