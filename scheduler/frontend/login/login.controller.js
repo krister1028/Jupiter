@@ -10,7 +10,6 @@ export default class LoginController {
 
   showLogin(ev) {
     this._$mdDialog.show({
-      // controller: this,
       template: loginModalTemplate,
       controller: LoginModalController,
       controllerAs: 'vm',
@@ -21,7 +20,6 @@ export default class LoginController {
   }
 
   cancel() {
-    console.log('home');
     this._$mdDialog.cancel();
   }
 }
