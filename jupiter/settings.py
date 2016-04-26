@@ -106,7 +106,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/compiled'),
-    os.path.join(BASE_DIR, 'static/css')
+    os.path.join(BASE_DIR, 'static/css'),
+    os.path.join(BASE_DIR, 'static/icons')
 ]
 
 # DRF settings
