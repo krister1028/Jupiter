@@ -67717,7 +67717,7 @@
 	      this._$mdDialog.cancel();
 	      this._userService.loginUser(this.username, this.password).then(function () {
 	        return _this._$state.go('home');
-	      });
+	      }, this._$state.go('login'));
 	    }
 	  }]);
 	
@@ -67750,7 +67750,8 @@
 	    this.user = { username: null, isSuperUser: false };
 	    this._$http = $http;
 	    this._$state = $state;
-	    this._authUrl = '/authenticate/';
+	    this._authUrl = '/rest-auth/login/';
+	    this._getUserUrl = '/rest-auth/user/';
 	    this.loading = this.getUser();
 	  }
 	
@@ -67759,7 +67760,7 @@
 	    value: function getUser() {
 	      var _this = this;
 	
-	      return this._$http.get(this._authUrl).then(function (response) {
+	      return this._$http.get(this._getUserUrl).then(function (response) {
 	        _this.user.username = response.data.username;
 	        _this.user.isSuperUser = response.data.is_superuser;
 	      }, function (response) {

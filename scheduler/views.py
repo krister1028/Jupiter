@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_auth.views import LoginView, Response
 
 from scheduler.serializers import UserSerializer
 
@@ -18,3 +19,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(groups__in=self.request.user.groups.all())
+
+
+class CustomLoginView(LoginView):
+    response_serializer = UserSerializer
+
+    def get_response(self):
+        return Response(self.response_serializer(self.request.user).data)

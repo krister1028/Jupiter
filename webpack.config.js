@@ -1,6 +1,8 @@
 const NgAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
 module.exports = {
+  devtool: 'source-map',
+
   entry: {
     jupiter: ['./scheduler/frontend/index.js']
   },
@@ -26,9 +28,9 @@ module.exports = {
     }]
   },
 
-  plugins: [
-    new NgAnnotatePlugin({
-      add: true
-    })
-  ]
+  //plugins: [
+  //  new NgAnnotatePlugin({
+  //    add: true
+  //  })
+  //]
 };

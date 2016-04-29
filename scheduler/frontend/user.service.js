@@ -4,12 +4,13 @@ export default class userService {
     this.user = {username: null, isSuperUser: false};
     this._$http = $http;
     this._$state = $state;
-    this._authUrl = '/authenticate/';
+    this._authUrl = '/rest-auth/login/';
+    this._getUserUrl = '/rest-auth/user/';
     this.loading = this.getUser();
   }
 
   getUser() {
-    return this._$http.get(this._authUrl).then(
+    return this._$http.get(this._getUserUrl).then(
       response => {
         this.user.username = response.data.username;
         this.user.isSuperUser = response.data.is_superuser;
