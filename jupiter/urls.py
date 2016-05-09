@@ -20,10 +20,10 @@ from rest_framework import routers
 
 from scheduler import views
 
-admin.site.site_header = 'Jupiter Admin'
-
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
+router.register(r'products', views.ProductViewSet)
+router.register(r'tasks', views.TaskViewSet)
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),

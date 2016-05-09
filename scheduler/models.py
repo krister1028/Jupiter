@@ -41,7 +41,7 @@ class Task(models.Model):
 class Product(models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255, default=None)
-    code = models.IntegerField()
+    code = models.CharField(max_length=8)
     tasks = models.ManyToManyField(Task)
 
     def __unicode__(self):

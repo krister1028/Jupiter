@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from scheduler.models import UserProfile, Product, Task
 
+admin.site.site_header = 'Jupiter Admin'
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile

@@ -3,7 +3,8 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 
-from scheduler.serializers import UserSerializer
+from scheduler.models import Product, Task
+from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer
 
 
 def index(request):
@@ -19,6 +20,22 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(groups__in=self.request.user.groups.all())
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(group__in=self.request.user.groups.all())
+
+
+class TaskViewSet(viewsets.ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(group__in=self.request.user.groups.all())
 
 
 class CustomLoginView(LoginView):
