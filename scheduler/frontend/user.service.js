@@ -1,7 +1,7 @@
 export default class userService {
   /* @ngInject */
   constructor($http, $state) {
-    this.user = {username: null, isSuperUser: false};
+    this.user = {username: null, isSuperUser: false, name: null};
     this._$http = $http;
     this._$state = $state;
     this._authUrl = '/rest-auth/login/';
@@ -14,6 +14,7 @@ export default class userService {
       response => {
         this.user.username = response.data.username;
         this.user.isSuperUser = response.data.is_superuser;
+        this.user.name = `${response.data.first_name} ${response.data.last_name}`
       },
       response => {
         if (response.status === 403) {

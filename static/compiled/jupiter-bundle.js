@@ -67747,7 +67747,7 @@
 	  function userService($http, $state) {
 	    _classCallCheck(this, userService);
 	
-	    this.user = { username: null, isSuperUser: false };
+	    this.user = { username: null, isSuperUser: false, name: null };
 	    this._$http = $http;
 	    this._$state = $state;
 	    this._authUrl = '/rest-auth/login/';
@@ -67763,6 +67763,7 @@
 	      return this._$http.get(this._getUserUrl).then(function (response) {
 	        _this.user.username = response.data.username;
 	        _this.user.isSuperUser = response.data.is_superuser;
+	        _this.user.name = response.data.first_name + ' ' + response.data.last_name;
 	      }, function (response) {
 	        if (response.status === 403) {
 	          return _this._$state.go('login');
@@ -67823,7 +67824,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.username }} </div> <div> production schedule </div> <div> jobs </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.name }} </div> <div> production schedule </div> <div> jobs </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
