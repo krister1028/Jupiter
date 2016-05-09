@@ -83,15 +83,19 @@
 	
 	var _userService2 = _interopRequireDefault(_userService);
 	
-	var _homeController = __webpack_require__(16);
+	var _productService = __webpack_require__(16);
+	
+	var _productService2 = _interopRequireDefault(_productService);
+	
+	var _homeController = __webpack_require__(17);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _homeTemplateHtml = __webpack_require__(17);
+	var _homeTemplateHtml = __webpack_require__(18);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).service('userService', _userService2['default']).config(configuration);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -67793,6 +67797,53 @@
 /* 16 */
 /***/ function(module, exports) {
 
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var productService = (function () {
+	  /* @ngInject */
+	
+	  function productService($http) {
+	    _classCallCheck(this, productService);
+	
+	    this._$http = $http;
+	    this._getProductUrl = '/api/products/';
+	    this.products = [];
+	    this.loading = this.getProducts();
+	  }
+	
+	  _createClass(productService, [{
+	    key: 'getProducts',
+	    value: function getProducts() {
+	      var _this = this;
+	
+	      return this._$http.get(this._getProductUrl).then(function (response) {
+	        var _products;
+	
+	        return (_products = _this.products).push.apply(_products, _toConsumableArray(response.data));
+	      });
+	    }
+	  }]);
+	
+	  return productService;
+	})();
+	
+	exports['default'] = productService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
 	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
@@ -67803,12 +67854,14 @@
 	
 	var HomeController =
 	/* @ngInject */
-	function HomeController(userService) {
+	function HomeController(userService, productService) {
 	  var _this = this;
 	
 	  _classCallCheck(this, HomeController);
 	
 	  this.user = userService.user;
+	  this.products = productService.products;
+	
 	  this.loading = true;
 	  userService.loading.then(function () {
 	    return _this.loading = false;
@@ -67819,13 +67872,13 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.name }} </div> <div> production schedule </div> <div> jobs </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.name }} </div> <div> jobs </div> <div ng-repeat=\"product in vm.products\"> {{ product.description }} </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 

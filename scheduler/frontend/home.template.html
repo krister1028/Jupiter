@@ -8,8 +8,8 @@
     Welcome {{ vm.user.name }}
 </div>
 <div>
-    production schedule
-</div>
-<div>
     jobs
+</div>
+<div ng-repeat="product in vm.products">
+    {{ product.description }}
 </div>
