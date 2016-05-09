@@ -12,6 +12,6 @@ class UserProfile(models.Model):
         (ADMINISTRATOR, 'Administrator')
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     user_type = models.IntegerField(choices=USER_TYPE_CHOICES, default=TECHNICIAN)
 

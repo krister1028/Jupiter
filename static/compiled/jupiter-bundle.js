@@ -67764,6 +67764,7 @@
 	        _this.user.username = response.data.username;
 	        _this.user.isSuperUser = response.data.is_superuser;
 	        _this.user.name = response.data.first_name + ' ' + response.data.last_name;
+	        _this.user.userType = response.data.profile;
 	      }, function (response) {
 	        if (response.status === 403) {
 	          return _this._$state.go('login');

@@ -14,7 +14,8 @@ export default class userService {
       response => {
         this.user.username = response.data.username;
         this.user.isSuperUser = response.data.is_superuser;
-        this.user.name = `${response.data.first_name} ${response.data.last_name}`
+        this.user.name = `${response.data.first_name} ${response.data.last_name}`;
+        this.user.userType = response.data.profile;
       },
       response => {
         if (response.status === 403) {
