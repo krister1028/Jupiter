@@ -4,6 +4,14 @@ from rest_framework import serializers
 from scheduler.models import Product, Task, Job, JobTask
 
 
+class CurrentGroupDefault(serializers.CurrentUserDefault):
+    def get_primary_group(self):
+        return self.user.groups.all()[0]
+
+    def __call__(self, *args, **kwargs):
+        return self.get_primary_group()
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = serializers.SlugRelatedField(slug_field='user_type', read_only=True)
 
@@ -13,15 +21,18 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    group = serializers.HiddenField(default=CurrentGroupDefault())
+
     class Meta:
         model = Product
-        exclude = ('tasks', 'group')
+        exclude = ('tasks', )
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    group = serializers.HiddenField(default=CurrentGroupDefault())
+
     class Meta:
         model = Task
-        exclude = ('group', )
 
 
 class JobTaskSerializer(serializers.ModelSerializer):
