@@ -87,6 +87,10 @@
 	
 	var _addProductController2 = _interopRequireDefault(_addProductController);
 	
+	var _addTaskController = __webpack_require__(24);
+	
+	var _addTaskController2 = _interopRequireDefault(_addTaskController);
+	
 	var _userService = __webpack_require__(15);
 	
 	var _userService2 = _interopRequireDefault(_userService);
@@ -115,7 +119,11 @@
 	
 	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).config(configuration);
+	var _addTaskTemplateHtml = __webpack_require__(25);
+	
+	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
+	
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -136,6 +144,10 @@
 	    url: '/add-product/',
 	    template: _addProductTemplateHtml2['default'],
 	    controller: 'AddProductController as vm'
+	  }).state('addTask', {
+	    url: '/add-task/',
+	    template: _addTaskTemplateHtml2['default'],
+	    controller: 'AddTaskController as vm'
 	  });
 	
 	  $urlRouterProvider.otherwise('/');
@@ -68038,6 +68050,38 @@
 	catch(e){ngModule=angular.module("ng",[])}
 	var v1="<div>add-product</div>";
 	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var AddTaskController =
+	/* @ngInject */
+	function AddTaskController() {
+	  _classCallCheck(this, AddTaskController);
+	};
+	
+	exports["default"] = AddTaskController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div>add task</div>";
+	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ }
