@@ -12,6 +12,6 @@ export default class productService {
   }
 
   post(data) {
-    return this._$http.post(this._productUrl, {data});
+    return this._$http.post(this._productUrl, data);
   }
 }

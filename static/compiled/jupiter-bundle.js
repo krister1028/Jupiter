@@ -67879,7 +67879,7 @@
 	  }, {
 	    key: 'post',
 	    value: function post(data) {
-	      return this._$http.post(this._productUrl, { data: data });
+	      return this._$http.post(this._productUrl, data);
 	    }
 	  }]);
 	
@@ -68047,6 +68047,8 @@
 	  /* @ngInject */
 	
 	  function AddProductController(taskService, productService) {
+	    var _this = this;
+	
 	    _classCallCheck(this, AddProductController);
 	
 	    this.description = null;
@@ -68054,6 +68056,13 @@
 	    this.productTasks = [];
 	    this._allTasks = taskService.tasks;
 	    this._productService = productService;
+	
+	    // set all task times to max to start with
+	    taskService.loading.then(function () {
+	      return _this._allTasks.forEach(function (t) {
+	        return t.completion_time = t.max_completion_time;
+	      });
+	    });
 	  }
 	
 	  _createClass(AddProductController, [{
@@ -68078,6 +68087,11 @@
 	        return f.description.toLowerCase().indexOf(query.toLowerCase()) > -1;
 	      });
 	    }
+	  }, {
+	    key: "addTask",
+	    value: function addTask(task) {
+	      this.productTasks.push(task);
+	    }
 	  }]);
 	
 	  return AddProductController;
@@ -68093,7 +68107,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<form name=\"addProduct\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.code\" required> </md-input-container> <md-chips ng-model=\"vm.productTasks\" md-autocomplete-snap md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <md-button ng-click=\"vm.publish()\">Publish Product</md-button> <div> <div ng-repeat=\"task in vm.unselectedTasks()\"> {{ task.description }} </div> </div>";
+	var v1="<form name=\"addProduct\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.code\" required> </md-input-container> <md-chips ng-model=\"vm.productTasks\" md-autocomplete-snap md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div> <div ng-repeat=\"task in vm.unselectedTasks()\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> </div> <div> <div>Product Tasks</div> <div ng-repeat=\"task in vm.productTasks\"> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <md-button ng-click=\"vm.publishProduct()\">Publish Product</md-button> <md-button ui-sref=\"addTask\">Add New Task</md-button> ";
 	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
 	module.exports=v1;
 

@@ -21,7 +21,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        exclude = ('group', 'min_completion_time', 'max_completion_time')
+        exclude = ('group', )
 
 
 class JobTaskSerializer(serializers.ModelSerializer):

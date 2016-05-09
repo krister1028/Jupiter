@@ -6,6 +6,9 @@ export default class AddProductController {
     this.productTasks = [];
     this._allTasks = taskService.tasks;
     this._productService = productService;
+
+    // set all task times to max to start with
+    taskService.loading.then(() => this._allTasks.forEach(t => t.completion_time = t.max_completion_time));
   }
 
   publishProduct() {
@@ -19,5 +22,9 @@ export default class AddProductController {
 
   searchTasks(query) {
     return this._allTasks.filter(f => f.description.toLowerCase().indexOf(query.toLowerCase()) > -1);
+  }
+
+  addTask(task) {
+    this.productTasks.push(task);
   }
 }

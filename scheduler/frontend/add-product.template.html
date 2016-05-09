@@ -22,11 +22,27 @@
       </md-chip-template>
     </md-chips>
 </form>
-<md-button ng-click="vm.publish()">Publish Product</md-button>
 
 <div>
-    <div ng-repeat="task in vm.unselectedTasks()">
+    <div ng-repeat="task in vm.unselectedTasks()" ng-click="vm.addTask(task)">
         {{ task.description }}
     </div>
-
 </div>
+
+<div>
+    <div>Product Tasks</div>
+    <div ng-repeat="task in vm.productTasks">
+        {{ task.description }}
+        <md-slider
+                aria-label="Select Time"
+                ng-model="task.completion_time"
+                md-discrete="true"
+                min="{{ task.min_completion_time }}"
+                max="{{ task.max_completion_time }}">
+        </md-slider>
+    </div>
+</div>
+
+<md-button ng-click="vm.publishProduct()">Publish Product</md-button>
+<md-button ui-sref="addTask">Add New Task</md-button>
+</md-slider>
