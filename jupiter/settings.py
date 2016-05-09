@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_auth',
     'rest_framework.authtoken',
+    'scheduler'
 )
 
 MIDDLEWARE_CLASSES = (
