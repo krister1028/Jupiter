@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from scheduler.models import UserProfile
+from scheduler.models import UserProfile, Product, Task
 
 
 class UserProfileInline(admin.StackedInline):
@@ -18,3 +18,5 @@ class UserAdmin(BaseUserAdmin):
 # Re-register UserAdmin to add inlines
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.register(Product)
+admin.site.register(Task)
