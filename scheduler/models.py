@@ -50,6 +50,7 @@ class Product(models.Model):
 
 class Job(models.Model):
     group = models.ForeignKey(Group)
+    product = models.ForeignKey(Product)
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
 
@@ -67,6 +68,7 @@ class JobTask(models.Model):
         (COMPLETE, 'Complete')
     )
 
-    job = models.ForeignKey(Job)
-    task = models.ForeignKey(Task)
+    job = models.ForeignKey(Job, related_name='job_tasks')
+    task = models.ForeignKey(Task, related_name='jobs')
     status = models.IntegerField(choices=STATUS_CHOICES)
+    completion_time = models.IntegerField()

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from scheduler.models import Product, Task, Job
+from scheduler.models import Product, Task, Job, JobTask
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -15,13 +15,26 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
+        exclude = ('tasks', 'group')
 
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
+        exclude = ('group', 'min_completion_time', 'max_completion_time')
+
+
+class JobTaskSerializer(serializers.ModelSerializer):
+    task = TaskSerializer()
+
+    class Meta:
+        model = JobTask
 
 
 class JobSerializer(serializers.ModelSerializer):
+    job_tasks = JobTaskSerializer(many=True)
+    product = ProductSerializer()
+
     class Meta:
         model = Job
+        exclude = ('group', )
