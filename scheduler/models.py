@@ -49,6 +49,15 @@ class Product(models.Model):
 
 
 class Job(models.Model):
+    group = models.ForeignKey(Group)
+    created = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.description
+
+
+class JobTask(models.Model):
     PENDING = 1
     IN_PROGRESS = 2
     COMPLETE = 3
@@ -58,7 +67,6 @@ class Job(models.Model):
         (COMPLETE, 'Complete')
     )
 
-    group = models.ForeignKey(Group)
+    job = models.ForeignKey(Job)
+    task = models.ForeignKey(Task)
     status = models.IntegerField(choices=STATUS_CHOICES)
-    created = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=255)
