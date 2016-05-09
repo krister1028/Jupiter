@@ -4,6 +4,7 @@ export default class HomeController {
     this.user = userService.user;
     this.products = productService.products;
     this.jobs = jobService.jobs;
+    this.jobService = jobService;
 
     this.loading = true;
     userService.loading.then(() => this.loading = false);

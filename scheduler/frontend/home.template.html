@@ -9,6 +9,7 @@
 </div>
 <div ng-repeat="job in vm.jobs">
     {{ job.description }}
+    <md-progress-linear md-mode="determinate" value="{{ vm.jobService.getProgress(job) * 100 }}"></md-progress-linear>
 </div>
 <div ng-repeat="product in vm.products">
     {{ product.description }}

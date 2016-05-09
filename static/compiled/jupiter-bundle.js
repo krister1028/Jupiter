@@ -67870,6 +67870,7 @@
 	    this._getJobUrl = '/api/jobs/';
 	    this.jobs = [];
 	    this.loading = this.getJobs();
+	    this._taskCompleteCode = 3;
 	  }
 	
 	  _createClass(jobService, [{
@@ -67882,6 +67883,22 @@
 	
 	        return (_jobs = _this.jobs).push.apply(_jobs, _toConsumableArray(response.data));
 	      });
+	    }
+	  }, {
+	    key: 'getProgress',
+	    value: function getProgress(job) {
+	      var _this2 = this;
+	
+	      var totalTime = 0;
+	      var remainingTime = 0;
+	
+	      job.job_tasks.forEach(function (t) {
+	        totalTime += t.completion_time;
+	        if (t.status === _this2._taskCompleteCode) {
+	          remainingTime += t.completion_time;
+	        }
+	      });
+	      return remainingTime / totalTime;
 	    }
 	  }]);
 	
@@ -67913,6 +67930,7 @@
 	  this.user = userService.user;
 	  this.products = productService.products;
 	  this.jobs = jobService.jobs;
+	  this.jobService = jobService;
 	
 	  this.loading = true;
 	  userService.loading.then(function () {
@@ -67930,7 +67948,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.name }} </div> <div ng-repeat=\"job in vm.jobs\"> {{ job.description }} </div> <div ng-repeat=\"product in vm.products\"> {{ product.description }} </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.name }} </div> <div ng-repeat=\"job in vm.jobs\"> {{ job.description }} <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </div> <div ng-repeat=\"product in vm.products\"> {{ product.description }} </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
