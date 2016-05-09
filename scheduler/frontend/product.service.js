@@ -2,12 +2,16 @@ export default class productService {
   /* @ngInject */
   constructor($http) {
     this._$http = $http;
-    this._getProductUrl = '/api/products/';
+    this._productUrl = '/api/products/';
     this.products = [];
-    this.loading = this.getProducts();
+    this.loading = this.get();
   }
 
-  getProducts() {
-    return this._$http.get(this._getProductUrl).then(response => this.products.push(...response.data));
+  get() {
+    return this._$http.get(this._productUrl).then(response => this.products.push(...response.data));
+  }
+
+  post(data) {
+    return this._$http.post(this._productUrl, {data});
   }
 }

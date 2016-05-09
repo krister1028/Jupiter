@@ -9,6 +9,7 @@ import AddTaskController from './add-task.controller';
 import userService from './user.service';
 import productService from './product.service';
 import jobService from './job.service';
+import taskService from './task.service';
 import HomeController from './home.controller';
 import homeTemplate from './home.template.html';
 import addJobTemplate from './add-job.template.html';
@@ -24,6 +25,7 @@ const jupiter = angular
   .service('userService', userService)
   .service('productService', productService)
   .service('jobService', jobService)
+  .service('taskService', taskService)
   .config(configuration);
 
 /* @ngInject */

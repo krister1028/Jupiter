@@ -1,1 +1,32 @@
-<div>add-product</div>
+<form name="addProduct">
+  <md-input-container>
+    <label>Product Description</label>
+    <input name="productDescription" ng-model="vm.description" required>
+  </md-input-container>
+  <md-input-container>
+    <label>Product Code</label>
+    <input name="productCode" ng-model="vm.code" required>
+  </md-input-container>
+    <md-chips ng-model="vm.productTasks" md-autocomplete-snap
+              md-require-match="true">
+      <md-autocomplete
+          md-search-text="vm.searchText"
+          md-items="item in vm.searchTasks(vm.searchText)"
+          placeholder="Add Product Tasks">
+        <span md-highlight-text="vm.searchText">{{item.description}}</span>
+      </md-autocomplete>
+      <md-chip-template>
+        <span>
+          <strong>{{$chip.description}}</strong>
+        </span>
+      </md-chip-template>
+    </md-chips>
+</form>
+<md-button ng-click="vm.publish()">Publish Product</md-button>
+
+<div>
+    <div ng-repeat="task in vm.unselectedTasks()">
+        {{ task.description }}
+    </div>
+
+</div>

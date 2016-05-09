@@ -103,6 +103,10 @@
 	
 	var _jobService2 = _interopRequireDefault(_jobService);
 	
+	var _taskService = __webpack_require__(26);
+	
+	var _taskService2 = _interopRequireDefault(_taskService);
+	
 	var _homeController = __webpack_require__(18);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
@@ -123,7 +127,7 @@
 	
 	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).config(configuration);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).service('taskService', _taskService2['default']).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -67856,21 +67860,26 @@
 	    _classCallCheck(this, productService);
 	
 	    this._$http = $http;
-	    this._getProductUrl = '/api/products/';
+	    this._productUrl = '/api/products/';
 	    this.products = [];
-	    this.loading = this.getProducts();
+	    this.loading = this.get();
 	  }
 	
 	  _createClass(productService, [{
-	    key: 'getProducts',
-	    value: function getProducts() {
+	    key: 'get',
+	    value: function get() {
 	      var _this = this;
 	
-	      return this._$http.get(this._getProductUrl).then(function (response) {
+	      return this._$http.get(this._productUrl).then(function (response) {
 	        var _products;
 	
 	        return (_products = _this.products).push.apply(_products, _toConsumableArray(response.data));
 	      });
+	    }
+	  }, {
+	    key: 'post',
+	    value: function post(data) {
+	      return this._$http.post(this._productUrl, { data: data });
 	    }
 	  }]);
 	
@@ -68030,13 +68039,49 @@
 	  value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var AddProductController =
-	/* @ngInject */
-	function AddProductController() {
-	  _classCallCheck(this, AddProductController);
-	};
+	var AddProductController = (function () {
+	  /* @ngInject */
+	
+	  function AddProductController(taskService, productService) {
+	    _classCallCheck(this, AddProductController);
+	
+	    this.description = null;
+	    this.code = null;
+	    this.productTasks = [];
+	    this._allTasks = taskService.tasks;
+	    this._productService = productService;
+	  }
+	
+	  _createClass(AddProductController, [{
+	    key: "publishProduct",
+	    value: function publishProduct() {
+	      this._productService.post({ description: this.description, code: this.code, tasks: this.productTasks });
+	    }
+	  }, {
+	    key: "unselectedTasks",
+	    value: function unselectedTasks() {
+	      var selectedTasks = this.productTasks.map(function (t) {
+	        return t.id;
+	      });
+	      return this._allTasks.filter(function (t) {
+	        return selectedTasks.indexOf(t.id) === -1;
+	      });
+	    }
+	  }, {
+	    key: "searchTasks",
+	    value: function searchTasks(query) {
+	      return this._allTasks.filter(function (f) {
+	        return f.description.toLowerCase().indexOf(query.toLowerCase()) > -1;
+	      });
+	    }
+	  }]);
+	
+	  return AddProductController;
+	})();
 	
 	exports["default"] = AddProductController;
 	module.exports = exports["default"];
@@ -68048,7 +68093,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div>add-product</div>";
+	var v1="<form name=\"addProduct\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.code\" required> </md-input-container> <md-chips ng-model=\"vm.productTasks\" md-autocomplete-snap md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <md-button ng-click=\"vm.publish()\">Publish Product</md-button> <div> <div ng-repeat=\"task in vm.unselectedTasks()\"> {{ task.description }} </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68083,6 +68128,54 @@
 	var v1="<div>add task</div>";
 	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
 	module.exports=v1;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var taskService = (function () {
+	  /* @ngInject */
+	
+	  function taskService($http) {
+	    _classCallCheck(this, taskService);
+	
+	    this._$http = $http;
+	    this._getTasksUrl = '/api/tasks/';
+	    this.tasks = [];
+	    this.loading = this.getTasks();
+	    this._taskCompleteCode = 3;
+	  }
+	
+	  _createClass(taskService, [{
+	    key: 'getTasks',
+	    value: function getTasks() {
+	      var _this = this;
+	
+	      return this._$http.get(this._getTasksUrl).then(function (response) {
+	        var _tasks;
+	
+	        return (_tasks = _this.tasks).push.apply(_tasks, _toConsumableArray(response.data));
+	      });
+	    }
+	  }]);
+	
+	  return taskService;
+	})();
+	
+	exports['default'] = taskService;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
