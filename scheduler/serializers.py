@@ -45,7 +45,7 @@ class JobTaskSerializer(serializers.ModelSerializer):
 class JobSerializer(serializers.ModelSerializer):
     job_tasks = JobTaskSerializer(many=True)
     product = ProductSerializer()
+    group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
         model = Job
-        exclude = ('group', )
