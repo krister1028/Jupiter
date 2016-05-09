@@ -79,6 +79,14 @@
 	
 	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
 	
+	var _addJobController = __webpack_require__(21);
+	
+	var _addJobController2 = _interopRequireDefault(_addJobController);
+	
+	var _addProductController = __webpack_require__(22);
+	
+	var _addProductController2 = _interopRequireDefault(_addProductController);
+	
 	var _userService = __webpack_require__(15);
 	
 	var _userService2 = _interopRequireDefault(_userService);
@@ -99,7 +107,15 @@
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).config(configuration);
+	var _addJobTemplateHtml = __webpack_require__(20);
+	
+	var _addJobTemplateHtml2 = _interopRequireDefault(_addJobTemplateHtml);
+	
+	var _addProductTemplateHtml = __webpack_require__(23);
+	
+	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
+	
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -112,6 +128,14 @@
 	    url: '/login/',
 	    template: _loginLoginHtml2['default'],
 	    controller: 'LoginController as vm'
+	  }).state('addJob', {
+	    url: '/add-job/',
+	    template: _addJobTemplateHtml2['default'],
+	    controller: 'AddJobController as vm'
+	  }).state('addProduct', {
+	    url: '/add-product/',
+	    template: _addProductTemplateHtml2['default'],
+	    controller: 'AddProductController as vm'
 	  });
 	
 	  $urlRouterProvider.otherwise('/');
@@ -67948,8 +67972,72 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.name }} </div> <div ng-repeat=\"job in vm.jobs\"> {{ job.description }} <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </div> <div ng-repeat=\"product in vm.products\"> {{ product.description }} </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.name }} </div> <div> <div ng-repeat=\"job in vm.jobs\"> {{ job.description }} <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </div> <md-button ui-sref=\"addJob\">Add Job</md-button> </div> <div> <div ng-repeat=\"product in vm.products\"> {{ product.description }} </div> <md-button ui-sref=\"addProduct\">Add Product</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div>add job</div>";
+	ngModule.run(["$templateCache",function(c){c.put("add-job.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var AddJobController =
+	/* @ngInject */
+	function AddJobController() {
+	  _classCallCheck(this, AddJobController);
+	};
+	
+	exports["default"] = AddJobController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var AddProductController =
+	/* @ngInject */
+	function AddProductController() {
+	  _classCallCheck(this, AddProductController);
+	};
+	
+	exports["default"] = AddProductController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div>add-product</div>";
+	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ }

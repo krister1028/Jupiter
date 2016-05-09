@@ -7,10 +7,19 @@
 <div>
     Welcome {{ vm.user.name }}
 </div>
-<div ng-repeat="job in vm.jobs">
-    {{ job.description }}
-    <md-progress-linear md-mode="determinate" value="{{ vm.jobService.getProgress(job) * 100 }}"></md-progress-linear>
+
+<div>
+    <div ng-repeat="job in vm.jobs">
+        {{ job.description }}
+        <md-progress-linear md-mode="determinate" value="{{ vm.jobService.getProgress(job) * 100 }}"></md-progress-linear>
+    </div>
+    <md-button ui-sref="addJob">Add Job</md-button>
 </div>
-<div ng-repeat="product in vm.products">
-    {{ product.description }}
+
+<div>
+    <div ng-repeat="product in vm.products">
+        {{ product.description }}
+    </div>
+    <md-button ui-sref="addProduct">Add Product</md-button>
 </div>
+
