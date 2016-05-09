@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from scheduler.models import Product, Task
+from scheduler.models import Product, Task, Job
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -20,3 +20,8 @@ class ProductSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
+
+
+class JobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Job

@@ -46,3 +46,19 @@ class Product(models.Model):
 
     def __unicode__(self):
         return self.description
+
+
+class Job(models.Model):
+    PENDING = 1
+    IN_PROGRESS = 2
+    COMPLETE = 3
+    STATUS_CHOICES = (
+        (PENDING, 'Pending'),
+        (IN_PROGRESS, 'In Progress'),
+        (COMPLETE, 'Complete')
+    )
+
+    group = models.ForeignKey(Group)
+    status = models.IntegerField(choices=STATUS_CHOICES)
+    created = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255)

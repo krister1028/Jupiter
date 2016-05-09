@@ -24,6 +24,7 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'products', views.ProductViewSet)
 router.register(r'tasks', views.TaskViewSet)
+router.register(r'jobs', views.JobViewSet)
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),

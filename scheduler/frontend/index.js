@@ -5,6 +5,7 @@ import loginTemplate from './login/login.html';
 import LoginController from './login/login.controller';
 import userService from './user.service';
 import productService from './product.service';
+import jobService from './job.service';
 import HomeController from './home.controller';
 import homeTemplate from './home.template.html';
 
@@ -13,6 +14,7 @@ const jupiter = angular
   .controller('LoginController', LoginController)
   .service('userService', userService)
   .service('productService', productService)
+  .service('jobService', jobService)
   .config(configuration);
 
 /* @ngInject */

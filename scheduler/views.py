@@ -3,8 +3,8 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 
-from scheduler.models import Product, Task
-from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer
+from scheduler.models import Product, Task, Job
+from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer
 
 
 def index(request):
@@ -33,6 +33,14 @@ class ProductViewSet(viewsets.ModelViewSet):
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(group__in=self.request.user.groups.all())
+
+
+class JobViewSet(viewsets.ModelViewSet):
+    queryset = Job.objects.all()
+    serializer_class = JobSerializer
 
     def get_queryset(self):
         return self.queryset.filter(group__in=self.request.user.groups.all())

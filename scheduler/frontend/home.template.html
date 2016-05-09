@@ -7,8 +7,8 @@
 <div>
     Welcome {{ vm.user.name }}
 </div>
-<div>
-    jobs
+<div ng-repeat="job in vm.jobs">
+    {{ job.description }}
 </div>
 <div ng-repeat="product in vm.products">
     {{ product.description }}
