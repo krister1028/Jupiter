@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="jupiter">
 <head>
     <meta charset="UTF-8">
     <title>Jupiter</title>
@@ -9,7 +9,7 @@
     <link type="text/css" rel="stylesheet" href="{% static "angular-material-1.0.7-min.css" %}">
     <link type="text/css" rel="stylesheet" href="{% static "base.css" %}">
 </head>
-<body ng-app="jupiter">
-    <ui-view ng-cloak></ui-view>
+<body layout="row">
+    <ui-view ng-cloak flex></ui-view>
 </body>
 </html>
