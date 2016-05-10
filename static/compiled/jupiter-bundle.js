@@ -79,51 +79,51 @@
 	
 	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
 	
-	var _addJobController = __webpack_require__(21);
+	var _addJobController = __webpack_require__(15);
 	
 	var _addJobController2 = _interopRequireDefault(_addJobController);
 	
-	var _addProductController = __webpack_require__(22);
+	var _addProductController = __webpack_require__(16);
 	
 	var _addProductController2 = _interopRequireDefault(_addProductController);
 	
-	var _addTaskController = __webpack_require__(24);
+	var _addTaskController = __webpack_require__(17);
 	
 	var _addTaskController2 = _interopRequireDefault(_addTaskController);
 	
-	var _userService = __webpack_require__(15);
+	var _userService = __webpack_require__(18);
 	
 	var _userService2 = _interopRequireDefault(_userService);
 	
-	var _productService = __webpack_require__(16);
+	var _productService = __webpack_require__(19);
 	
 	var _productService2 = _interopRequireDefault(_productService);
 	
-	var _jobService = __webpack_require__(17);
+	var _jobService = __webpack_require__(20);
 	
 	var _jobService2 = _interopRequireDefault(_jobService);
 	
-	var _taskService = __webpack_require__(26);
+	var _taskService = __webpack_require__(21);
 	
 	var _taskService2 = _interopRequireDefault(_taskService);
 	
-	var _homeController = __webpack_require__(18);
+	var _homeController = __webpack_require__(22);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _homeTemplateHtml = __webpack_require__(19);
+	var _homeTemplateHtml = __webpack_require__(23);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _addJobTemplateHtml = __webpack_require__(20);
+	var _addJobTemplateHtml = __webpack_require__(24);
 	
 	var _addJobTemplateHtml2 = _interopRequireDefault(_addJobTemplateHtml);
 	
-	var _addProductTemplateHtml = __webpack_require__(23);
+	var _addProductTemplateHtml = __webpack_require__(25);
 	
 	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
 	
-	var _addTaskTemplateHtml = __webpack_require__(25);
+	var _addTaskTemplateHtml = __webpack_require__(26);
 	
 	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
 	
@@ -67779,6 +67779,130 @@
 /* 15 */
 /***/ function(module, exports) {
 
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var AddJobController =
+	/* @ngInject */
+	function AddJobController() {
+	  _classCallCheck(this, AddJobController);
+	};
+	
+	exports["default"] = AddJobController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var AddProductController = (function () {
+	  /* @ngInject */
+	
+	  function AddProductController(taskService, productService, $state) {
+	    var _this = this;
+	
+	    _classCallCheck(this, AddProductController);
+	
+	    this.description = null;
+	    this.code = null;
+	    this.productTasks = [];
+	    this._allTasks = taskService.tasks;
+	    this._productService = productService;
+	    this._$state = $state;
+	
+	    // set all task times to max to start with
+	    taskService.loading.then(function () {
+	      return _this._allTasks.forEach(function (t) {
+	        return t.completion_time = t.max_completion_time;
+	      });
+	    });
+	  }
+	
+	  _createClass(AddProductController, [{
+	    key: 'publishProduct',
+	    value: function publishProduct() {
+	      var _this2 = this;
+	
+	      this._productService.post({
+	        description: this.description,
+	        code: this.code,
+	        tasks: this.productTasks.map(function (t) {
+	          return { task: t.id, completion_time: t.completion_time };
+	        })
+	      }).then(function () {
+	        return _this2._$state.go('home');
+	      });
+	    }
+	  }, {
+	    key: 'unselectedTasks',
+	    value: function unselectedTasks() {
+	      var selectedTasks = this.productTasks.map(function (t) {
+	        return t.id;
+	      });
+	      return this._allTasks.filter(function (t) {
+	        return selectedTasks.indexOf(t.id) === -1;
+	      });
+	    }
+	  }, {
+	    key: 'searchTasks',
+	    value: function searchTasks(query) {
+	      return this._allTasks.filter(function (f) {
+	        return f.description.toLowerCase().indexOf(query.toLowerCase()) > -1;
+	      });
+	    }
+	  }, {
+	    key: 'addTask',
+	    value: function addTask(task) {
+	      this.productTasks.push(task);
+	    }
+	  }]);
+	
+	  return AddProductController;
+	})();
+	
+	exports['default'] = AddProductController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var AddTaskController =
+	/* @ngInject */
+	function AddTaskController() {
+	  _classCallCheck(this, AddTaskController);
+	};
+	
+	exports["default"] = AddTaskController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -67838,7 +67962,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67890,7 +68014,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67954,197 +68078,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var HomeController =
-	/* @ngInject */
-	function HomeController(userService, productService, jobService) {
-	  var _this = this;
-	
-	  _classCallCheck(this, HomeController);
-	
-	  this.user = userService.user;
-	  this.products = productService.products;
-	  this.jobs = jobService.jobs;
-	  this.jobService = jobService;
-	
-	  this.loading = true;
-	  userService.loading.then(function () {
-	    return _this.loading = false;
-	  });
-	};
-	
-	exports["default"] = HomeController;
-	module.exports = exports["default"];
-
-/***/ },
-/* 19 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.name }} </div> <div> <div ng-repeat=\"job in vm.jobs\"> {{ job.description }} <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </div> <md-button ui-sref=\"addJob\">Add Job</md-button> </div> <div> <div ng-repeat=\"product in vm.products\"> {{ product.description }} </div> <md-button ui-sref=\"addProduct\">Add Product</md-button> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 20 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div>add job</div>";
-	ngModule.run(["$templateCache",function(c){c.put("add-job.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
 /* 21 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var AddJobController =
-	/* @ngInject */
-	function AddJobController() {
-	  _classCallCheck(this, AddJobController);
-	};
-	
-	exports["default"] = AddJobController;
-	module.exports = exports["default"];
-
-/***/ },
-/* 22 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var AddProductController = (function () {
-	  /* @ngInject */
-	
-	  function AddProductController(taskService, productService) {
-	    var _this = this;
-	
-	    _classCallCheck(this, AddProductController);
-	
-	    this.description = null;
-	    this.code = null;
-	    this.productTasks = [];
-	    this._allTasks = taskService.tasks;
-	    this._productService = productService;
-	
-	    // set all task times to max to start with
-	    taskService.loading.then(function () {
-	      return _this._allTasks.forEach(function (t) {
-	        return t.completion_time = t.max_completion_time;
-	      });
-	    });
-	  }
-	
-	  _createClass(AddProductController, [{
-	    key: "publishProduct",
-	    value: function publishProduct() {
-	      this._productService.post({ description: this.description, code: this.code, tasks: this.productTasks });
-	    }
-	  }, {
-	    key: "unselectedTasks",
-	    value: function unselectedTasks() {
-	      var selectedTasks = this.productTasks.map(function (t) {
-	        return t.id;
-	      });
-	      return this._allTasks.filter(function (t) {
-	        return selectedTasks.indexOf(t.id) === -1;
-	      });
-	    }
-	  }, {
-	    key: "searchTasks",
-	    value: function searchTasks(query) {
-	      return this._allTasks.filter(function (f) {
-	        return f.description.toLowerCase().indexOf(query.toLowerCase()) > -1;
-	      });
-	    }
-	  }, {
-	    key: "addTask",
-	    value: function addTask(task) {
-	      this.productTasks.push(task);
-	    }
-	  }]);
-	
-	  return AddProductController;
-	})();
-	
-	exports["default"] = AddProductController;
-	module.exports = exports["default"];
-
-/***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<form name=\"addProduct\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.code\" required> </md-input-container> <md-chips ng-model=\"vm.productTasks\" md-autocomplete-snap md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div> <div ng-repeat=\"task in vm.unselectedTasks()\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> </div> <div> <div>Product Tasks</div> <div ng-repeat=\"task in vm.productTasks\"> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <md-button ng-click=\"vm.publishProduct()\">Publish Product</md-button> <md-button ui-sref=\"addTask\">Add New Task</md-button> ";
-	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var AddTaskController =
-	/* @ngInject */
-	function AddTaskController() {
-	  _classCallCheck(this, AddTaskController);
-	};
-	
-	exports["default"] = AddTaskController;
-	module.exports = exports["default"];
-
-/***/ },
-/* 25 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div>add task</div>";
-	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 26 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68190,6 +68124,83 @@
 	
 	exports['default'] = taskService;
 	module.exports = exports['default'];
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var HomeController =
+	/* @ngInject */
+	function HomeController(userService, productService, jobService) {
+	  var _this = this;
+	
+	  _classCallCheck(this, HomeController);
+	
+	  this.user = userService.user;
+	  this.products = productService.products;
+	  this.jobs = jobService.jobs;
+	  this.jobService = jobService;
+	
+	  this.loading = true;
+	  userService.loading.then(function () {
+	    return _this.loading = false;
+	  });
+	};
+	
+	exports["default"] = HomeController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <md-divider md-inset ng-if=\"!$last\" layout-margin></md-divider> <div> Welcome {{ vm.user.name }} </div> <div> <div ng-repeat=\"job in vm.jobs\"> {{ job.description }} <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </div> <md-button ui-sref=\"addJob\">Add Job</md-button> </div> <div> <div ng-repeat=\"product in vm.products\"> {{ product.description }} </div> <md-button ui-sref=\"addProduct\">Add Product</md-button> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div>add job</div>";
+	ngModule.run(["$templateCache",function(c){c.put("add-job.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<form name=\"addProduct\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.code\" required> </md-input-container> <md-chips ng-model=\"vm.productTasks\" md-autocomplete-snap md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div> <div ng-repeat=\"task in vm.unselectedTasks()\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> </div> <div> <div>Product Tasks</div> <div ng-repeat=\"task in vm.productTasks\"> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <md-button ng-click=\"vm.publishProduct()\">Publish Product</md-button> <md-button ui-sref=\"addTask\">Add New Task</md-button> ";
+	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div>add task</div>";
+	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
+	module.exports=v1;
 
 /***/ }
 /******/ ]);

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from scheduler.models import UserProfile, Product, Task, Job, JobTask
+from scheduler.models import UserProfile, Product, Task, Job, ProductTask
 
 admin.site.site_header = 'Jupiter Admin'
 
@@ -18,17 +18,17 @@ class UserAdmin(BaseUserAdmin):
     inlines = (UserProfileInline, )
 
 
-class JobTaskInline(admin.StackedInline):
-    model = JobTask
+class ProductTaskInline(admin.StackedInline):
+    model = ProductTask
 
 
-class JobAdmin(admin.ModelAdmin):
-    model = Job
-    inlines = (JobTaskInline, )
+class ProductAdmin(admin.ModelAdmin):
+    model = Product
+    inlines = (ProductTaskInline, )
 
 # Re-register UserAdmin to add inlines
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-admin.site.register(Product)
+admin.site.register(Job)
 admin.site.register(Task)
-admin.site.register(Job, JobAdmin)
+admin.site.register(Product, ProductAdmin)

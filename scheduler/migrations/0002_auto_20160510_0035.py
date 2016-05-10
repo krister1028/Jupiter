@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('scheduler', '0003_auto_20160509_1807'),
+        ('scheduler', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='product',
-            name='code',
-            field=models.CharField(max_length=8),
+            model_name='producttask',
+            name='status',
+            field=models.IntegerField(default=1, choices=[(1, 'Pending'), (2, 'In Progress'), (3, 'Complete')]),
         ),
     ]

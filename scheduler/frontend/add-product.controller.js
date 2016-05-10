@@ -1,18 +1,27 @@
 export default class AddProductController {
   /* @ngInject */
-  constructor(taskService, productService) {
+  constructor(taskService, productService, $state) {
     this.description = null;
     this.code = null;
     this.productTasks = [];
     this._allTasks = taskService.tasks;
     this._productService = productService;
+    this._$state = $state;
 
     // set all task times to max to start with
     taskService.loading.then(() => this._allTasks.forEach(t => t.completion_time = t.max_completion_time));
   }
 
   publishProduct() {
-    this._productService.post({description: this.description, code: this.code, tasks: this.productTasks});
+    this._productService.post({
+      description: this.description,
+      code: this.code,
+      tasks: this.productTasks.map(t => {
+        return {task: t.id, completion_time: t.completion_time};
+      })
+    }).then(
+      () => this._$state.go('home')
+    );
   }
 
   unselectedTasks() {

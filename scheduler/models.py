@@ -42,7 +42,6 @@ class Product(models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255, default=None)
     code = models.CharField(max_length=8)
-    tasks = models.ManyToManyField(Task)
 
     def __unicode__(self):
         return self.description
@@ -58,7 +57,7 @@ class Job(models.Model):
         return self.description
 
 
-class JobTask(models.Model):
+class ProductTask(models.Model):
     PENDING = 1
     IN_PROGRESS = 2
     COMPLETE = 3
@@ -68,7 +67,7 @@ class JobTask(models.Model):
         (COMPLETE, 'Complete')
     )
 
-    job = models.ForeignKey(Job, related_name='job_tasks')
-    task = models.ForeignKey(Task, related_name='jobs')
-    status = models.IntegerField(choices=STATUS_CHOICES)
+    product = models.ForeignKey(Product, related_name='tasks')
+    task = models.ForeignKey(Task, related_name='products')
+    status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     completion_time = models.IntegerField()

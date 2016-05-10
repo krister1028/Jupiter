@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from scheduler.models import Product, Task, Job, JobTask
+from scheduler.models import Product, Task, Job, ProductTask
 
 
 class CurrentGroupDefault(serializers.CurrentUserDefault):
@@ -20,14 +20,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('username', 'is_superuser', 'first_name', 'last_name', 'profile')
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    group = serializers.HiddenField(default=CurrentGroupDefault())
-
-    class Meta:
-        model = Product
-        exclude = ('tasks', )
-
-
 class TaskSerializer(serializers.ModelSerializer):
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
@@ -35,15 +27,33 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
 
 
-class JobTaskSerializer(serializers.ModelSerializer):
-    task = TaskSerializer()
+class ProductTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = JobTask
+        model = ProductTask
+        exclude = ('product', )
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    group = serializers.HiddenField(default=CurrentGroupDefault())
+    tasks = ProductTaskSerializer(many=True)
+
+    def create(self, validated_data):
+        related_tasks = validated_data.pop('tasks')
+        product = Product(**validated_data)
+        product.save()
+
+        for task in related_tasks:
+            task['product'] = product
+            ProductTask(**task).save()
+
+        return product
+
+    class Meta:
+        model = Product
 
 
 class JobSerializer(serializers.ModelSerializer):
-    job_tasks = JobTaskSerializer(many=True)
     product = ProductSerializer()
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
