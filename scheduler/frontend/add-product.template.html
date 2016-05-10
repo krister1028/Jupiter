@@ -1,48 +1,56 @@
-<form name="addProduct">
-  <md-input-container>
-    <label>Product Description</label>
-    <input name="productDescription" ng-model="vm.description" required>
-  </md-input-container>
-  <md-input-container>
-    <label>Product Code</label>
-    <input name="productCode" ng-model="vm.code" required>
-  </md-input-container>
-    <md-chips ng-model="vm.productTasks" md-autocomplete-snap
-              md-require-match="true">
-      <md-autocomplete
-          md-search-text="vm.searchText"
-          md-items="item in vm.searchTasks(vm.searchText)"
-          placeholder="Add Product Tasks">
-        <span md-highlight-text="vm.searchText">{{item.description}}</span>
-      </md-autocomplete>
-      <md-chip-template>
-        <span>
-          <strong>{{$chip.description}}</strong>
-        </span>
-      </md-chip-template>
-    </md-chips>
-</form>
-
-<div>
-    <div ng-repeat="task in vm.unselectedTasks()" ng-click="vm.addTask(task)">
-        {{ task.description }}
+<md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2 class="md-flex">Add Product</h2>
     </div>
+</md-toolbar>
+<div layout-margin layout="row">
+    <form name="addProduct" layout="column" flex="66">
+      <md-input-container>
+        <label>Product Description</label>
+        <input name="productDescription" ng-model="vm.description" required>
+      </md-input-container>
+      <md-input-container>
+        <label>Product Code</label>
+        <input name="productCode" ng-model="vm.code" required>
+      </md-input-container>
+        <md-chips ng-model="vm.productTasks" md-autocomplete-snap
+                  md-require-match="true">
+          <md-autocomplete
+              md-search-text="vm.searchText"
+              md-items="item in vm.searchTasks(vm.searchText)"
+              placeholder="Add Product Tasks">
+            <span md-highlight-text="vm.searchText">{{item.description}}</span>
+          </md-autocomplete>
+          <md-chip-template>
+            <span>
+              <strong>{{$chip.description}}</strong>
+            </span>
+          </md-chip-template>
+        </md-chips>
+    </form>
+
+    <div layout="column" flex="33">
+        <h4>Product Tasks</h4>
+        <div ng-repeat="task in vm.productTasks" layout-margin>
+            {{ task.description }}
+            <md-slider
+                    aria-label="Select Time"
+                    ng-model="task.completion_time"
+                    md-discrete="true"
+                    min="{{ task.min_completion_time }}"
+                    max="{{ task.max_completion_time }}">
+            </md-slider>
+        </div>
+    </div>
+
+    <div layout="column" layout-align="end end" flex="33">
+        <h2 flex>Assign Tasks</h2>
+        <div flex ng-repeat="task in vm.unselectedTasks()" ng-click="vm.addTask(task)">
+            (x) {{ task.description }}
+        </div>
+        <md-button flex ui-sref="addTask">Add New Task</md-button>
+    </div>
+
 </div>
 
-<div>
-    <div>Product Tasks</div>
-    <div ng-repeat="task in vm.productTasks">
-        {{ task.description }}
-        <md-slider
-                aria-label="Select Time"
-                ng-model="task.completion_time"
-                md-discrete="true"
-                min="{{ task.min_completion_time }}"
-                max="{{ task.max_completion_time }}">
-        </md-slider>
-    </div>
-</div>
-
-<md-button ng-click="vm.publishProduct()">Publish Product</md-button>
-<md-button ui-sref="addTask">Add New Task</md-button>
-</md-slider>
+<md-button class="md-raised md-primary" ng-click="vm.publishProduct()">Publish Product</md-button>
