@@ -42,11 +42,6 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
       template: loginTemplate,
       controller: 'LoginController as vm'
     })
-    .state('addJob', {
-      url: '/add-job/',
-      template: addJobTemplate,
-      controller: 'AddJobController as vm'
-    })
     .state('addProduct', {
       url: '/add-product/',
       template: addProductTemplate,

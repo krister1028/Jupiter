@@ -111,19 +111,19 @@
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _homeTemplateHtml = __webpack_require__(23);
+	var _homeTemplateHtml = __webpack_require__(25);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _addJobTemplateHtml = __webpack_require__(24);
+	var _addJobTemplateHtml = __webpack_require__(26);
 	
 	var _addJobTemplateHtml2 = _interopRequireDefault(_addJobTemplateHtml);
 	
-	var _addProductTemplateHtml = __webpack_require__(25);
+	var _addProductTemplateHtml = __webpack_require__(27);
 	
 	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
 	
-	var _addTaskTemplateHtml = __webpack_require__(26);
+	var _addTaskTemplateHtml = __webpack_require__(28);
 	
 	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
 	
@@ -140,10 +140,6 @@
 	    url: '/login/',
 	    template: _loginLoginHtml2['default'],
 	    controller: 'LoginController as vm'
-	  }).state('addJob', {
-	    url: '/add-job/',
-	    template: _addJobTemplateHtml2['default'],
-	    controller: 'AddJobController as vm'
 	  }).state('addProduct', {
 	    url: '/add-product/',
 	    template: _addProductTemplateHtml2['default'],
@@ -68128,36 +68124,71 @@
 
 /***/ },
 /* 22 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var HomeController =
-	/* @ngInject */
-	function HomeController(userService, productService, jobService) {
-	  var _this = this;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	  _classCallCheck(this, HomeController);
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	  this.user = userService.user;
-	  this.products = productService.products;
-	  this.jobs = jobService.jobs;
-	  this.jobService = jobService;
+	var _addJobModalTemplateHtml = __webpack_require__(23);
 	
-	  this.loading = true;
-	  userService.loading.then(function () {
-	    return _this.loading = false;
-	  });
-	};
+	var _addJobModalTemplateHtml2 = _interopRequireDefault(_addJobModalTemplateHtml);
 	
-	exports["default"] = HomeController;
-	module.exports = exports["default"];
+	var _addJobModalController = __webpack_require__(24);
+	
+	var _addJobModalController2 = _interopRequireDefault(_addJobModalController);
+	
+	var _angular = __webpack_require__(2);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	var HomeController = (function () {
+	  /* @ngInject */
+	
+	  function HomeController(userService, productService, jobService, $mdDialog) {
+	    var _this = this;
+	
+	    _classCallCheck(this, HomeController);
+	
+	    this.user = userService.user;
+	    this.products = productService.products;
+	    this.jobs = jobService.jobs;
+	    this.jobService = jobService;
+	    this._$mdDialog = $mdDialog;
+	
+	    this.loading = true;
+	    userService.loading.then(function () {
+	      return _this.loading = false;
+	    });
+	  }
+	
+	  _createClass(HomeController, [{
+	    key: 'addJob',
+	    value: function addJob(ev) {
+	      this._$mdDialog.show({
+	        template: _addJobModalTemplateHtml2['default'],
+	        controller: _addJobModalController2['default'],
+	        controllerAs: 'vm',
+	        parent: _angular2['default'].element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose: true
+	      });
+	    }
+	  }]);
+	
+	  return HomeController;
+	})();
+	
+	exports['default'] = HomeController;
+	module.exports = exports['default'];
 
 /***/ },
 /* 23 */
@@ -68166,12 +68197,66 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> {{ job.description }} <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addJob\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
+	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.jobDescription\"/> </md-input-container> <md-input-container class=\"md-block\"> <label>Password</label> <input type=\"password\" required ng-model=\"vm.password\"/> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.doLogin()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
+	ngModule.run(["$templateCache",function(c){c.put("add-job-modal.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
 /* 24 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var AddJobModalController = (function () {
+	  /* @ngInject */
+	
+	  function AddJobModalController($mdDialog, jobService) {
+	    _classCallCheck(this, AddJobModalController);
+	
+	    this._$mdDialog = $mdDialog;
+	    this._jobService = jobService;
+	  }
+	
+	  _createClass(AddJobModalController, [{
+	    key: "cancel",
+	    value: function cancel() {
+	      this._$mdDialog.cancel();
+	    }
+	  }, {
+	    key: "addJob",
+	    value: function addJob() {
+	      this._$mdDialog.cancel();
+	      this._jobService.addJob();
+	    }
+	  }]);
+	
+	  return AddJobModalController;
+	})();
+	
+	exports["default"] = AddJobModalController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> {{ job.description }} <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 26 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68182,7 +68267,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68193,7 +68278,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
