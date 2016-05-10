@@ -67844,8 +67844,9 @@
 	        tasks: this.productTasks.map(function (t) {
 	          return { task: t.id, completion_time: t.completion_time };
 	        })
-	      }).then(function () {
-	        return _this2._$state.go('home');
+	      }).then(function (response) {
+	        _this2._productService.products.push(response.data);
+	        _this2._$state.go('home');
 	      });
 	    }
 	  }, {
