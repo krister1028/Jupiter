@@ -10,6 +10,8 @@
     <link type="text/css" rel="stylesheet" href="{% static "base.css" %}">
 </head>
 <body layout="row">
-    <ui-view ng-cloak flex></ui-view>
+    <md-content flex>
+        <ui-view ng-cloak></ui-view>
+    </md-content>
 </body>
 </html>
