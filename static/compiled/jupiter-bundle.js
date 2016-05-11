@@ -68089,10 +68089,23 @@
 	      var _this = this;
 	
 	      return this._$http.get(this._getJobUrl).then(function (response) {
-	        var _jobs;
+	        var jobs = [].concat(_toConsumableArray(response.data));
+	        return _this._productService.loading.then(function () {
+	          var _jobs;
 	
-	        return (_jobs = _this.jobs).push.apply(_jobs, _toConsumableArray(response.data));
+	          jobs.forEach(function (j) {
+	            return j.tasks = _this._getJobTasks(j);
+	          });
+	          (_jobs = _this.jobs).push.apply(_jobs, _toConsumableArray(jobs));
+	        });
 	      });
+	    }
+	  }, {
+	    key: '_getJobTasks',
+	    value: function _getJobTasks(job) {
+	      return this._productService.products.filter(function (p) {
+	        return p.id = job.product_id;
+	      })[0].tasks;
 	    }
 	  }, {
 	    key: 'post',
@@ -68111,20 +68124,13 @@
 	      var totalTime = 0;
 	      var remainingTime = 0;
 	
-	      this.getJobTasks(job).forEach(function (t) {
+	      job.tasks.forEach(function (t) {
 	        totalTime += t.completion_time;
 	        if (t.status === _this3._taskCompleteCode) {
 	          remainingTime += t.completion_time;
 	        }
 	      });
 	      return remainingTime / totalTime;
-	    }
-	  }, {
-	    key: 'getJobTasks',
-	    value: function getJobTasks(job) {
-	      return this._productService.products.filter(function (p) {
-	        return p.id = job.product_id;
-	      })[0].tasks;
 	    }
 	  }]);
 	
@@ -68337,17 +68343,17 @@
 	
 	var EditJobController =
 	/* @ngInject */
-	function EditJobController($stateParams, jobService) {
+	function EditJobController($stateParams, jobService, taskService) {
 	  var _this = this;
 	
 	  _classCallCheck(this, EditJobController);
 	
 	  this._jobService = jobService;
-	  this.loading = jobService.loading.then(function () {
+	  this._taskService = taskService;
+	  jobService.loading.then(function () {
 	    _this.job = jobService.jobs.filter(function (j) {
-	      return j.id = $stateParams.jobId;
+	      return j.id === $stateParams.jobId;
 	    })[0];
-	    _this.tasks = jobService.getJobTasks(_this.job);
 	  });
 	};
 	
@@ -68361,7 +68367,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> <a ui-sref=\"editJob({jobId:job.id})\">{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ ::vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> <a ui-sref=\"editJob({jobId:job.id})\">{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ ::product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68394,7 +68400,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.tasks\">{{ task.description }}</div> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> {{ vm.job }} <div ng-repeat=\"task in vm.job.tasks\">{{ vm.getTask(task.id).description }}</div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 

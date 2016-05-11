@@ -4,9 +4,10 @@
     </div>
 </md-toolbar>
 
-<div>
+<div layout-margin>
     <h3>Job Tasks</h3>
-    <div ng-repeat="task in vm.tasks">{{ task.description }}</div>
+    {{ vm.job }}
+    <div ng-repeat="task in vm.job.tasks">{{ vm.getTask(task.id).description }}</div>
 </div>
 
 
