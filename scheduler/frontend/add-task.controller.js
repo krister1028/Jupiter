@@ -3,6 +3,11 @@ export default class AddTaskController {
   constructor(taskService, $state) {
     this._taskService = taskService;
     this._$state = $state;
+    this.expertiseLevels = [
+      {value: 1, description: 'Low'},
+      {value: 2, description: 'Medium'},
+      {value: 3, description: 'High'}
+    ];
 
     this.abbreviation = null;
     this.cost = null;

@@ -67897,6 +67897,7 @@
 	
 	    this._taskService = taskService;
 	    this._$state = $state;
+	    this.expertiseLevels = [{ value: 1, description: 'Low' }, { value: 2, description: 'Medium' }, { value: 3, description: 'High' }];
 	
 	    this.abbreviation = null;
 	    this.cost = null;
@@ -68346,7 +68347,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <input name=\"expertiseLevel\" ng-model=\"vm.expertiseLevel\" required> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.maxCompletionTime\" required> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.minCompletionTime\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishTask()\">Publish Task</md-button>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <md-select ng-model=\"user.state\"> <md-option ng-repeat=\"level in vm.expertiseLevels\" value=\"{{level.value}}\"> {{level.description}} </md-option> </md-select> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.maxCompletionTime\" required> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.minCompletionTime\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishTask()\">Publish Task</md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
 	module.exports=v1;
 

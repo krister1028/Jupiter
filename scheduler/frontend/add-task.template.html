@@ -15,7 +15,11 @@
       </md-input-container>
       <md-input-container>
         <label>Required Expertise Level</label>
-        <input name="expertiseLevel" ng-model="vm.expertiseLevel" required>
+        <md-select ng-model="user.state">
+          <md-option ng-repeat="level in vm.expertiseLevels" value="{{level.value}}">
+            {{level.description}}
+          </md-option>
+        </md-select>
       </md-input-container>
       <md-input-container>
         <label>Max Time To Complete (mins)</label>
