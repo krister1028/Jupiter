@@ -54,9 +54,10 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class JobSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     product_id = serializers.IntegerField()
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
         model = Job
-        fields = ('description', 'product_id', 'group', 'created')
+        fields = ('id', 'description', 'product_id', 'group', 'created')

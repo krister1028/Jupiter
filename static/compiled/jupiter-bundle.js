@@ -111,13 +111,13 @@
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _homeTemplateHtml = __webpack_require__(25);
+	var _editJobController = __webpack_require__(25);
+	
+	var _editJobController2 = _interopRequireDefault(_editJobController);
+	
+	var _homeTemplateHtml = __webpack_require__(26);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
-	
-	var _addJobTemplateHtml = __webpack_require__(26);
-	
-	var _addJobTemplateHtml2 = _interopRequireDefault(_addJobTemplateHtml);
 	
 	var _addProductTemplateHtml = __webpack_require__(27);
 	
@@ -127,7 +127,11 @@
 	
 	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).service('taskService', _taskService2['default']).config(configuration);
+	var _editJobTemplateHtml = __webpack_require__(29);
+	
+	var _editJobTemplateHtml2 = _interopRequireDefault(_editJobTemplateHtml);
+	
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).controller('EditJobController', _editJobController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).service('taskService', _taskService2['default']).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -144,6 +148,10 @@
 	    url: '/add-product/',
 	    template: _addProductTemplateHtml2['default'],
 	    controller: 'AddProductController as vm'
+	  }).state('editJob', {
+	    url: '/edit-job/{jobId:int}',
+	    template: _editJobTemplateHtml2['default'],
+	    controller: 'EditJobController as vm'
 	  }).state('addTask', {
 	    url: '/add-task/',
 	    template: _addTaskTemplateHtml2['default'],
@@ -68103,7 +68111,7 @@
 	      var totalTime = 0;
 	      var remainingTime = 0;
 	
-	      this._getJobTasks(job).forEach(function (t) {
+	      this.getJobTasks(job).forEach(function (t) {
 	        totalTime += t.completion_time;
 	        if (t.status === _this3._taskCompleteCode) {
 	          remainingTime += t.completion_time;
@@ -68112,8 +68120,8 @@
 	      return remainingTime / totalTime;
 	    }
 	  }, {
-	    key: '_getJobTasks',
-	    value: function _getJobTasks(job) {
+	    key: 'getJobTasks',
+	    value: function getJobTasks(job) {
 	      return this._productService.products.filter(function (p) {
 	        return p.id = job.product_id;
 	      })[0].tasks;
@@ -68319,12 +68327,32 @@
 /* 25 */
 /***/ function(module, exports) {
 
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> {{ job.description }} <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
-	module.exports=v1;
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var EditJobController =
+	/* @ngInject */
+	function EditJobController($stateParams, jobService) {
+	  var _this = this;
+	
+	  _classCallCheck(this, EditJobController);
+	
+	  this._jobService = jobService;
+	  this.loading = jobService.loading.then(function () {
+	    _this.job = jobService.jobs.filter(function (j) {
+	      return j.id = $stateParams.jobId;
+	    })[0];
+	    _this.tasks = jobService.getJobTasks(_this.job);
+	  });
+	};
+	
+	exports["default"] = EditJobController;
+	module.exports = exports["default"];
 
 /***/ },
 /* 26 */
@@ -68333,8 +68361,8 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div>add job</div>";
-	ngModule.run(["$templateCache",function(c){c.put("add-job.template.html",v1)}]);
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> <a ui-sref=\"editJob({jobId:job.id})\">{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
@@ -68357,6 +68385,17 @@
 	catch(e){ngModule=angular.module("ng",[])}
 	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <md-select ng-model=\"user.state\"> <md-option ng-repeat=\"level in vm.expertiseLevels\" value=\"{{level.value}}\"> {{level.description}} </md-option> </md-select> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.maxCompletionTime\" required> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.minCompletionTime\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishTask()\">Publish Task</md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.tasks\">{{ task.description }}</div> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ }

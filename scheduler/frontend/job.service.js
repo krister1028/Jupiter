@@ -21,7 +21,7 @@ export default class jobService {
     let totalTime = 0;
     let remainingTime = 0;
 
-    this._getJobTasks(job).forEach(t => {
+    this.getJobTasks(job).forEach(t => {
       totalTime += t.completion_time;
       if (t.status === this._taskCompleteCode) {
         remainingTime += t.completion_time;
@@ -30,7 +30,7 @@ export default class jobService {
     return remainingTime / totalTime;
   }
 
-  _getJobTasks(job) {
+  getJobTasks(job) {
     return this._productService.products.filter(p => p.id = job.product_id)[0].tasks;
   }
 }

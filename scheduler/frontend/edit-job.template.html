@@ -1,0 +1,12 @@
+<md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2 class="md-flex">Edit {{ vm.job.description }}</h2>
+    </div>
+</md-toolbar>
+
+<div>
+    <h3>Job Tasks</h3>
+    <div ng-repeat="task in vm.tasks">{{ task.description }}</div>
+</div>
+
+
