@@ -6,8 +6,7 @@
 
 <div layout-margin>
     <h3>Job Tasks</h3>
-    {{ vm.job }}
-    <div ng-repeat="task in vm.job.tasks">{{ vm.getTask(task.id).description }}</div>
+    <div ng-repeat="task in vm.job.tasks">{{ task.description }}</div>
 </div>
 
 

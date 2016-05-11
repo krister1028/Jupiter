@@ -1,18 +1,20 @@
 export default class jobService {
   /* @ngInject */
-  constructor($http, productService) {
+  constructor($http, productService, taskService, $q) {
     this._$http = $http;
     this._getJobUrl = '/api/jobs/';
     this.jobs = [];
     this.loading = this.get();
     this._taskCompleteCode = 3;
     this._productService = productService;
+    this._taskService = taskService;
+    this.dependantLoads = $q.all([productService.loading, taskService.loading]);
   }
 
   get() {
     return this._$http.get(this._getJobUrl).then(response => {
       const jobs = [...response.data];
-      return this._productService.loading.then(
+      return this.dependantLoads.then(
         () => {
           jobs.forEach(j => j.tasks = this._getJobTasks(j));
           this.jobs.push(...jobs);
@@ -22,7 +24,11 @@ export default class jobService {
   }
 
   _getJobTasks(job) {
-    return this._productService.products.filter(p => p.id = job.product_id)[0].tasks;
+    const tasks = this._productService.products.filter(p => p.id = job.product_id)[0].tasks;
+    tasks.forEach(t => {
+      t.description = this._taskService.tasks.filter(serviceTask => serviceTask.id === t.task)[0].description;
+    });
+    return tasks;
   }
 
   post(data) {
