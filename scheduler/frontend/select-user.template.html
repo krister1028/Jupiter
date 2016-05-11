@@ -1,0 +1,31 @@
+<md-dialog aria-label="Mark Complete" ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Mark {{ vm.task }} as complete</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="vm.cancel()">
+          <md-icon class="material-icons" aria-label="Close dialog">close_black_18x18</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+          <md-input-container>
+            <label>Select User</label>
+            <md-select ng-model="vm.selectedUser">
+              <md-option ng-repeat="user in vm.groupUsers" value="{{user.id}}">
+                {{user.first_name}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button ng-click="vm.cancel()">
+       Cancel
+      </md-button>
+      <md-button ng-click="vm.markComplete()" style="margin-right:20px;">
+        Mark Complete
+      </md-button>
+    </md-dialog-actions>
+</md-dialog>
