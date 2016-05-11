@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from scheduler.models import Product, Task, Job, ProductTask
+from scheduler.models import Product, Task, Job, ProductTask, JobTask
 
 
 class CurrentGroupDefault(serializers.CurrentUserDefault):
@@ -53,11 +53,24 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
 
 
+class JobTaskSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = JobTask
+        exclude = ('job', )
+
+
 class JobSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     product_id = serializers.IntegerField()
     group = serializers.HiddenField(default=CurrentGroupDefault())
+    job_tasks = JobTaskSerializer(many=True, read_only=True)
+
+    def create(self, validated_data):
+        job = super(JobSerializer, self).create(validated_data)
+        JobTask.create_for_job(job)
+        return job
 
     class Meta:
         model = Job
-        fields = ('id', 'description', 'product_id', 'group', 'created')
+        fields = ('id', 'description', 'product_id', 'group', 'created', 'job_tasks')

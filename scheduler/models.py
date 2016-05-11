@@ -58,6 +58,15 @@ class Job(models.Model):
 
 
 class ProductTask(models.Model):
+    product = models.ForeignKey(Product, related_name='tasks')
+    task = models.ForeignKey(Task, related_name='product_tasks')
+    completion_time = models.IntegerField()
+
+    def __unicode__(self):
+        return self.task.description
+
+
+class JobTask(models.Model):
     PENDING = 1
     IN_PROGRESS = 2
     COMPLETE = 3
@@ -67,7 +76,12 @@ class ProductTask(models.Model):
         (COMPLETE, 'Complete')
     )
 
-    product = models.ForeignKey(Product, related_name='tasks')
-    task = models.ForeignKey(Task, related_name='products')
+    job = models.ForeignKey(Job, related_name='job_tasks')
+    product_task = models.ForeignKey(ProductTask, related_name='job_tasks')
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
-    completion_time = models.IntegerField()
+
+    @classmethod
+    def create_for_job(cls, job):
+        for product_task in job.product.tasks.all():
+            cls.objects.create(job=job, product_task=product_task, status=cls.PENDING)
+
