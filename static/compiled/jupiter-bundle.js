@@ -68064,7 +68064,7 @@
 	var jobService = (function () {
 	  /* @ngInject */
 	
-	  function jobService($http) {
+	  function jobService($http, productService) {
 	    _classCallCheck(this, jobService);
 	
 	    this._$http = $http;
@@ -68072,6 +68072,7 @@
 	    this.jobs = [];
 	    this.loading = this.get();
 	    this._taskCompleteCode = 3;
+	    this._productService = productService;
 	  }
 	
 	  _createClass(jobService, [{
@@ -68102,13 +68103,20 @@
 	      var totalTime = 0;
 	      var remainingTime = 0;
 	
-	      job.job_tasks.forEach(function (t) {
+	      this._getJobTasks(job).forEach(function (t) {
 	        totalTime += t.completion_time;
 	        if (t.status === _this3._taskCompleteCode) {
 	          remainingTime += t.completion_time;
 	        }
 	      });
 	      return remainingTime / totalTime;
+	    }
+	  }, {
+	    key: '_getJobTasks',
+	    value: function _getJobTasks(job) {
+	      return this._productService.products.filter(function (p) {
+	        return p.id = job.product_id;
+	      })[0].tasks;
 	    }
 	  }]);
 	
