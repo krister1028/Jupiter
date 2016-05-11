@@ -14,17 +14,21 @@
           <label>Description</label>
           <input type="text" required ng-model="vm.jobDescription" />
         </md-input-container>
-        <md-input-container class="md-block">
-          <label>Password</label>
-          <input type="password" required ng-model="vm.password" />
-        </md-input-container>
+          <md-autocomplete
+              md-search-text="vm.searchText"
+              md-selected-item="vm.jobProduct"
+              md-items="item in vm.searchProducts(vm.searchText)"
+              md-item-text="item.description"
+              placeholder="Add Product">
+              <span md-highlight-text="vm.searchText">{{item.description}}</span>
+          </md-autocomplete>
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row">
       <md-button ng-click="vm.cancel()">
        Cancel
       </md-button>
-      <md-button ng-click="vm.doLogin()" style="margin-right:20px;">
+      <md-button ng-click="vm.addJob()" style="margin-right:20px;">
         Create Job
       </md-button>
     </md-dialog-actions>

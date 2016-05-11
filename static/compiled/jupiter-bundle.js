@@ -68035,13 +68035,13 @@
 	    this._$http = $http;
 	    this._getJobUrl = '/api/jobs/';
 	    this.jobs = [];
-	    this.loading = this.getJobs();
+	    this.loading = this.get();
 	    this._taskCompleteCode = 3;
 	  }
 	
 	  _createClass(jobService, [{
-	    key: 'getJobs',
-	    value: function getJobs() {
+	    key: 'get',
+	    value: function get() {
 	      var _this = this;
 	
 	      return this._$http.get(this._getJobUrl).then(function (response) {
@@ -68051,16 +68051,25 @@
 	      });
 	    }
 	  }, {
+	    key: 'post',
+	    value: function post(data) {
+	      var _this2 = this;
+	
+	      return this._$http.post(this._getJobUrl, data).then(function (response) {
+	        return _this2.jobs.push(response.data);
+	      });
+	    }
+	  }, {
 	    key: 'getProgress',
 	    value: function getProgress(job) {
-	      var _this2 = this;
+	      var _this3 = this;
 	
 	      var totalTime = 0;
 	      var remainingTime = 0;
 	
 	      job.job_tasks.forEach(function (t) {
 	        totalTime += t.completion_time;
-	        if (t.status === _this2._taskCompleteCode) {
+	        if (t.status === _this3._taskCompleteCode) {
 	          remainingTime += t.completion_time;
 	        }
 	      });
@@ -68197,7 +68206,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.jobDescription\"/> </md-input-container> <md-input-container class=\"md-block\"> <label>Password</label> <input type=\"password\" required ng-model=\"vm.password\"/> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.doLogin()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
+	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.jobDescription\"/> </md-input-container> <md-autocomplete md-search-text=\"vm.searchText\" md-selected-item=\"vm.jobProduct\" md-items=\"item in vm.searchProducts(vm.searchText)\" md-item-text=\"item.description\" placeholder=\"Add Product\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.addJob()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
 	ngModule.run(["$templateCache",function(c){c.put("add-job-modal.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68218,11 +68227,14 @@
 	var AddJobModalController = (function () {
 	  /* @ngInject */
 	
-	  function AddJobModalController($mdDialog, jobService) {
+	  function AddJobModalController($mdDialog, jobService, productService) {
 	    _classCallCheck(this, AddJobModalController);
 	
 	    this._$mdDialog = $mdDialog;
 	    this._jobService = jobService;
+	    this.products = productService.products;
+	    this.jobDescription = null;
+	    this.jobProduct = null;
 	  }
 	
 	  _createClass(AddJobModalController, [{
@@ -68234,7 +68246,14 @@
 	    key: "addJob",
 	    value: function addJob() {
 	      this._$mdDialog.cancel();
-	      this._jobService.addJob();
+	      this._jobService.post({ description: this.jobDescription, product_id: this.jobProduct.id });
+	    }
+	  }, {
+	    key: "searchProducts",
+	    value: function searchProducts(query) {
+	      return this.products.filter(function (f) {
+	        return f.description.toLowerCase().indexOf(query.toLowerCase()) > -1;
+	      });
 	    }
 	  }]);
 	

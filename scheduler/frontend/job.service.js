@@ -4,12 +4,16 @@ export default class jobService {
     this._$http = $http;
     this._getJobUrl = '/api/jobs/';
     this.jobs = [];
-    this.loading = this.getJobs();
+    this.loading = this.get();
     this._taskCompleteCode = 3;
   }
 
-  getJobs() {
+  get() {
     return this._$http.get(this._getJobUrl).then(response => this.jobs.push(...response.data));
+  }
+
+  post(data) {
+    return this._$http.post(this._getJobUrl, data).then(response => this.jobs.push(response.data));
   }
 
   getProgress(job) {
