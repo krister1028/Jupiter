@@ -67879,22 +67879,56 @@
 /* 17 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var AddTaskController =
-	/* @ngInject */
-	function AddTaskController() {
-	  _classCallCheck(this, AddTaskController);
-	};
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	exports["default"] = AddTaskController;
-	module.exports = exports["default"];
+	var AddTaskController = (function () {
+	  /* @ngInject */
+	
+	  function AddTaskController(taskService, $state) {
+	    _classCallCheck(this, AddTaskController);
+	
+	    this._taskService = taskService;
+	    this._$state = $state;
+	
+	    this.abbreviation = null;
+	    this.cost = null;
+	    this.description = null;
+	    this.expertiseLevel = null;
+	    this.minCompletionTime = null;
+	    this.maxCompletionTime = null;
+	  }
+	
+	  _createClass(AddTaskController, [{
+	    key: 'publishTask',
+	    value: function publishTask() {
+	      var _this = this;
+	
+	      return this._taskService.post({
+	        abbreviation: this.abbreviation,
+	        cost: this.cost,
+	        description: this.description,
+	        expertise_level: this.expertiseLevel,
+	        min_completion_time: this.minCompletionTime,
+	        max_completion_time: this.maxCompletionTime
+	      }).then(function () {
+	        return _this._$state.go('addProduct');
+	      });
+	    }
+	  }]);
+	
+	  return AddTaskController;
+	})();
+	
+	exports['default'] = AddTaskController;
+	module.exports = exports['default'];
 
 /***/ },
 /* 18 */
@@ -68108,19 +68142,28 @@
 	    this._$http = $http;
 	    this._getTasksUrl = '/api/tasks/';
 	    this.tasks = [];
-	    this.loading = this.getTasks();
+	    this.loading = this.get();
 	    this._taskCompleteCode = 3;
 	  }
 	
 	  _createClass(taskService, [{
-	    key: 'getTasks',
-	    value: function getTasks() {
+	    key: 'get',
+	    value: function get() {
 	      var _this = this;
 	
 	      return this._$http.get(this._getTasksUrl).then(function (response) {
 	        var _tasks;
 	
 	        return (_tasks = _this.tasks).push.apply(_tasks, _toConsumableArray(response.data));
+	      });
+	    }
+	  }, {
+	    key: 'post',
+	    value: function post(data) {
+	      var _this2 = this;
+	
+	      return this._$http.post(this._getTasksUrl, data).then(function (response) {
+	        return _this2.tasks.push(response.data);
 	      });
 	    }
 	  }]);
@@ -68303,7 +68346,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div>add task</div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <input name=\"expertiseLevel\" ng-model=\"vm.expertiseLevel\" required> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.maxCompletionTime\" required> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.minCompletionTime\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishTask()\">Publish Task</md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
 	module.exports=v1;
 

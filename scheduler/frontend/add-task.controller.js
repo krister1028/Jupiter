@@ -1,6 +1,25 @@
 export default class AddTaskController {
   /* @ngInject */
-  constructor() {
+  constructor(taskService, $state) {
+    this._taskService = taskService;
+    this._$state = $state;
 
+    this.abbreviation = null;
+    this.cost = null;
+    this.description = null;
+    this.expertiseLevel = null;
+    this.minCompletionTime = null;
+    this.maxCompletionTime = null;
+  }
+
+  publishTask() {
+    return this._taskService.post({
+      abbreviation: this.abbreviation,
+      cost: this.cost,
+      description: this.description,
+      expertise_level: this.expertiseLevel,
+      min_completion_time: this.minCompletionTime,
+      max_completion_time: this.maxCompletionTime
+    }).then(() => this._$state.go('addProduct'));
   }
 }
