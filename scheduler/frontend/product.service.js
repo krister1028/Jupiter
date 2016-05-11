@@ -5,6 +5,7 @@ export default class productService {
     this._productUrl = '/api/products/';
     this.products = [];
     this.loading = this.get();
+    this.taskCompleteCode = 3;
   }
 
   get() {

@@ -19,7 +19,8 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(groups__in=self.request.user.groups.all())
+        user = self.request.user
+        return self.queryset.filter(groups__in=user.groups.all()).exclude(id=user.id)
 
 
 class ProductViewSet(viewsets.ModelViewSet):

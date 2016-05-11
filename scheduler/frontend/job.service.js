@@ -5,7 +5,6 @@ export default class jobService {
     this._getJobUrl = '/api/jobs/';
     this.jobs = [];
     this.loading = this.get();
-    this._taskCompleteCode = 3;
     this._productService = productService;
     this._taskService = taskService;
     this.dependantLoads = $q.all([productService.loading, taskService.loading]);
@@ -41,7 +40,7 @@ export default class jobService {
 
     job.tasks.forEach(t => {
       totalTime += t.completion_time;
-      if (t.status === this._taskCompleteCode) {
+      if (t.status === this._productService.taskCompleteCode) {
         remainingTime += t.completion_time;
       }
     });
