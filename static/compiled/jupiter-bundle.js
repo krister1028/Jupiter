@@ -68086,7 +68086,6 @@
 	    this.loading = this.get();
 	    this._productService = productService;
 	    this._taskService = taskService;
-	    this.dependantLoads = $q.all([productService.loading, taskService.loading]);
 	  }
 	
 	  _createClass(jobService, [{
@@ -68095,52 +68094,31 @@
 	      var _this = this;
 	
 	      return this._$http.get(this._getJobUrl).then(function (response) {
-	        var jobs = [].concat(_toConsumableArray(response.data));
-	        return _this.dependantLoads.then(function () {
-	          var _jobs;
+	        var _jobs;
 	
-	          jobs.forEach(function (j) {
-	            return j.tasks = _this._getJobTasks(j);
-	          });
-	          (_jobs = _this.jobs).push.apply(_jobs, _toConsumableArray(jobs));
-	        });
+	        return (_jobs = _this.jobs).push.apply(_jobs, _toConsumableArray(response.data));
 	      });
-	    }
-	  }, {
-	    key: '_getJobTasks',
-	    value: function _getJobTasks(job) {
-	      var _this2 = this;
-	
-	      var tasks = this._productService.products.filter(function (p) {
-	        return p.id = job.product_id;
-	      })[0].tasks;
-	      tasks.forEach(function (t) {
-	        t.description = _this2._taskService.tasks.filter(function (serviceTask) {
-	          return serviceTask.id === t.task;
-	        })[0].description;
-	      });
-	      return tasks;
 	    }
 	  }, {
 	    key: 'post',
 	    value: function post(data) {
-	      var _this3 = this;
+	      var _this2 = this;
 	
 	      return this._$http.post(this._getJobUrl, data).then(function (response) {
-	        return _this3.jobs.push(response.data);
+	        return _this2.jobs.push(response.data);
 	      });
 	    }
 	  }, {
 	    key: 'getProgress',
 	    value: function getProgress(job) {
-	      var _this4 = this;
+	      var _this3 = this;
 	
 	      var totalTime = 0;
 	      var remainingTime = 0;
 	
-	      job.tasks.forEach(function (t) {
+	      job.job_tasks.forEach(function (t) {
 	        totalTime += t.completion_time;
-	        if (t.status === _this4._productService.taskCompleteCode) {
+	        if (t.status === _this3._productService.taskCompleteCode) {
 	          remainingTime += t.completion_time;
 	        }
 	      });
@@ -68204,8 +68182,8 @@
 	    }
 	  }, {
 	    key: 'patch',
-	    value: function patch(id, data) {
-	      return this._$http.patch(id, data);
+	    value: function patch(taskId, data) {
+	      return this._$http.patch(taskId, data);
 	    }
 	  }]);
 	
@@ -68429,9 +68407,14 @@
 	  _createClass(EditJobController, [{
 	    key: 'getTaskStyle',
 	    value: function getTaskStyle(task) {
-	      if (task.status === 3) {
+	      if (task.completed_by !== null) {
 	        return { 'text-decoration': 'line-through' };
 	      }
+	    }
+	  }, {
+	    key: 'markComplete',
+	    value: function markComplete(task) {
+	      this._taskService.patch();
 	    }
 	  }]);
 	
@@ -68448,7 +68431,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> <a ui-sref=\"editJob({jobId:job.id})\">{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> <a ui-sref=\"editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68481,7 +68464,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.tasks\"> <md-button class=\"md-raised\">Mark Complete</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks\"> <md-button class=\"md-raised\">Mark Complete</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 

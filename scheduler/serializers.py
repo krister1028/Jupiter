@@ -54,10 +54,12 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class JobTaskSerializer(serializers.ModelSerializer):
+    description = serializers.CharField(read_only=True)
+    completion_time = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = JobTask
-        exclude = ('job', )
+        exclude = ('job', 'product_task')
 
 
 class JobSerializer(serializers.ModelSerializer):

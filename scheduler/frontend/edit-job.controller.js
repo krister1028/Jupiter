@@ -10,8 +10,12 @@ export default class EditJobController {
   }
 
   getTaskStyle(task) {
-    if (task.status === 3) {
+    if (task.completed_by !== null) {
       return {'text-decoration': 'line-through'};
     }
+  }
+
+  markComplete(task) {
+    this._taskService.patch()
   }
 }

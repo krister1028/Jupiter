@@ -7,27 +7,10 @@ export default class jobService {
     this.loading = this.get();
     this._productService = productService;
     this._taskService = taskService;
-    this.dependantLoads = $q.all([productService.loading, taskService.loading]);
   }
 
   get() {
-    return this._$http.get(this._getJobUrl).then(response => {
-      const jobs = [...response.data];
-      return this.dependantLoads.then(
-        () => {
-          jobs.forEach(j => j.tasks = this._getJobTasks(j));
-          this.jobs.push(...jobs);
-        }
-      );
-    });
-  }
-
-  _getJobTasks(job) {
-    const tasks = this._productService.products.filter(p => p.id = job.product_id)[0].tasks;
-    tasks.forEach(t => {
-      t.description = this._taskService.tasks.filter(serviceTask => serviceTask.id === t.task)[0].description;
-    });
-    return tasks;
+    return this._$http.get(this._getJobUrl).then(response => this.jobs.push(...response.data));
   }
 
   post(data) {
@@ -38,7 +21,7 @@ export default class jobService {
     let totalTime = 0;
     let remainingTime = 0;
 
-    job.tasks.forEach(t => {
+    job.job_tasks.forEach(t => {
       totalTime += t.completion_time;
       if (t.status === this._productService.taskCompleteCode) {
         remainingTime += t.completion_time;

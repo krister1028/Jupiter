@@ -79,6 +79,15 @@ class JobTask(models.Model):
     job = models.ForeignKey(Job, related_name='job_tasks')
     product_task = models.ForeignKey(ProductTask, related_name='job_tasks')
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
+    completed_by = models.ForeignKey(User, null=True)
+
+    @property
+    def description(self):
+        return self.product_task.task.description
+
+    @property
+    def completion_time(self):
+        return self.product_task.completion_time
 
     @classmethod
     def create_for_job(cls, job):
