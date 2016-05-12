@@ -68136,7 +68136,7 @@
 	    value: function markTaskComplete(userId, task, job) {
 	      task.status = this.taskCompleteStatus;
 	      task.completed_by = userId;
-	      this.patch(job.id, { job_tasks: job.job_tasks, description: 'barf' });
+	      this.patch(job.id, { job_tasks: job.job_tasks });
 	    }
 	  }]);
 	
