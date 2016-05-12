@@ -8,6 +8,7 @@ export default class jobService {
     this._productService = productService;
     this._taskService = taskService;
     this.taskCompleteStatus = 3;
+    this.taskIncompleteStatus = 1;
   }
 
   get() {
@@ -39,6 +40,12 @@ export default class jobService {
   markTaskComplete(userId, task, job) {
     task.status = this.taskCompleteStatus;
     task.completed_by = userId;
+    this.patch(job.id, {job_tasks: job.job_tasks});
+  }
+
+  markTaskIncomplete(task, job) {
+    task.status = this.taskIncompleteStatus;
+    task.completed_by = null;
     this.patch(job.id, {job_tasks: job.job_tasks});
   }
 }

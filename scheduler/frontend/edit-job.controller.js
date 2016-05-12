@@ -14,10 +14,28 @@ export default class EditJobController {
     });
   }
 
+  static _taskComplete(task) {
+    return task.completed_by !== null;
+  }
+
   getTaskStyle(task) {
-    if (task.completed_by !== null) {
+    if (EditJobController._taskComplete(task)) {
       return {'text-decoration': 'line-through'};
     }
+  }
+
+  taskToggleText(task) {
+    if (!EditJobController._taskComplete(task)) {
+      return 'Mark as complete';
+    }
+    return 'Mark as in progress';
+  }
+
+  toggleTask(task) {
+    if (EditJobController._taskComplete(task)) {
+      return this._jobService.markTaskIncomplete(task, this.job);
+    }
+    return this.openMarkCompleteDialog(task);
   }
 
   openMarkCompleteDialog(task) {

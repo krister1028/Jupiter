@@ -91,7 +91,7 @@ class JobSerializer(serializers.ModelSerializer):
             for field in JobTask._meta.fields:
                 column = field.column.rstrip('_id')  # account for FK's in column names
                 new_value = task.get(column)
-                if field.column not in excluded_fields and new_value:
+                if column and column not in excluded_fields:
                     setattr(job_task, column, new_value)
             job_task.save()
 

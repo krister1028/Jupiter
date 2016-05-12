@@ -68087,6 +68087,7 @@
 	    this._productService = productService;
 	    this._taskService = taskService;
 	    this.taskCompleteStatus = 3;
+	    this.taskIncompleteStatus = 1;
 	  }
 	
 	  _createClass(jobService, [{
@@ -68136,6 +68137,13 @@
 	    value: function markTaskComplete(userId, task, job) {
 	      task.status = this.taskCompleteStatus;
 	      task.completed_by = userId;
+	      this.patch(job.id, { job_tasks: job.job_tasks });
+	    }
+	  }, {
+	    key: 'markTaskIncomplete',
+	    value: function markTaskIncomplete(task, job) {
+	      task.status = this.taskIncompleteStatus;
+	      task.completed_by = null;
 	      this.patch(job.id, { job_tasks: job.job_tasks });
 	    }
 	  }]);
@@ -68436,9 +68444,25 @@
 	  _createClass(EditJobController, [{
 	    key: 'getTaskStyle',
 	    value: function getTaskStyle(task) {
-	      if (task.completed_by !== null) {
+	      if (EditJobController._taskComplete(task)) {
 	        return { 'text-decoration': 'line-through' };
 	      }
+	    }
+	  }, {
+	    key: 'taskToggleText',
+	    value: function taskToggleText(task) {
+	      if (!EditJobController._taskComplete(task)) {
+	        return 'Mark as complete';
+	      }
+	      return 'Mark as in progress';
+	    }
+	  }, {
+	    key: 'toggleTask',
+	    value: function toggleTask(task) {
+	      if (EditJobController._taskComplete(task)) {
+	        return this._jobService.markTaskIncomplete(task, this.job);
+	      }
+	      return this.openMarkCompleteDialog(task);
 	    }
 	  }, {
 	    key: 'openMarkCompleteDialog',
@@ -68455,6 +68479,11 @@
 	      }).then(function (userId) {
 	        return _this2._jobService.markTaskComplete(userId, task, _this2.job);
 	      });
+	    }
+	  }], [{
+	    key: '_taskComplete',
+	    value: function _taskComplete(task) {
+	      return task.completed_by !== null;
 	    }
 	  }]);
 	
@@ -68558,7 +68587,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks\"> <md-button class=\"md-raised\" ng-click=\"vm.openMarkCompleteDialog(task)\">Mark Complete</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 
