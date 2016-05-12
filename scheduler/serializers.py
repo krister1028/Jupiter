@@ -67,7 +67,7 @@ class JobSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     product_id = serializers.IntegerField()
     group = serializers.HiddenField(default=CurrentGroupDefault())
-    job_tasks = JobTaskSerializer(many=True)
+    job_tasks = JobTaskSerializer(many=True, required=False)
 
     def create(self, validated_data):
         job = super(JobSerializer, self).create(validated_data)
