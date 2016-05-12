@@ -13,7 +13,7 @@
           <md-input-container>
             <label>Select User</label>
             <md-select ng-model="vm.selectedUser">
-              <md-option ng-repeat="user in vm.groupUsers" value="{{user.id}}">
+              <md-option ng-repeat="user in vm.groupUsers track by $index" value="{{user.id}}">
                 {{user.first_name}}
               </md-option>
             </md-select>

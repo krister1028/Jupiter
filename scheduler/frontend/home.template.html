@@ -15,7 +15,7 @@
                 Production Schedule
             </h2>
             <md-list ng-show="vm.jobs.length">
-                <md-list-item ng-repeat="job in vm.jobs">
+                <md-list-item ng-repeat="job in vm.jobs track by $index">
                     <a ui-sref="editJob({jobId:job.id})" layout-margin>{{ job.description }}</a>
                     <md-progress-linear md-mode="determinate" value="{{ vm.jobService.getProgress(job) * 100 }}"></md-progress-linear>
                 </md-list-item>
@@ -32,7 +32,7 @@
                 Products
             </h2>
             <md-list ng-show="vm.products.length">
-                <md-list-item ng-repeat="product in vm.products">
+                <md-list-item ng-repeat="product in vm.products track by $index">
                     {{ product.description }}
                 </md-list-item>
             </md-list>
