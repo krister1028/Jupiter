@@ -121,6 +121,9 @@ REST_FRAMEWORK = {
     )
 }
 
+if not os.environ['LOCAL']:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = 'rest_framework.renderers.JSONRenderer'
+
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'scheduler.serializers.UserSerializer'
 }
