@@ -11,6 +11,10 @@ export default class jobService {
     this.taskIncompleteStatus = 1;
   }
 
+  _detailUrl(jobId) {
+    return `${this._getJobUrl}${jobId}/`;
+  }
+
   get() {
     return this._$http.get(this._getJobUrl).then(response => this.jobs.push(...response.data));
   }
@@ -20,8 +24,16 @@ export default class jobService {
   }
 
   patch(jobId, data) {
-    const patchUrl = `${this._getJobUrl}${jobId}/`;
-    return this._$http.patch(patchUrl, data);
+    return this._$http.patch(this._detailUrl(jobId), data);
+  }
+
+  delete(jobId) {
+    return this._$http.delete(this._detailUrl(jobId));
+  }
+
+  deleteJob(job) {
+    this.jobs.splice(this.jobs.indexOf(job), 1);
+    this.delete(job.id);
   }
 
   getProgress(job) {

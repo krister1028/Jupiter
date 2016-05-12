@@ -68091,6 +68091,11 @@
 	  }
 	
 	  _createClass(jobService, [{
+	    key: '_detailUrl',
+	    value: function _detailUrl(jobId) {
+	      return '' + this._getJobUrl + jobId + '/';
+	    }
+	  }, {
 	    key: 'get',
 	    value: function get() {
 	      var _this = this;
@@ -68113,8 +68118,18 @@
 	  }, {
 	    key: 'patch',
 	    value: function patch(jobId, data) {
-	      var patchUrl = '' + this._getJobUrl + jobId + '/';
-	      return this._$http.patch(patchUrl, data);
+	      return this._$http.patch(this._detailUrl(jobId), data);
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete(jobId) {
+	      return this._$http['delete'](this._detailUrl(jobId));
+	    }
+	  }, {
+	    key: 'deleteJob',
+	    value: function deleteJob(job) {
+	      this.jobs.splice(this.jobs.indexOf(job), 1);
+	      this['delete'](job.id);
 	    }
 	  }, {
 	    key: 'getProgress',
@@ -68425,11 +68440,12 @@
 	var EditJobController = (function () {
 	  /* @ngInject */
 	
-	  function EditJobController($stateParams, jobService, taskService, groupUserService, $mdDialog) {
+	  function EditJobController($state, $stateParams, jobService, taskService, groupUserService, $mdDialog) {
 	    var _this = this;
 	
 	    _classCallCheck(this, EditJobController);
 	
+	    this._$state = $state;
 	    this._jobService = jobService;
 	    this._taskService = taskService;
 	    this._$mdDialog = $mdDialog;
@@ -68455,6 +68471,22 @@
 	        return 'Mark as complete';
 	      }
 	      return 'Mark as in progress';
+	    }
+	  }, {
+	    key: 'updateJobDescription',
+	    value: function updateJobDescription() {
+	      this._$mdDialog.show({
+	        template: _selectUserTemplateHtml2['default'],
+	        controller: _selectUserController2['default'],
+	        controllerAs: 'vm',
+	        parent: _angular2['default'].element(document.body)
+	      });
+	    }
+	  }, {
+	    key: 'deleteJob',
+	    value: function deleteJob() {
+	      this._jobService.deleteJob(this.job);
+	      this._$state.go('home');
 	    }
 	  }, {
 	    key: 'toggleTask',
@@ -68587,7 +68619,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Done</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJobDescription()\">Update Job Description</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 

@@ -4,7 +4,8 @@ import SelectUserController from './select-user.controller';
 
 export default class EditJobController {
   /* @ngInject */
-  constructor($stateParams, jobService, taskService, groupUserService, $mdDialog) {
+  constructor($state, $stateParams, jobService, taskService, groupUserService, $mdDialog) {
+    this._$state = $state;
     this._jobService = jobService;
     this._taskService = taskService;
     this._$mdDialog = $mdDialog;
@@ -29,6 +30,20 @@ export default class EditJobController {
       return 'Mark as complete';
     }
     return 'Mark as in progress';
+  }
+
+  updateJobDescription() {
+    this._$mdDialog.show({
+      template: selectUserTemplate,
+      controller: SelectUserController,
+      controllerAs: 'vm',
+      parent: angular.element(document.body)
+    });
+  }
+
+  deleteJob() {
+    this._jobService.deleteJob(this.job);
+    this._$state.go('home');
   }
 
   toggleTask(task) {
