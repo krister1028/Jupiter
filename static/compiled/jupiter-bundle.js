@@ -107,31 +107,35 @@
 	
 	var _taskService2 = _interopRequireDefault(_taskService);
 	
-	var _homeController = __webpack_require__(22);
+	var _groupUserService = __webpack_require__(22);
+	
+	var _groupUserService2 = _interopRequireDefault(_groupUserService);
+	
+	var _homeController = __webpack_require__(23);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _editJobController = __webpack_require__(25);
+	var _editJobController = __webpack_require__(26);
 	
 	var _editJobController2 = _interopRequireDefault(_editJobController);
 	
-	var _homeTemplateHtml = __webpack_require__(26);
+	var _homeTemplateHtml = __webpack_require__(29);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _addProductTemplateHtml = __webpack_require__(27);
+	var _addProductTemplateHtml = __webpack_require__(30);
 	
 	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
 	
-	var _addTaskTemplateHtml = __webpack_require__(28);
+	var _addTaskTemplateHtml = __webpack_require__(31);
 	
 	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
 	
-	var _editJobTemplateHtml = __webpack_require__(29);
+	var _editJobTemplateHtml = __webpack_require__(32);
 	
 	var _editJobTemplateHtml2 = _interopRequireDefault(_editJobTemplateHtml);
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).controller('EditJobController', _editJobController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).service('taskService', _taskService2['default']).config(configuration);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).controller('EditJobController', _editJobController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).service('taskService', _taskService2['default']).service('groupUserService', _groupUserService2['default']).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -68027,6 +68031,7 @@
 	    this._productUrl = '/api/products/';
 	    this.products = [];
 	    this.loading = this.get();
+	    this.taskCompleteCode = 3;
 	  }
 	
 	  _createClass(productService, [{
@@ -68072,15 +68077,16 @@
 	var jobService = (function () {
 	  /* @ngInject */
 	
-	  function jobService($http, productService) {
+	  function jobService($http, productService, taskService) {
 	    _classCallCheck(this, jobService);
 	
 	    this._$http = $http;
 	    this._getJobUrl = '/api/jobs/';
 	    this.jobs = [];
 	    this.loading = this.get();
-	    this._taskCompleteCode = 3;
 	    this._productService = productService;
+	    this._taskService = taskService;
+	    this.taskCompleteStatus = 3;
 	  }
 	
 	  _createClass(jobService, [{
@@ -68104,6 +68110,12 @@
 	      });
 	    }
 	  }, {
+	    key: 'patch',
+	    value: function patch(jobId, data) {
+	      var patchUrl = '' + this._getJobUrl + jobId + '/';
+	      return this._$http.patch(patchUrl, data);
+	    }
+	  }, {
 	    key: 'getProgress',
 	    value: function getProgress(job) {
 	      var _this3 = this;
@@ -68111,20 +68123,20 @@
 	      var totalTime = 0;
 	      var remainingTime = 0;
 	
-	      this.getJobTasks(job).forEach(function (t) {
+	      job.job_tasks.forEach(function (t) {
 	        totalTime += t.completion_time;
-	        if (t.status === _this3._taskCompleteCode) {
+	        if (t.status === _this3._productService.taskCompleteCode) {
 	          remainingTime += t.completion_time;
 	        }
 	      });
 	      return remainingTime / totalTime;
 	    }
 	  }, {
-	    key: 'getJobTasks',
-	    value: function getJobTasks(job) {
-	      return this._productService.products.filter(function (p) {
-	        return p.id = job.product_id;
-	      })[0].tasks;
+	    key: 'markTaskComplete',
+	    value: function markTaskComplete(userId, task, job) {
+	      task.status = this.taskCompleteStatus;
+	      task.completed_by = userId;
+	      this.patch(job.id, { job_tasks: job.job_tasks });
 	    }
 	  }]);
 	
@@ -68160,7 +68172,6 @@
 	    this._getTasksUrl = '/api/tasks/';
 	    this.tasks = [];
 	    this.loading = this.get();
-	    this._taskCompleteCode = 3;
 	  }
 	
 	  _createClass(taskService, [{
@@ -68183,6 +68194,11 @@
 	        return _this2.tasks.push(response.data);
 	      });
 	    }
+	  }, {
+	    key: 'patch',
+	    value: function patch(taskId, data) {
+	      return this._$http.patch(taskId, data);
+	    }
 	  }]);
 	
 	  return taskService;
@@ -68193,6 +68209,53 @@
 
 /***/ },
 /* 22 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var groupUserService = (function () {
+	  /* @ngInject */
+	
+	  function groupUserService($http) {
+	    _classCallCheck(this, groupUserService);
+	
+	    this._$http = $http;
+	    this._groupUserUrl = '/api/users/';
+	    this.groupUsers = [];
+	    this.loading = this.get();
+	  }
+	
+	  _createClass(groupUserService, [{
+	    key: 'get',
+	    value: function get() {
+	      var _this = this;
+	
+	      return this._$http.get(this._groupUserUrl).then(function (response) {
+	        var _groupUsers;
+	
+	        return (_groupUsers = _this.groupUsers).push.apply(_groupUsers, _toConsumableArray(response.data));
+	      });
+	    }
+	  }]);
+	
+	  return groupUserService;
+	})();
+	
+	exports['default'] = groupUserService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68207,11 +68270,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _addJobModalTemplateHtml = __webpack_require__(23);
+	var _addJobModalTemplateHtml = __webpack_require__(24);
 	
 	var _addJobModalTemplateHtml2 = _interopRequireDefault(_addJobModalTemplateHtml);
 	
-	var _addJobModalController = __webpack_require__(24);
+	var _addJobModalController = __webpack_require__(25);
 	
 	var _addJobModalController2 = _interopRequireDefault(_addJobModalController);
 	
@@ -68260,7 +68323,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68271,7 +68334,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -68324,7 +68387,96 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 25 */
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _angular = __webpack_require__(2);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	var _selectUserTemplateHtml = __webpack_require__(27);
+	
+	var _selectUserTemplateHtml2 = _interopRequireDefault(_selectUserTemplateHtml);
+	
+	var _selectUserController = __webpack_require__(28);
+	
+	var _selectUserController2 = _interopRequireDefault(_selectUserController);
+	
+	var EditJobController = (function () {
+	  /* @ngInject */
+	
+	  function EditJobController($stateParams, jobService, taskService, groupUserService, $mdDialog) {
+	    var _this = this;
+	
+	    _classCallCheck(this, EditJobController);
+	
+	    this._jobService = jobService;
+	    this._taskService = taskService;
+	    this._$mdDialog = $mdDialog;
+	    this.groupUsers = groupUserService.groupUsers;
+	    jobService.loading.then(function () {
+	      _this.job = jobService.jobs.filter(function (j) {
+	        return j.id === $stateParams.jobId;
+	      })[0];
+	    });
+	  }
+	
+	  _createClass(EditJobController, [{
+	    key: 'getTaskStyle',
+	    value: function getTaskStyle(task) {
+	      if (task.completed_by !== null) {
+	        return { 'text-decoration': 'line-through' };
+	      }
+	    }
+	  }, {
+	    key: 'openMarkCompleteDialog',
+	    value: function openMarkCompleteDialog(task) {
+	      var _this2 = this;
+	
+	      this._$mdDialog.show({
+	        template: _selectUserTemplateHtml2['default'],
+	        controller: _selectUserController2['default'],
+	        controllerAs: 'vm',
+	        parent: _angular2['default'].element(document.body),
+	        clickOutsideToClose: true,
+	        locals: { job: this.job, task: task }
+	      }).then(function (userId) {
+	        return _this2._jobService.markTaskComplete(userId, task, _this2.job);
+	      });
+	    }
+	  }]);
+	
+	  return EditJobController;
+	})();
+	
+	exports['default'] = EditJobController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-dialog aria-label=\"Mark Complete\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Mark {{ vm.task }} as complete</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container> <label>Select User</label> <md-select ng-model=\"vm.selectedUser\"> <md-option ng-repeat=\"user in vm.groupUsers\" value=\"{{user.id}}\"> {{user.first_name}} </md-option> </md-select> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.markComplete()\" style=\"margin-right:20px\"> Mark Complete </md-button> </md-dialog-actions> </md-dialog>";
+	ngModule.run(["$templateCache",function(c){c.put("select-user.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 28 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -68333,40 +68485,52 @@
 	  value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var EditJobController =
-	/* @ngInject */
-	function EditJobController($stateParams, jobService) {
-	  var _this = this;
+	var SelectUserController = (function () {
+	  /* @ngInject */
 	
-	  _classCallCheck(this, EditJobController);
+	  function SelectUserController(groupUserService, $mdDialog) {
+	    _classCallCheck(this, SelectUserController);
 	
-	  this._jobService = jobService;
-	  this.loading = jobService.loading.then(function () {
-	    _this.job = jobService.jobs.filter(function (j) {
-	      return j.id = $stateParams.jobId;
-	    })[0];
-	    _this.tasks = jobService.getJobTasks(_this.job);
-	  });
-	};
+	    this.groupUsers = groupUserService.groupUsers;
+	    this._$mdDialog = $mdDialog;
+	    this.selectedUser = null;
+	  }
 	
-	exports["default"] = EditJobController;
+	  _createClass(SelectUserController, [{
+	    key: "cancel",
+	    value: function cancel() {
+	      this._$mdDialog.cancel();
+	    }
+	  }, {
+	    key: "markComplete",
+	    value: function markComplete() {
+	      this._$mdDialog.hide(this.selectedUser);
+	    }
+	  }]);
+	
+	  return SelectUserController;
+	})();
+	
+	exports["default"] = SelectUserController;
 	module.exports = exports["default"];
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> <a ui-sref=\"editJob({jobId:job.id})\">{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs\"> <a ui-sref=\"editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products\"> {{ product.description }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> </div> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68377,7 +68541,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 28 */
+/* 31 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68388,13 +68552,13 @@
 	module.exports=v1;
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.tasks\">{{ task.description }}</div> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks\"> <md-button class=\"md-raised\" ng-click=\"vm.openMarkCompleteDialog(task)\">Mark Complete</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 

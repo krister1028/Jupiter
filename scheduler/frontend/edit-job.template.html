@@ -4,9 +4,13 @@
     </div>
 </md-toolbar>
 
-<div>
+<div layout-margin>
     <h3>Job Tasks</h3>
-    <div ng-repeat="task in vm.tasks">{{ task.description }}</div>
+    <div ng-repeat="task in vm.job.job_tasks">
+        <md-button class="md-raised" ng-click="vm.openMarkCompleteDialog(task)">Mark Complete</md-button>
+        <span ng-style="vm.getTaskStyle(task)">{{ task.description }}</span>
+    </div>
 </div>
+
 
 

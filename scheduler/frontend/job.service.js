@@ -1,12 +1,13 @@
 export default class jobService {
   /* @ngInject */
-  constructor($http, productService) {
+  constructor($http, productService, taskService) {
     this._$http = $http;
     this._getJobUrl = '/api/jobs/';
     this.jobs = [];
     this.loading = this.get();
-    this._taskCompleteCode = 3;
     this._productService = productService;
+    this._taskService = taskService;
+    this.taskCompleteStatus = 3;
   }
 
   get() {
@@ -17,20 +18,27 @@ export default class jobService {
     return this._$http.post(this._getJobUrl, data).then(response => this.jobs.push(response.data));
   }
 
+  patch(jobId, data) {
+    const patchUrl = `${this._getJobUrl}${jobId}/`;
+    return this._$http.patch(patchUrl, data);
+  }
+
   getProgress(job) {
     let totalTime = 0;
     let remainingTime = 0;
 
-    this.getJobTasks(job).forEach(t => {
+    job.job_tasks.forEach(t => {
       totalTime += t.completion_time;
-      if (t.status === this._taskCompleteCode) {
+      if (t.status === this._productService.taskCompleteCode) {
         remainingTime += t.completion_time;
       }
     });
     return remainingTime / totalTime;
   }
 
-  getJobTasks(job) {
-    return this._productService.products.filter(p => p.id = job.product_id)[0].tasks;
+  markTaskComplete(userId, task, job) {
+    task.status = this.taskCompleteStatus;
+    task.completed_by = userId;
+    this.patch(job.id, {job_tasks: job.job_tasks});
   }
 }

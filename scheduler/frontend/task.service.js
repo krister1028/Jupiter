@@ -5,7 +5,6 @@ export default class taskService {
     this._getTasksUrl = '/api/tasks/';
     this.tasks = [];
     this.loading = this.get();
-    this._taskCompleteCode = 3;
   }
 
   get() {
@@ -14,5 +13,9 @@ export default class taskService {
 
   post(data) {
     return this._$http.post(this._getTasksUrl, data).then(response => this.tasks.push(response.data));
+  }
+
+  patch(taskId, data) {
+    return this._$http.patch(taskId, data);
   }
 }
