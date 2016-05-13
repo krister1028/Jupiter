@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from scheduler.models import Product, Task, Job, ProductTask, JobTask
+from scheduler.models import Product, Task, Job, ProductTask, JobTask, JobType, JobStatus
 
 
 class CurrentGroupDefault(serializers.CurrentUserDefault):
@@ -63,11 +63,27 @@ class JobTaskSerializer(serializers.ModelSerializer):
         exclude = ('job', )
 
 
+class JobTypeSerializer(serializers.ModelSerializer):
+    group = serializers.HiddenField(default=CurrentGroupDefault())
+
+    class Meta:
+        model = JobType
+
+
+class JobStatusSerializer(serializers.ModelSerializer):
+    group = serializers.HiddenField(default=CurrentGroupDefault())
+
+    class Meta:
+        model = JobStatus
+
+
 class JobSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     product_id = serializers.IntegerField()
     group = serializers.HiddenField(default=CurrentGroupDefault())
     job_tasks = JobTaskSerializer(many=True, required=False)
+    type = JobTypeSerializer(required=False)
+    status = JobStatusSerializer(required=False)
 
     def create(self, validated_data):
         job = super(JobSerializer, self).create(validated_data)
@@ -99,4 +115,4 @@ class JobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Job
-        fields = ('id', 'description', 'product_id', 'group', 'created', 'job_tasks')
+        fields = ('id', 'description', 'product_id', 'group', 'created', 'job_tasks', 'type', 'status')

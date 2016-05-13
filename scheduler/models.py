@@ -47,9 +47,27 @@ class Product(models.Model):
         return self.description
 
 
+class JobStatus(models.Model):
+    group = models.ForeignKey(Group)
+    description = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.description
+
+
+class JobType(models.Model):
+    group = models.ForeignKey(Group)
+    description = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.description
+
+
 class Job(models.Model):
     group = models.ForeignKey(Group)
     product = models.ForeignKey(Product)
+    status = models.ForeignKey(JobStatus, null=True)
+    type = models.ForeignKey(JobType, null=True)
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
 
