@@ -25,6 +25,8 @@ router.register(r'users', views.UserViewSet)
 router.register(r'products', views.ProductViewSet)
 router.register(r'tasks', views.TaskViewSet)
 router.register(r'jobs', views.JobViewSet)
+router.register(r'job-statuses', views.JobStatusViewSet)
+router.register(r'job-types', views.JobTypeViewSet)
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
