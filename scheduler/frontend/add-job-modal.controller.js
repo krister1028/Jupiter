@@ -1,11 +1,12 @@
 export default class AddJobModalController {
   /* @ngInject */
-  constructor($mdDialog, jobService, productService) {
+  constructor($mdDialog, jobService, productService, jobTypeService, jobStatusService) {
     this._$mdDialog = $mdDialog;
     this._jobService = jobService;
     this.products = productService.products;
-    this.jobDescription = null;
-    this.jobProduct = null;
+    this.jobTypes = jobTypeService.jobTypes;
+    this.jobStatuses = jobStatusService.jobStatuses;
+    this.newJob = {};
   }
 
   cancel() {
@@ -14,7 +15,11 @@ export default class AddJobModalController {
 
   addJob() {
     this._$mdDialog.cancel();
-    this._jobService.post({description: this.jobDescription, product_id: this.jobProduct.id});
+    this._jobService.post(this.newJob);
+  }
+
+  addProduct(product) {
+    this.newJob.product_id = product.id;
   }
 
   searchProducts(query) {

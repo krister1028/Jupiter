@@ -64,6 +64,7 @@ class JobTaskSerializer(serializers.ModelSerializer):
 
 
 class JobTypeSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
@@ -71,6 +72,7 @@ class JobTypeSerializer(serializers.ModelSerializer):
 
 
 class JobStatusSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
