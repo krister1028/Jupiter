@@ -4,12 +4,14 @@ import SelectUserController from './select-user.controller';
 
 export default class EditJobController {
   /* @ngInject */
-  constructor($state, $stateParams, jobService, taskService, groupUserService, $mdDialog) {
+  constructor($state, $stateParams, jobService, taskService, groupUserService, $mdDialog, jobTypeService, jobStatusService) {
     this._$state = $state;
     this._jobService = jobService;
     this._taskService = taskService;
     this._$mdDialog = $mdDialog;
     this.groupUsers = groupUserService.groupUsers;
+    this.jobTypes = jobTypeService.jobTypes;
+    this.jobStatuses = jobStatusService.jobStatuses;
     jobService.loading.then(() => {
       this.job = jobService.jobs.filter(j => j.id === $stateParams.jobId)[0];
     });

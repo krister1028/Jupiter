@@ -12,6 +12,26 @@
     </div>
 </div>
 
+<div layout-margin>
+    <h3>Job Details</h3>
+      <md-input-container>
+          <label>Job Type</label>
+          <md-select ng-model="vm.job.type_id">
+              <md-option ng-repeat="type in vm.jobTypes" value="{{ type.id }}">
+                  {{ type.description }}
+              </md-option>
+          </md-select>
+      </md-input-container>
+      <md-input-container>
+          <label>Job Status</label>
+          <md-select ng-model="vm.job.status_id">
+              <md-option ng-repeat="status in vm.jobStatuses" value="{{ status.id }}">
+                  {{ status.description }}
+              </md-option>
+          </md-select>
+      </md-input-container>
+</div>
+
 <div layout="row" layout-margin>
     <md-button class="md-raised md-primary" ui-sref="home">Done</md-button>
     <md-button class="md-raised md-primary" ng-click="vm.updateJobDescription()">Update Job Description</md-button>

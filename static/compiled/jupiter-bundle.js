@@ -79,71 +79,67 @@
 	
 	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
 	
-	var _addJobController = __webpack_require__(15);
-	
-	var _addJobController2 = _interopRequireDefault(_addJobController);
-	
-	var _addProductController = __webpack_require__(16);
+	var _addProductController = __webpack_require__(15);
 	
 	var _addProductController2 = _interopRequireDefault(_addProductController);
 	
-	var _addTaskController = __webpack_require__(17);
+	var _addTaskController = __webpack_require__(16);
 	
 	var _addTaskController2 = _interopRequireDefault(_addTaskController);
 	
-	var _userService = __webpack_require__(18);
+	var _userService = __webpack_require__(17);
 	
 	var _userService2 = _interopRequireDefault(_userService);
 	
-	var _productService = __webpack_require__(19);
+	var _productService = __webpack_require__(18);
 	
 	var _productService2 = _interopRequireDefault(_productService);
 	
-	var _jobService = __webpack_require__(20);
+	var _jobService = __webpack_require__(19);
 	
 	var _jobService2 = _interopRequireDefault(_jobService);
 	
-	var _taskService = __webpack_require__(21);
+	var _taskService = __webpack_require__(20);
 	
 	var _taskService2 = _interopRequireDefault(_taskService);
 	
-	var _groupUserService = __webpack_require__(22);
+	var _groupUserService = __webpack_require__(21);
 	
 	var _groupUserService2 = _interopRequireDefault(_groupUserService);
 	
-	var _jobTypeService = __webpack_require__(23);
+	var _jobTypeService = __webpack_require__(22);
 	
 	var _jobTypeService2 = _interopRequireDefault(_jobTypeService);
 	
-	var _jobStatusService = __webpack_require__(24);
+	var _jobStatusService = __webpack_require__(23);
 	
 	var _jobStatusService2 = _interopRequireDefault(_jobStatusService);
 	
-	var _homeController = __webpack_require__(25);
+	var _homeController = __webpack_require__(24);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _editJobController = __webpack_require__(28);
+	var _editJobController = __webpack_require__(27);
 	
 	var _editJobController2 = _interopRequireDefault(_editJobController);
 	
-	var _homeTemplateHtml = __webpack_require__(31);
+	var _homeTemplateHtml = __webpack_require__(30);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _addProductTemplateHtml = __webpack_require__(32);
+	var _addProductTemplateHtml = __webpack_require__(31);
 	
 	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
 	
-	var _addTaskTemplateHtml = __webpack_require__(33);
+	var _addTaskTemplateHtml = __webpack_require__(32);
 	
 	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
 	
-	var _editJobTemplateHtml = __webpack_require__(34);
+	var _editJobTemplateHtml = __webpack_require__(33);
 	
 	var _editJobTemplateHtml2 = _interopRequireDefault(_editJobTemplateHtml);
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddJobController', _addJobController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).controller('EditJobController', _editJobController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).service('taskService', _taskService2['default']).service('groupUserService', _groupUserService2['default']).service('jobTypeService', _jobTypeService2['default']).service('jobStatusService', _jobStatusService2['default']).config(configuration);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).controller('EditJobController', _editJobController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).service('taskService', _taskService2['default']).service('groupUserService', _groupUserService2['default']).service('jobTypeService', _jobTypeService2['default']).service('jobStatusService', _jobStatusService2['default']).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -67795,27 +67791,6 @@
 /* 15 */
 /***/ function(module, exports) {
 
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var AddJobController =
-	/* @ngInject */
-	function AddJobController() {
-	  _classCallCheck(this, AddJobController);
-	};
-	
-	exports["default"] = AddJobController;
-	module.exports = exports["default"];
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -67896,7 +67871,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67952,7 +67927,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68014,7 +67989,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68067,7 +68042,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68178,7 +68153,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68239,7 +68214,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68286,7 +68261,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68333,7 +68308,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68380,7 +68355,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68395,11 +68370,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _addJobModalTemplateHtml = __webpack_require__(26);
+	var _addJobModalTemplateHtml = __webpack_require__(25);
 	
 	var _addJobModalTemplateHtml2 = _interopRequireDefault(_addJobModalTemplateHtml);
 	
-	var _addJobModalController = __webpack_require__(27);
+	var _addJobModalController = __webpack_require__(26);
 	
 	var _addJobModalController2 = _interopRequireDefault(_addJobModalController);
 	
@@ -68448,18 +68423,18 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.newJob.description\"/> </md-input-container> <md-autocomplete md-search-text=\"vm.searchText\" md-selected-item-change=\"vm.addProduct(item)\" md-items=\"item in vm.searchProducts(vm.searchText)\" md-item-text=\"item.description\" placeholder=\"Add Product\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.newJob.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.newJob.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.addJob()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
+	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.newJob.description\"/> </md-input-container> <md-autocomplete md-search-text=\"vm.searchText\" md-selected-item-change=\"vm.addProduct(item)\" md-items=\"item in vm.searchProducts(vm.searchText)\" md-item-text=\"item.description\" placeholder=\"Add Product\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.newJob.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.newJob.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.addJob()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
 	ngModule.run(["$templateCache",function(c){c.put("add-job-modal.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -68518,7 +68493,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68537,18 +68512,18 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _selectUserTemplateHtml = __webpack_require__(29);
+	var _selectUserTemplateHtml = __webpack_require__(28);
 	
 	var _selectUserTemplateHtml2 = _interopRequireDefault(_selectUserTemplateHtml);
 	
-	var _selectUserController = __webpack_require__(30);
+	var _selectUserController = __webpack_require__(29);
 	
 	var _selectUserController2 = _interopRequireDefault(_selectUserController);
 	
 	var EditJobController = (function () {
 	  /* @ngInject */
 	
-	  function EditJobController($state, $stateParams, jobService, taskService, groupUserService, $mdDialog) {
+	  function EditJobController($state, $stateParams, jobService, taskService, groupUserService, $mdDialog, jobTypeService, jobStatusService) {
 	    var _this = this;
 	
 	    _classCallCheck(this, EditJobController);
@@ -68558,6 +68533,8 @@
 	    this._taskService = taskService;
 	    this._$mdDialog = $mdDialog;
 	    this.groupUsers = groupUserService.groupUsers;
+	    this.jobTypes = jobTypeService.jobTypes;
+	    this.jobStatuses = jobStatusService.jobStatuses;
 	    jobService.loading.then(function () {
 	      _this.job = jobService.jobs.filter(function (j) {
 	        return j.id === $stateParams.jobId;
@@ -68634,7 +68611,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68645,7 +68622,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -68688,7 +68665,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68699,7 +68676,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68710,7 +68687,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 33 */
+/* 32 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68721,13 +68698,13 @@
 	module.exports=v1;
 
 /***/ },
-/* 34 */
+/* 33 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Done</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJobDescription()\">Update Job Description</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin> <h3>Job Details</h3> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Done</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJobDescription()\">Update Job Description</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 
