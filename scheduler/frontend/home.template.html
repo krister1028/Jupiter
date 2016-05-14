@@ -33,7 +33,7 @@
             </h2>
             <md-list ng-show="vm.products.length">
                 <md-list-item ng-repeat="product in vm.products track by $index">
-                    {{ product.description }}
+                    {{ vm.getProductText(product) }}
                 </md-list-item>
             </md-list>
             <div ng-show="vm.products.length == 0" layout-margin>
@@ -41,6 +41,9 @@
             </div>
             <md-divider></md-divider>
             <md-button class="md-raised md-primary" ui-sref="addProduct">Add Product</md-button>
+            <md-button ng-if="vm.products.length > 0" class="md-raised md-primary" ng-click="vm.showFullNames = !vm.showFullNames">
+                {{ vm.nameAbbreviationToggleText() }}
+            </md-button>
         </div>
     </div>
 </div>

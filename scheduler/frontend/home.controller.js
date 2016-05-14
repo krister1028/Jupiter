@@ -11,6 +11,8 @@ export default class HomeController {
     this.jobService = jobService;
     this._$mdDialog = $mdDialog;
 
+    this.showFullNames = true;
+
     this.loading = true;
     userService.loading.then(() => this.loading = false);
   }
@@ -24,5 +26,19 @@ export default class HomeController {
       targetEvent: ev,
       clickOutsideToClose: true
     });
+  }
+
+  getProductText(product) {
+    if (this.showFullNames) {
+      return product.description;
+    }
+    return product.code;
+  }
+
+  nameAbbreviationToggleText() {
+    if (this.showFullNames) {
+      return 'Show Product Code';
+    }
+    return 'Show Product Name';
   }
 }
