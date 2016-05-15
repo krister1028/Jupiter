@@ -68149,7 +68149,7 @@
 	    value: function setJobDescription(newDescription, jobId) {
 	      var job = this.jobs.filter(function (j) {
 	        return j.id === jobId;
-	      });
+	      })[0];
 	      var oldDescription = job.description;
 	      job.description = newDescription;
 	      return this.patch(jobId, { description: newDescription }).then(null, function () {

@@ -62,7 +62,7 @@ export default class jobService {
   }
 
   setJobDescription(newDescription, jobId) {
-    const job = this.jobs.filter(j => j.id === jobId);
+    const job = this.jobs.filter(j => j.id === jobId)[0];
     const oldDescription = job.description;
     job.description = newDescription;
     return this.patch(jobId, {description: newDescription}).then(null, () => job.description = oldDescription);
