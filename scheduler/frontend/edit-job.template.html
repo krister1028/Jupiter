@@ -12,8 +12,12 @@
     </div>
 </div>
 
-<div layout-margin>
-    <h3>Job Details</h3>
+<div layout-margin layout="column">
+    <h3 layout-margin>Job Details</h3>
+      <md-input-container>
+        <label>Job Description</label>
+        <input ng-model="vm.job.description" required>
+      </md-input-container>
       <md-input-container>
           <label>Job Type</label>
           <md-select ng-model="vm.job.type_id">
@@ -30,11 +34,12 @@
               </md-option>
           </md-select>
       </md-input-container>
+      <md-checkbox ng-model="vm.job.rework">Is Rework</md-checkbox>
 </div>
 
 <div layout="row" layout-margin>
     <md-button class="md-raised md-primary" ui-sref="home">Done</md-button>
-    <md-button class="md-raised md-primary" ng-click="vm.updateJobDescription()">Update Job Description</md-button>
+    <md-button class="md-raised md-primary" ng-click="vm.updateJob()">Update Job</md-button>
     <md-button class="md-raised md-primary" ng-click="vm.deleteJob()">Delete Job</md-button>
 </div>
 

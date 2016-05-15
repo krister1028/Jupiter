@@ -14,7 +14,7 @@
           <label>Description</label>
           <input type="text" required ng-model="vm.newJob.description" />
         </md-input-container>
-          <md-autocomplete
+          <md-autocomplete required
               md-search-text="vm.searchText"
               md-selected-item-change="vm.addProduct(item)"
               md-items="item in vm.searchProducts(vm.searchText)"
@@ -38,6 +38,7 @@
                   </md-option>
               </md-select>
           </md-input-container>
+          <md-checkbox layout="row" ng-model="vm.newJob.rework">Is Rework</md-checkbox>
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row">

@@ -27,6 +27,10 @@ export default class jobService {
     return this._$http.patch(this._detailUrl(jobId), data);
   }
 
+  put(job) {
+    return this._$http.put(this._detailUrl(job.id), job);
+  }
+
   delete(jobId) {
     return this._$http.delete(this._detailUrl(jobId));
   }

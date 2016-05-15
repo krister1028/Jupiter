@@ -123,19 +123,19 @@
 	
 	var _editJobController2 = _interopRequireDefault(_editJobController);
 	
-	var _homeTemplateHtml = __webpack_require__(30);
+	var _homeTemplateHtml = __webpack_require__(32);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _addProductTemplateHtml = __webpack_require__(31);
+	var _addProductTemplateHtml = __webpack_require__(33);
 	
 	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
 	
-	var _addTaskTemplateHtml = __webpack_require__(32);
+	var _addTaskTemplateHtml = __webpack_require__(34);
 	
 	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
 	
-	var _editJobTemplateHtml = __webpack_require__(33);
+	var _editJobTemplateHtml = __webpack_require__(35);
 	
 	var _editJobTemplateHtml2 = _interopRequireDefault(_editJobTemplateHtml);
 	
@@ -68104,6 +68104,11 @@
 	      return this._$http.patch(this._detailUrl(jobId), data);
 	    }
 	  }, {
+	    key: 'put',
+	    value: function put(job) {
+	      return this._$http.put(this._detailUrl(job.id), job);
+	    }
+	  }, {
 	    key: 'delete',
 	    value: function _delete(jobId) {
 	      return this._$http['delete'](this._detailUrl(jobId));
@@ -68459,7 +68464,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.newJob.description\"/> </md-input-container> <md-autocomplete md-search-text=\"vm.searchText\" md-selected-item-change=\"vm.addProduct(item)\" md-items=\"item in vm.searchProducts(vm.searchText)\" md-item-text=\"item.description\" placeholder=\"Add Product\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.newJob.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.newJob.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.addJob()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
+	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.newJob.description\"/> </md-input-container> <md-autocomplete required md-search-text=\"vm.searchText\" md-selected-item-change=\"vm.addProduct(item)\" md-items=\"item in vm.searchProducts(vm.searchText)\" md-item-text=\"item.description\" placeholder=\"Add Product\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.newJob.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.newJob.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox layout=\"row\" ng-model=\"vm.newJob.rework\">Is Rework</md-checkbox> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.addJob()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
 	ngModule.run(["$templateCache",function(c){c.put("add-job-modal.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68550,14 +68555,6 @@
 	
 	var _selectUserController2 = _interopRequireDefault(_selectUserController);
 	
-	var _updateDescriptionTemplateHtml = __webpack_require__(34);
-	
-	var _updateDescriptionTemplateHtml2 = _interopRequireDefault(_updateDescriptionTemplateHtml);
-	
-	var _updateDescriptionController = __webpack_require__(35);
-	
-	var _updateDescriptionController2 = _interopRequireDefault(_updateDescriptionController);
-	
 	var EditJobController = (function () {
 	  /* @ngInject */
 	
@@ -68596,17 +68593,12 @@
 	      return 'Mark as in progress';
 	    }
 	  }, {
-	    key: 'updateJobDescription',
-	    value: function updateJobDescription() {
+	    key: 'updateJob',
+	    value: function updateJob() {
 	      var _this2 = this;
 	
-	      this._$mdDialog.show({
-	        template: _updateDescriptionTemplateHtml2['default'],
-	        controller: _updateDescriptionController2['default'],
-	        locals: { jobId: this.job.id },
-	        controllerAs: 'vm'
-	      }).then(function (newDescription) {
-	        return _this2._jobService.setJobDescription(newDescription, _this2.job.id);
+	      this._jobService.put(this.job).then(function () {
+	        return _this2._$state.go('home');
 	      });
 	    }
 	  }, {
@@ -68707,18 +68699,20 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 30 */
+/* 30 */,
+/* 31 */,
+/* 32 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\"> <a ui-sref=\"editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\"> <a ui-sref=\"editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-button class=\"md-raised md-primary\">Add Job Status Option</md-button> <md-button class=\"md-raised md-primary\">Add Job Type</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 31 */
+/* 33 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68729,7 +68723,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 32 */
+/* 34 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68740,68 +68734,15 @@
 	module.exports=v1;
 
 /***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin> <h3>Job Details</h3> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Done</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJobDescription()\">Update Job Description</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 34 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Update Description\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Change Job Description</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container> <label>New Decription</label> <input type=\"text\" ng-model=\"vm.newDescription\" required> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.updateDescription()\" style=\"margin-right:20px\"> Update Description </md-button> </md-dialog-actions> </md-dialog>";
-	ngModule.run(["$templateCache",function(c){c.put("update-description.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
 /* 35 */
 /***/ function(module, exports) {
 
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var UpdateDescriptionController = (function () {
-	  /* @ngInject */
-	
-	  function UpdateDescriptionController($mdDialog) {
-	    _classCallCheck(this, UpdateDescriptionController);
-	
-	    this._$mdDialog = $mdDialog;
-	    this.newDescription = null;
-	  }
-	
-	  _createClass(UpdateDescriptionController, [{
-	    key: "updateDescription",
-	    value: function updateDescription() {
-	      this._$mdDialog.hide(this.newDescription);
-	    }
-	  }, {
-	    key: "cancel",
-	    value: function cancel() {
-	      this._$mdDialog.cancel();
-	    }
-	  }]);
-	
-	  return UpdateDescriptionController;
-	})();
-	
-	exports["default"] = UpdateDescriptionController;
-	module.exports = exports["default"];
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Done</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
+	module.exports=v1;
 
 /***/ }
 /******/ ]);
