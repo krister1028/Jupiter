@@ -60,4 +60,11 @@ export default class jobService {
     task.completed_by = null;
     this.patch(job.id, {job_tasks: job.job_tasks});
   }
+
+  setJobDescription(newDescription, jobId) {
+    const job = this.jobs.filter(j => j.id === jobId);
+    const oldDescription = job.description;
+    job.description = newDescription;
+    return this.patch(jobId, {description: newDescription}).then(null, () => job.description = oldDescription);
+  }
 }

@@ -1,6 +1,8 @@
 import angular from 'angular';
 import selectUserTemplate from './select-user.template.html';
 import SelectUserController from './select-user.controller';
+import updateDescriptionTemplate from './update-description.template.html';
+import UpdateDescriptionController from './update-description.controller';
 
 export default class EditJobController {
   /* @ngInject */
@@ -36,11 +38,11 @@ export default class EditJobController {
 
   updateJobDescription() {
     this._$mdDialog.show({
-      template: selectUserTemplate,
-      controller: SelectUserController,
-      controllerAs: 'vm',
-      parent: angular.element(document.body)
-    });
+      template: updateDescriptionTemplate,
+      controller: UpdateDescriptionController,
+      locals: {jobId: this.job.id},
+      controllerAs: 'vm'
+    }).then(newDescription => this._jobService.setJobDescription(newDescription, this.job.id));
   }
 
   deleteJob() {

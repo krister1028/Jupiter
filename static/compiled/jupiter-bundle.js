@@ -68144,6 +68144,18 @@
 	      task.completed_by = null;
 	      this.patch(job.id, { job_tasks: job.job_tasks });
 	    }
+	  }, {
+	    key: 'setJobDescription',
+	    value: function setJobDescription(newDescription, jobId) {
+	      var job = this.jobs.filter(function (j) {
+	        return j.id === jobId;
+	      });
+	      var oldDescription = job.description;
+	      job.description = newDescription;
+	      return this.patch(jobId, { description: newDescription }).then(null, function () {
+	        return job.description = oldDescription;
+	      });
+	    }
 	  }]);
 	
 	  return jobService;
@@ -68538,6 +68550,14 @@
 	
 	var _selectUserController2 = _interopRequireDefault(_selectUserController);
 	
+	var _updateDescriptionTemplateHtml = __webpack_require__(34);
+	
+	var _updateDescriptionTemplateHtml2 = _interopRequireDefault(_updateDescriptionTemplateHtml);
+	
+	var _updateDescriptionController = __webpack_require__(35);
+	
+	var _updateDescriptionController2 = _interopRequireDefault(_updateDescriptionController);
+	
 	var EditJobController = (function () {
 	  /* @ngInject */
 	
@@ -68578,11 +68598,15 @@
 	  }, {
 	    key: 'updateJobDescription',
 	    value: function updateJobDescription() {
+	      var _this2 = this;
+	
 	      this._$mdDialog.show({
-	        template: _selectUserTemplateHtml2['default'],
-	        controller: _selectUserController2['default'],
-	        controllerAs: 'vm',
-	        parent: _angular2['default'].element(document.body)
+	        template: _updateDescriptionTemplateHtml2['default'],
+	        controller: _updateDescriptionController2['default'],
+	        locals: { jobId: this.job.id },
+	        controllerAs: 'vm'
+	      }).then(function (newDescription) {
+	        return _this2._jobService.setJobDescription(newDescription, _this2.job.id);
 	      });
 	    }
 	  }, {
@@ -68602,7 +68626,7 @@
 	  }, {
 	    key: 'openMarkCompleteDialog',
 	    value: function openMarkCompleteDialog(task) {
-	      var _this2 = this;
+	      var _this3 = this;
 	
 	      this._$mdDialog.show({
 	        template: _selectUserTemplateHtml2['default'],
@@ -68612,7 +68636,7 @@
 	        clickOutsideToClose: true,
 	        locals: { job: this.job, task: task }
 	      }).then(function (userId) {
-	        return _this2._jobService.markTaskComplete(userId, task, _this2.job);
+	        return _this3._jobService.markTaskComplete(userId, task, _this3.job);
 	      });
 	    }
 	  }], [{
@@ -68725,6 +68749,59 @@
 	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin> <h3>Job Details</h3> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Done</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJobDescription()\">Update Job Description</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-dialog aria-label=\"Update Description\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Change Job Description</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container> <label>New Decription</label> <input type=\"text\" ng-model=\"vm.newDescription\" required> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.updateDescription()\" style=\"margin-right:20px\"> Update Description </md-button> </md-dialog-actions> </md-dialog>";
+	ngModule.run(["$templateCache",function(c){c.put("update-description.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var UpdateDescriptionController = (function () {
+	  /* @ngInject */
+	
+	  function UpdateDescriptionController($mdDialog) {
+	    _classCallCheck(this, UpdateDescriptionController);
+	
+	    this._$mdDialog = $mdDialog;
+	    this.newDescription = null;
+	  }
+	
+	  _createClass(UpdateDescriptionController, [{
+	    key: "updateDescription",
+	    value: function updateDescription() {
+	      this._$mdDialog.hide(this.newDescription);
+	    }
+	  }, {
+	    key: "cancel",
+	    value: function cancel() {
+	      this._$mdDialog.cancel();
+	    }
+	  }]);
+	
+	  return UpdateDescriptionController;
+	})();
+	
+	exports["default"] = UpdateDescriptionController;
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ]);

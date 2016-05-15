@@ -92,7 +92,7 @@ class JobSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         # save main instance
-        job_tasks = validated_data.pop('job_tasks')
+        job_tasks = validated_data.pop('job_tasks', [])
         for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.save()
