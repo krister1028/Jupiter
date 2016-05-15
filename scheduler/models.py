@@ -68,6 +68,7 @@ class Job(models.Model):
     product = models.ForeignKey(Product)
     status = models.ForeignKey(JobStatus, null=True)
     type = models.ForeignKey(JobType, null=True)
+    rework = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
 
