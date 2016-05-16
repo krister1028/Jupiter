@@ -6,7 +6,8 @@ export default class AddTaskController {
     this.expertiseLevels = [
       {value: 1, description: 'Low'},
       {value: 2, description: 'Medium'},
-      {value: 3, description: 'High'}
+      {value: 3, description: 'High'},
+      {value: 4, description: 'CP'}
     ];
 
     this.abbreviation = null;

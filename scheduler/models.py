@@ -20,10 +20,12 @@ class Task(models.Model):
     LOW = 1
     MEDIUM = 2
     HIGH = 3
+    CP = 4
     EXPERTISE_CHOICES = (
         (LOW, 'Low'),
         (MEDIUM, 'Medium'),
-        (HIGH, 'High')
+        (HIGH, 'High'),
+        (CP, 'CP')
     )
 
     group = models.ForeignKey(Group)
