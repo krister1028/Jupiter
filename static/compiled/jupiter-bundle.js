@@ -123,19 +123,19 @@
 	
 	var _editJobController2 = _interopRequireDefault(_editJobController);
 	
-	var _homeTemplateHtml = __webpack_require__(32);
+	var _homeTemplateHtml = __webpack_require__(30);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _addProductTemplateHtml = __webpack_require__(33);
+	var _addProductTemplateHtml = __webpack_require__(31);
 	
 	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
 	
-	var _addTaskTemplateHtml = __webpack_require__(34);
+	var _addTaskTemplateHtml = __webpack_require__(32);
 	
 	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
 	
-	var _editJobTemplateHtml = __webpack_require__(35);
+	var _editJobTemplateHtml = __webpack_require__(33);
 	
 	var _editJobTemplateHtml2 = _interopRequireDefault(_editJobTemplateHtml);
 	
@@ -161,7 +161,7 @@
 	    template: _editJobTemplateHtml2['default'],
 	    controller: 'EditJobController as vm'
 	  }).state('addTask', {
-	    url: '/add-task/',
+	    url: '/add-task/?taskId',
 	    template: _addTaskTemplateHtml2['default'],
 	    controller: 'AddTaskController as vm'
 	  });
@@ -67812,12 +67812,15 @@
 	    this.description = null;
 	    this.code = null;
 	    this.productTasks = [];
-	    this._allTasks = taskService.tasks;
+	    this._allTasks = [];
+	    taskService.get().then(function (tasks) {
+	      return _this._allTasks = tasks;
+	    });
 	    this._productService = productService;
 	    this._$state = $state;
 	
 	    // set all task times to max to start with
-	    taskService.loading.then(function () {
+	    taskService.get().then(function () {
 	      return _this._allTasks.forEach(function (t) {
 	        return t.completion_time = t.max_completion_time;
 	      });
@@ -67887,35 +67890,37 @@
 	var AddTaskController = (function () {
 	  /* @ngInject */
 	
-	  function AddTaskController(taskService, $state) {
+	  function AddTaskController(taskService, $state, $stateParams) {
+	    var _this = this;
+	
 	    _classCallCheck(this, AddTaskController);
 	
 	    this._taskService = taskService;
 	    this._$state = $state;
-	    this.expertiseLevels = [{ value: 1, description: 'Low' }, { value: 2, description: 'Medium' }, { value: 3, description: 'High' }];
+	    this.expertiseLevels = [{ value: 1, description: 'Low' }, { value: 2, description: 'Medium' }, { value: 3, description: 'High' }, { value: 4, description: 'CP' }];
 	
-	    this.abbreviation = null;
-	    this.cost = null;
-	    this.description = null;
-	    this.expertiseLevel = null;
-	    this.minCompletionTime = null;
-	    this.maxCompletionTime = null;
+	    if ($stateParams.taskId !== undefined) {
+	      taskService.getItemById($stateParams.taskId).then(function (task) {
+	        _this.newTask = task;
+	      });
+	    } else {
+	      this.newTask = {};
+	      this.created = true;
+	    }
 	  }
 	
 	  _createClass(AddTaskController, [{
 	    key: 'publishTask',
 	    value: function publishTask() {
-	      var _this = this;
+	      var _this2 = this;
 	
-	      return this._taskService.post({
-	        abbreviation: this.abbreviation,
-	        cost: this.cost,
-	        description: this.description,
-	        expertise_level: this.expertiseLevel,
-	        min_completion_time: this.minCompletionTime,
-	        max_completion_time: this.maxCompletionTime
-	      }).then(function () {
-	        return _this._$state.go('addProduct');
+	      if (this.created) {
+	        return this._taskService.post(this.newTask).then(function () {
+	          return _this2._$state.go('addProduct');
+	        });
+	      }
+	      return this._taskService.put(this.newTask).then(function () {
+	        return _this2._$state.go('addProduct');
 	      });
 	    }
 	  }]);
@@ -68171,7 +68176,7 @@
 
 /***/ },
 /* 20 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -68179,53 +68184,32 @@
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var taskService = (function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(34);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var taskService = (function (_baseResourceClass) {
+	  _inherits(taskService, _baseResourceClass);
+	
 	  /* @ngInject */
 	
-	  function taskService($http) {
+	  function taskService($http, $q) {
 	    _classCallCheck(this, taskService);
 	
-	    this._$http = $http;
-	    this._getTasksUrl = '/api/tasks/';
-	    this.tasks = [];
-	    this.loading = this.get();
+	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q);
+	    this._resourceUrl = '/api/tasks/';
 	  }
 	
-	  _createClass(taskService, [{
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
-	
-	      return this._$http.get(this._getTasksUrl).then(function (response) {
-	        var _tasks;
-	
-	        return (_tasks = _this.tasks).push.apply(_tasks, _toConsumableArray(response.data));
-	      });
-	    }
-	  }, {
-	    key: 'post',
-	    value: function post(data) {
-	      var _this2 = this;
-	
-	      return this._$http.post(this._getTasksUrl, data).then(function (response) {
-	        return _this2.tasks.push(response.data);
-	      });
-	    }
-	  }, {
-	    key: 'patch',
-	    value: function patch(taskId, data) {
-	      return this._$http.patch(taskId, data);
-	    }
-	  }]);
-	
 	  return taskService;
-	})();
+	})(_baseResourceClass3['default']);
 	
 	exports['default'] = taskService;
 	module.exports = exports['default'];
@@ -68699,9 +68683,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 30 */,
-/* 31 */,
-/* 32 */
+/* 30 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68712,7 +68694,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 33 */
+/* 31 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68723,18 +68705,18 @@
 	module.exports=v1;
 
 /***/ },
-/* 34 */
+/* 32 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <md-select ng-model=\"vm.expertiseLevel\"> <md-option ng-repeat=\"level in vm.expertiseLevels\" value=\"{{level.value}}\"> {{level.description}} </md-option> </md-select> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.minCompletionTime\" required> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.maxCompletionTime\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishTask()\">Publish Task</md-button>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.newTask.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.newTask.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <md-select ng-model=\"vm.newTask.expertise_level\"> <md-option ng-repeat=\"level in vm.expertiseLevels\" value=\"{{level.value}}\"> {{level.description}} </md-option> </md-select> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.newTask.min_completion_time\" required> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.newTask.max_completion_time\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.newTask.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishTask()\">Publish Task</md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 35 */
+/* 33 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -68743,6 +68725,92 @@
 	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Done</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _angular = __webpack_require__(2);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	var baseResourceClass = (function () {
+	  /* @ngInject */
+	
+	  function baseResourceClass($http, $q) {
+	    _classCallCheck(this, baseResourceClass);
+	
+	    this._$http = $http;
+	    this._$q = $q;
+	    this._deferred = $q.defer();
+	    this.itemList = [];
+	    this._resourceUrl = null;
+	  }
+	
+	  _createClass(baseResourceClass, [{
+	    key: 'getItemById',
+	    value: function getItemById(itemId) {
+	      return this.get().then(function (tasks) {
+	        return tasks.filter(function (i) {
+	          return i.id === parseInt(itemId, 10);
+	        })[0];
+	      });
+	    }
+	  }, {
+	    key: 'get',
+	    value: function get() {
+	      var _this = this;
+	
+	      if (this._deferred.promise.$$state.status === 0) {
+	        this._$http.get(this._resourceUrl).then(function (response) {
+	          var _itemList;
+	
+	          (_itemList = _this.itemList).push.apply(_itemList, _toConsumableArray(response.data));
+	          _this._deferred.resolve(_this.itemList);
+	        });
+	      }
+	      return this._deferred.promise;
+	    }
+	  }, {
+	    key: 'post',
+	    value: function post(data) {
+	      var _this2 = this;
+	
+	      return this._$http.post(this._resourceUrl, data).then(function (response) {
+	        return _this2.itemList.push(response.data);
+	      });
+	    }
+	  }, {
+	    key: 'put',
+	    value: function put(item) {
+	      return this._$http.put(this._itemResourceUrl(item.id), item);
+	    }
+	  }, {
+	    key: '_itemResourceUrl',
+	    value: function _itemResourceUrl(itemId) {
+	      return '' + this._resourceUrl + itemId + '/';
+	    }
+	  }]);
+	
+	  return baseResourceClass;
+	})();
+	
+	exports['default'] = baseResourceClass;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

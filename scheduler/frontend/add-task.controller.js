@@ -1,6 +1,6 @@
 export default class AddTaskController {
   /* @ngInject */
-  constructor(taskService, $state) {
+  constructor(taskService, $state, $stateParams) {
     this._taskService = taskService;
     this._$state = $state;
     this.expertiseLevels = [
@@ -10,22 +10,20 @@ export default class AddTaskController {
       {value: 4, description: 'CP'}
     ];
 
-    this.abbreviation = null;
-    this.cost = null;
-    this.description = null;
-    this.expertiseLevel = null;
-    this.minCompletionTime = null;
-    this.maxCompletionTime = null;
+    if ($stateParams.taskId !== undefined) {
+      taskService.getItemById($stateParams.taskId).then(task => {
+        this.newTask = task;
+      });
+    } else {
+      this.newTask = {};
+      this.created = true;
+    }
   }
 
   publishTask() {
-    return this._taskService.post({
-      abbreviation: this.abbreviation,
-      cost: this.cost,
-      description: this.description,
-      expertise_level: this.expertiseLevel,
-      min_completion_time: this.minCompletionTime,
-      max_completion_time: this.maxCompletionTime
-    }).then(() => this._$state.go('addProduct'));
+    if (this.created) {
+      return this._taskService.post(this.newTask).then(() => this._$state.go('addProduct'));
+    }
+    return this._taskService.put(this.newTask).then(() => this._$state.go('addProduct'));
   }
 }

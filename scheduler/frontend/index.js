@@ -59,7 +59,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
       controller: 'EditJobController as vm'
     })
     .state('addTask', {
-      url: '/add-task/',
+      url: '/add-task/?taskId',
       template: addTaskTemplate,
       controller: 'AddTaskController as vm'
     })

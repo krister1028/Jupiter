@@ -4,12 +4,13 @@ export default class AddProductController {
     this.description = null;
     this.code = null;
     this.productTasks = [];
-    this._allTasks = taskService.tasks;
+    this._allTasks = [];
+    taskService.get().then(tasks => this._allTasks = tasks);
     this._productService = productService;
     this._$state = $state;
 
     // set all task times to max to start with
-    taskService.loading.then(() => this._allTasks.forEach(t => t.completion_time = t.max_completion_time));
+    taskService.get().then(() => this._allTasks.forEach(t => t.completion_time = t.max_completion_time));
   }
 
   publishProduct() {
