@@ -10,7 +10,7 @@ export default class baseResourceClass {
   }
 
   getItemById(itemId) {
-    return this.get().then(tasks => tasks.filter(i => i.id === parseInt(itemId, 10))[0]);
+    return this.get().then(items => items.filter(i => i.id === parseInt(itemId, 10))[0]);
   }
 
   get() {
