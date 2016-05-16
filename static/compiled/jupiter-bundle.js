@@ -67838,9 +67838,8 @@
 	        tasks: this.productTasks.map(function (t) {
 	          return { task: t.id, completion_time: t.completion_time };
 	        })
-	      }).then(function (response) {
-	        _this2._productService.products.push(response.data);
-	        _this2._$state.go('home');
+	      }).then(function () {
+	        return _this2._$state.go('home');
 	      });
 	    }
 	  }, {
@@ -67995,7 +67994,7 @@
 
 /***/ },
 /* 18 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -68003,45 +68002,33 @@
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var productService = (function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(34);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var productService = (function (_baseResourceClass) {
+	  _inherits(productService, _baseResourceClass);
+	
 	  /* @ngInject */
 	
-	  function productService($http) {
+	  function productService($http, $q, $state) {
 	    _classCallCheck(this, productService);
 	
-	    this._$http = $http;
-	    this._productUrl = '/api/products/';
-	    this.products = [];
-	    this.loading = this.get();
+	    _get(Object.getPrototypeOf(productService.prototype), 'constructor', this).call(this, $http, $q, $state);
+	    this._resourceUrl = '/api/products/';
 	    this.taskCompleteCode = 3;
 	  }
 	
-	  _createClass(productService, [{
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
-	
-	      return this._$http.get(this._productUrl).then(function (response) {
-	        var _products;
-	
-	        return (_products = _this.products).push.apply(_products, _toConsumableArray(response.data));
-	      });
-	    }
-	  }, {
-	    key: 'post',
-	    value: function post(data) {
-	      return this._$http.post(this._productUrl, data);
-	    }
-	  }]);
-	
 	  return productService;
-	})();
+	})(_baseResourceClass3['default']);
 	
 	exports['default'] = productService;
 	module.exports = exports['default'];
@@ -68434,11 +68421,15 @@
 	  /* @ngInject */
 	
 	  function AddJobModalController($mdDialog, jobService, productService, jobTypeService, jobStatusService) {
+	    var _this = this;
+	
 	    _classCallCheck(this, AddJobModalController);
 	
 	    this._$mdDialog = $mdDialog;
 	    this._jobService = jobService;
-	    this.products = productService.products;
+	    productService.get().then(function (products) {
+	      return _this.products = products;
+	    });
 	    this.jobTypes = jobTypeService.jobTypes;
 	    this.jobStatuses = jobStatusService.jobStatuses;
 	    this.newJob = {};
@@ -68690,7 +68681,7 @@
 
 /***/ },
 /* 34 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 	
@@ -68700,15 +68691,9 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var _angular = __webpack_require__(2);
-	
-	var _angular2 = _interopRequireDefault(_angular);
 	
 	var baseResourceClass = (function () {
 	  /* @ngInject */
@@ -68757,8 +68742,9 @@
 	    value: function post(data) {
 	      var _this2 = this;
 	
-	      return this._$http.post(this._resourceUrl, data).then(function (response) {
-	        return _this2.itemList.push(response.data);
+	      this.itemList.push(data);
+	      return this._$http.post(this._resourceUrl, data).then(null, function () {
+	        return _this2.itemList.pop();
 	      });
 	    }
 	  }, {

@@ -1,5 +1,3 @@
-import angular from 'angular';
-
 export default class baseResourceClass {
   /* @ngInject */
   constructor($http, $q, $state) {
@@ -32,7 +30,8 @@ export default class baseResourceClass {
   }
 
   post(data) {
-    return this._$http.post(this._resourceUrl, data).then(response => this.itemList.push(response.data));
+    this.itemList.push(data);
+    return this._$http.post(this._resourceUrl, data).then(null, () => this.itemList.pop());
   }
 
   put(item) {

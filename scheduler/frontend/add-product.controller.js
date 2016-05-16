@@ -21,10 +21,7 @@ export default class AddProductController {
         return {task: t.id, completion_time: t.completion_time};
       })
     }).then(
-      response => {
-        this._productService.products.push(response.data);
-        this._$state.go('home');
-      }
+      () => this._$state.go('home')
     );
   }
 

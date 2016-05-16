@@ -3,7 +3,7 @@ export default class AddJobModalController {
   constructor($mdDialog, jobService, productService, jobTypeService, jobStatusService) {
     this._$mdDialog = $mdDialog;
     this._jobService = jobService;
-    this.products = productService.products;
+    productService.get().then(products => this.products = products);
     this.jobTypes = jobTypeService.jobTypes;
     this.jobStatuses = jobStatusService.jobStatuses;
     this.newJob = {};

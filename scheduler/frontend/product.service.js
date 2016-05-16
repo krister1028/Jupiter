@@ -1,18 +1,10 @@
-export default class productService {
+import baseResourceClass from './base-resource-class';
+
+export default class productService extends baseResourceClass {
   /* @ngInject */
-  constructor($http) {
-    this._$http = $http;
-    this._productUrl = '/api/products/';
-    this.products = [];
-    this.loading = this.get();
+  constructor($http, $q, $state) {
+    super($http, $q, $state);
+    this._resourceUrl = '/api/products/';
     this.taskCompleteCode = 3;
-  }
-
-  get() {
-    return this._$http.get(this._productUrl).then(response => this.products.push(...response.data));
-  }
-
-  post(data) {
-    return this._$http.post(this._productUrl, data);
   }
 }
