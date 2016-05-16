@@ -68318,6 +68318,8 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var _addJobModalTemplateHtml = __webpack_require__(25);
@@ -68341,9 +68343,17 @@
 	    _classCallCheck(this, HomeController);
 	
 	    this.user = userService.user;
-	    this.products = productService.products;
+	    this.products = [];
+	    productService.get().then(function (products) {
+	      var _products;
+	
+	      return (_products = _this.products).push.apply(_products, _toConsumableArray(products));
+	    });
+	    this.jobs = [];
 	    jobService.get().then(function (jobs) {
-	      return _this.jobs = jobs;
+	      var _jobs;
+	
+	      return (_jobs = _this.jobs).push.apply(_jobs, _toConsumableArray(jobs));
 	    });
 	    this.jobService = jobService;
 	    this._$mdDialog = $mdDialog;
@@ -68757,6 +68767,11 @@
 	    value: function _delete(item) {
 	      this.itemList.splice(this.itemList.indexOf(item), 1);
 	      return this._$http['delete'](this._itemResourceUrl(item.id));
+	    }
+	  }, {
+	    key: 'patch',
+	    value: function patch(itemId, data) {
+	      return this._$http.patch(this._itemResourceUrl(itemId), data);
 	    }
 	  }, {
 	    key: '_itemResourceUrl',

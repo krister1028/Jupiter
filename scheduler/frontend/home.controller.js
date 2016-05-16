@@ -6,8 +6,10 @@ export default class HomeController {
   /* @ngInject */
   constructor(userService, productService, jobService, $mdDialog) {
     this.user = userService.user;
-    this.products = productService.products;
-    jobService.get().then(jobs => this.jobs = jobs);
+    this.products = [];
+    productService.get().then(products => this.products.push(...products));
+    this.jobs = [];
+    jobService.get().then(jobs => this.jobs.push(...jobs));
     this.jobService = jobService;
     this._$mdDialog = $mdDialog;
 

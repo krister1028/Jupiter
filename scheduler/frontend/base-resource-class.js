@@ -43,6 +43,10 @@ export default class baseResourceClass {
     return this._$http.delete(this._itemResourceUrl(item.id));
   }
 
+  patch(itemId, data) {
+    return this._$http.patch(this._itemResourceUrl(itemId), data);
+  }
+
   _itemResourceUrl(itemId) {
     return `${this._resourceUrl}${itemId}/`;
   }
