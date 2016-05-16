@@ -87,6 +87,14 @@ class ProductTask(models.Model):
     def description(self):
         return self.task.description
 
+    @property
+    def min_completion_time(self):
+        return self.task.min_completion_time
+
+    @property
+    def max_completion_time(self):
+        return self.task.max_completion_time
+
     def __unicode__(self):
         return self.task.description
 

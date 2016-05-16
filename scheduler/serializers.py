@@ -30,6 +30,8 @@ class TaskSerializer(serializers.ModelSerializer):
 
 class ProductTaskSerializer(serializers.ModelSerializer):
     description = serializers.CharField(read_only=True)
+    min_completion_time = serializers.IntegerField(read_only=True)
+    max_completion_time = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = ProductTask
@@ -50,6 +52,24 @@ class ProductSerializer(serializers.ModelSerializer):
             ProductTask(**task).save()
 
         return product
+
+    def update(self, instance, validated_data):
+        # save main instance
+        product_tasks = validated_data.pop('tasks', [])
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+        instance.save()
+
+        # save associated tasks
+        for task in product_tasks:
+            product_task = ProductTask.objects.get_or_create(
+                product=instance,
+                task=task['task'],
+                completion_time=task['completion_time']
+            )[0]
+            product_task.save()
+
+        return instance
 
     class Meta:
         model = Product
