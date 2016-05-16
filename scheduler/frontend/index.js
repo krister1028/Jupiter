@@ -49,7 +49,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
       controller: 'LoginController as vm'
     })
     .state('addProduct', {
-      url: '/add-product/',
+      url: '/add-product/?productId',
       template: addProductTemplate,
       controller: 'AddProductController as vm'
     })

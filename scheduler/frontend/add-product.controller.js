@@ -1,9 +1,12 @@
-export default class AddProductController {
+import baseFormClass from './base-form-class';
+
+export default class AddProductController extends baseFormClass{
   /* @ngInject */
-  constructor(taskService, productService, $state) {
-    this.description = null;
-    this.code = null;
-    this.productTasks = [];
+  constructor(taskService, productService, $state, $stateParams) {
+    super($stateParams);
+    this.paramIdName = 'productId';
+    this.resourceService = productService;
+
     this._allTasks = [];
     taskService.get().then(tasks => this._allTasks = tasks);
     this._productService = productService;
@@ -11,22 +14,20 @@ export default class AddProductController {
 
     // set all task times to max to start with
     taskService.get().then(() => this._allTasks.forEach(t => t.completion_time = t.max_completion_time));
+
+    this._getFormItem();
   }
 
-  publishProduct() {
-    this._productService.post({
-      description: this.description,
-      code: this.code,
-      tasks: this.productTasks.map(t => {
-        return {task: t.id, completion_time: t.completion_time};
-      })
-    }).then(
-      () => this._$state.go('home')
-    );
+  getDefaultFormItem() {
+    return {tasks: []};
+  }
+
+  publishItem() {
+    super.publishItem().then(() => this._$state.go('home'));
   }
 
   unselectedTasks() {
-    const selectedTasks = this.productTasks.map(t => t.id);
+    const selectedTasks = this.formItem.tasks.map(t => t.id);
     return this._allTasks.filter(t => selectedTasks.indexOf(t.id) === -1);
   }
 
@@ -35,6 +36,7 @@ export default class AddProductController {
   }
 
   addTask(task) {
-    this.productTasks.push(task);
+    task.task = task.id;
+    this.formItem.tasks.push(task);
   }
 }

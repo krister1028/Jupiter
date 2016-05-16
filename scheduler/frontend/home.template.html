@@ -32,7 +32,7 @@
                 Products
             </h2>
             <md-list ng-show="vm.products.length">
-                <md-list-item ng-repeat="product in vm.products track by $index">
+                <md-list-item ui-sref="addProduct({productId: product.id})" ng-repeat="product in vm.products track by $index">
                     {{ vm.getProductText(product) }}
                 </md-list-item>
             </md-list>

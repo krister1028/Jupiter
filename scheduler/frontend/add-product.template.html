@@ -7,13 +7,13 @@
     <form name="addProduct" layout="column" flex="66">
       <md-input-container>
         <label>Product Description</label>
-        <input name="productDescription" ng-model="vm.description" required>
+        <input name="productDescription" ng-model="vm.formItem.description" required>
       </md-input-container>
       <md-input-container>
         <label>Product Code</label>
-        <input name="productCode" ng-model="vm.code" required>
+        <input name="productCode" ng-model="vm.formItem.code" required>
       </md-input-container>
-        <md-chips ng-model="vm.productTasks" md-autocomplete-snap
+        <md-chips ng-model="vm.formItem.tasks" md-autocomplete-snap
                   md-require-match="true">
           <md-autocomplete
               md-search-text="vm.searchText"
@@ -31,7 +31,7 @@
 
     <div layout="column" flex="33">
         <h4>Product Tasks</h4>
-        <div ng-repeat="task in vm.productTasks track by $index" layout-margin>
+        <div ng-repeat="task in vm.formItem.tasks track by $index" layout-margin>
             {{ task.description }}
             <md-slider
                     aria-label="Select Time"
@@ -53,4 +53,4 @@
 
 </div>
 
-<md-button class="md-raised md-primary" ng-click="vm.publishProduct()">Publish Product</md-button>
+<md-button class="md-raised md-primary" ng-click="vm.publishItem()">Publish Product</md-button>

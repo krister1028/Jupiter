@@ -153,7 +153,7 @@
 	    template: _loginLoginHtml2['default'],
 	    controller: 'LoginController as vm'
 	  }).state('addProduct', {
-	    url: '/add-product/',
+	    url: '/add-product/?productId',
 	    template: _addProductTemplateHtml2['default'],
 	    controller: 'AddProductController as vm'
 	  }).state('editJob', {
@@ -67789,7 +67789,7 @@
 
 /***/ },
 /* 15 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -67799,19 +67799,32 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var AddProductController = (function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseFormClass2 = __webpack_require__(35);
+	
+	var _baseFormClass3 = _interopRequireDefault(_baseFormClass2);
+	
+	var AddProductController = (function (_baseFormClass) {
+	  _inherits(AddProductController, _baseFormClass);
+	
 	  /* @ngInject */
 	
-	  function AddProductController(taskService, productService, $state) {
+	  function AddProductController(taskService, productService, $state, $stateParams) {
 	    var _this = this;
 	
 	    _classCallCheck(this, AddProductController);
 	
-	    this.description = null;
-	    this.code = null;
-	    this.productTasks = [];
+	    _get(Object.getPrototypeOf(AddProductController.prototype), 'constructor', this).call(this, $stateParams);
+	    this.paramIdName = 'productId';
+	    this.resourceService = productService;
+	
 	    this._allTasks = [];
 	    taskService.get().then(function (tasks) {
 	      return _this._allTasks = tasks;
@@ -67825,27 +67838,28 @@
 	        return t.completion_time = t.max_completion_time;
 	      });
 	    });
+	
+	    this._getFormItem();
 	  }
 	
 	  _createClass(AddProductController, [{
-	    key: 'publishProduct',
-	    value: function publishProduct() {
+	    key: 'getDefaultFormItem',
+	    value: function getDefaultFormItem() {
+	      return { tasks: [] };
+	    }
+	  }, {
+	    key: 'publishItem',
+	    value: function publishItem() {
 	      var _this2 = this;
 	
-	      this._productService.post({
-	        description: this.description,
-	        code: this.code,
-	        tasks: this.productTasks.map(function (t) {
-	          return { task: t.id, completion_time: t.completion_time };
-	        })
-	      }).then(function () {
+	      _get(Object.getPrototypeOf(AddProductController.prototype), 'publishItem', this).call(this).then(function () {
 	        return _this2._$state.go('home');
 	      });
 	    }
 	  }, {
 	    key: 'unselectedTasks',
 	    value: function unselectedTasks() {
-	      var selectedTasks = this.productTasks.map(function (t) {
+	      var selectedTasks = this.formItem.tasks.map(function (t) {
 	        return t.id;
 	      });
 	      return this._allTasks.filter(function (t) {
@@ -67862,19 +67876,20 @@
 	  }, {
 	    key: 'addTask',
 	    value: function addTask(task) {
-	      this.productTasks.push(task);
+	      task.task = task.id;
+	      this.formItem.tasks.push(task);
 	    }
 	  }]);
 	
 	  return AddProductController;
-	})();
+	})(_baseFormClass3['default']);
 	
 	exports['default'] = AddProductController;
 	module.exports = exports['default'];
 
 /***/ },
 /* 16 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -67884,48 +67899,52 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var AddTaskController = (function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseFormClass2 = __webpack_require__(35);
+	
+	var _baseFormClass3 = _interopRequireDefault(_baseFormClass2);
+	
+	var AddTaskController = (function (_baseFormClass) {
+	  _inherits(AddTaskController, _baseFormClass);
+	
 	  /* @ngInject */
 	
 	  function AddTaskController(taskService, $state, $stateParams) {
-	    var _this = this;
-	
 	    _classCallCheck(this, AddTaskController);
 	
-	    this._taskService = taskService;
+	    _get(Object.getPrototypeOf(AddTaskController.prototype), 'constructor', this).call(this, $stateParams);
+	    this.paramIdName = 'taskId';
+	    this.resourceService = taskService;
+	
 	    this._$state = $state;
 	    this.expertiseLevels = [{ value: 1, description: 'Low' }, { value: 2, description: 'Medium' }, { value: 3, description: 'High' }, { value: 4, description: 'CP' }];
-	
-	    if ($stateParams.taskId !== undefined) {
-	      taskService.getItemById($stateParams.taskId).then(function (task) {
-	        _this.newTask = task;
-	      });
-	    } else {
-	      this.newTask = {};
-	      this.created = true;
-	    }
+	    this._getFormItem();
 	  }
 	
 	  _createClass(AddTaskController, [{
-	    key: 'publishTask',
-	    value: function publishTask() {
-	      var _this2 = this;
+	    key: 'publishItem',
+	    value: function publishItem() {
+	      var _this = this;
 	
-	      if (this.created) {
-	        return this._taskService.post(this.newTask).then(function () {
-	          return _this2._$state.go('addProduct');
-	        });
-	      }
-	      return this._taskService.put(this.newTask).then(function () {
-	        return _this2._$state.go('home');
+	      _get(Object.getPrototypeOf(AddTaskController.prototype), 'publishItem', this).call(this).then(function () {
+	        if (_this.created) {
+	          _this._$state.go('addProduct');
+	        } else {
+	          _this._$state.go('home');
+	        }
 	      });
 	    }
 	  }]);
 	
 	  return AddTaskController;
-	})();
+	})(_baseFormClass3['default']);
 	
 	exports['default'] = AddTaskController;
 	module.exports = exports['default'];
@@ -68652,7 +68671,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\"> <a ui-sref=\"editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-button class=\"md-raised md-primary\">Add Job Status Option</md-button> <md-button class=\"md-raised md-primary\">Add Job Type</md-button> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\"> <a ui-sref=\"editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"addProduct({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-button class=\"md-raised md-primary\">Add Job Status Option</md-button> <md-button class=\"md-raised md-primary\">Add Job Type</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68663,7 +68682,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Product</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.code\" required> </md-input-container> <md-chips ng-model=\"vm.productTasks\" md-autocomplete-snap md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.productTasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"end end\" flex=\"33\"> <h2 flex>Assign Tasks</h2> <div flex ng-repeat=\"task in vm.unselectedTasks() track by $index\" ng-click=\"vm.addTask(task)\"> (x) {{ task.description }} </div> <md-button flex ui-sref=\"addTask\">Add New Task</md-button> </div> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishProduct()\">Publish Product</md-button>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Product</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.formItem.code\" required> </md-input-container> <md-chips ng-model=\"vm.formItem.tasks\" md-autocomplete-snap md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.formItem.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"end end\" flex=\"33\"> <h2 flex>Assign Tasks</h2> <div flex ng-repeat=\"task in vm.unselectedTasks() track by $index\" ng-click=\"vm.addTask(task)\"> (x) {{ task.description }} </div> <md-button flex ui-sref=\"addTask\">Add New Task</md-button> </div> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">Publish Product</md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68674,7 +68693,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.newTask.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.newTask.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <md-select ng-model=\"vm.newTask.expertise_level\"> <md-option ng-repeat=\"level in vm.expertiseLevels\" value=\"{{level.value}}\"> {{level.description}} </md-option> </md-select> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.newTask.min_completion_time\" required> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.newTask.max_completion_time\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.newTask.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishTask()\">Publish Task</md-button>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.formItem.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <md-select ng-model=\"vm.formItem.expertise_level\"> <md-option ng-repeat=\"level in vm.expertiseLevels\" value=\"{{level.value}}\"> {{level.description}} </md-option> </md-select> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.formItem.min_completion_time\" required> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.formItem.max_completion_time\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.formItem.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">Publish Task</md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68685,7 +68704,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Done</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68785,6 +68804,64 @@
 	
 	exports['default'] = baseResourceClass;
 	module.exports = exports['default'];
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var baseFormClass = (function () {
+	  function baseFormClass($stateParams) {
+	    _classCallCheck(this, baseFormClass);
+	
+	    this._$stateParams = $stateParams;
+	    this.paramIdName = null;
+	    this.resourceService = null;
+	    this.formItem = this.getDefaultFormItem();
+	  }
+	
+	  _createClass(baseFormClass, [{
+	    key: "_getFormItem",
+	    value: function _getFormItem() {
+	      var _this = this;
+	
+	      if (this._$stateParams[this.paramIdName] !== undefined) {
+	        this.resourceService.getItemById(this._$stateParams[this.paramIdName]).then(function (item) {
+	          return _this.formItem = item;
+	        });
+	      } else {
+	        this.created = true;
+	      }
+	    }
+	  }, {
+	    key: "getDefaultFormItem",
+	    value: function getDefaultFormItem() {
+	      return {};
+	    }
+	  }, {
+	    key: "publishItem",
+	    value: function publishItem() {
+	      if (this.created) {
+	        return this.resourceService.post(this.formItem);
+	      }
+	      return this.resourceService.put(this.formItem);
+	    }
+	  }]);
+	
+	  return baseFormClass;
+	})();
+	
+	exports["default"] = baseFormClass;
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ]);

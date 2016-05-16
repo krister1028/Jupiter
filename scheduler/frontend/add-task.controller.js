@@ -1,7 +1,12 @@
-export default class AddTaskController {
+import baseFormClass from './base-form-class';
+
+export default class AddTaskController extends baseFormClass {
   /* @ngInject */
   constructor(taskService, $state, $stateParams) {
-    this._taskService = taskService;
+    super($stateParams);
+    this.paramIdName = 'taskId';
+    this.resourceService = taskService;
+
     this._$state = $state;
     this.expertiseLevels = [
       {value: 1, description: 'Low'},
@@ -9,21 +14,16 @@ export default class AddTaskController {
       {value: 3, description: 'High'},
       {value: 4, description: 'CP'}
     ];
-
-    if ($stateParams.taskId !== undefined) {
-      taskService.getItemById($stateParams.taskId).then(task => {
-        this.newTask = task;
-      });
-    } else {
-      this.newTask = {};
-      this.created = true;
-    }
+    this._getFormItem();
   }
 
-  publishTask() {
-    if (this.created) {
-      return this._taskService.post(this.newTask).then(() => this._$state.go('addProduct'));
-    }
-    return this._taskService.put(this.newTask).then(() => this._$state.go('home'));
+  publishItem() {
+    super.publishItem().then(() => {
+      if (this.created) {
+        this._$state.go('addProduct');
+      } else {
+        this._$state.go('home');
+      }
+    });
   }
 }
