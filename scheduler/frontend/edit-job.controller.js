@@ -37,7 +37,7 @@ export default class EditJobController {
   }
 
   deleteJob() {
-    this._jobService.deleteJob(this.job);
+    this._jobService.delete(this.job);
     this._$state.go('home');
   }
 

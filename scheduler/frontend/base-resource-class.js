@@ -39,6 +39,11 @@ export default class baseResourceClass {
     return this._$http.put(this._itemResourceUrl(item.id), item);
   }
 
+  delete(item) {
+    this.itemList.splice(this.itemList.indexOf(item), 1);
+    return this._$http.delete(this._itemResourceUrl(item.id));
+  }
+
   _itemResourceUrl(itemId) {
     return `${this._resourceUrl}${itemId}/`;
   }

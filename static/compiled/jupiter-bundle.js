@@ -68550,7 +68550,7 @@
 	  }, {
 	    key: 'deleteJob',
 	    value: function deleteJob() {
-	      this._jobService.deleteJob(this.job);
+	      this._jobService['delete'](this.job);
 	      this._$state.go('home');
 	    }
 	  }, {
@@ -68765,6 +68765,12 @@
 	    key: 'put',
 	    value: function put(item) {
 	      return this._$http.put(this._itemResourceUrl(item.id), item);
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete(item) {
+	      this.itemList.splice(this.itemList.indexOf(item), 1);
+	      return this._$http['delete'](this._itemResourceUrl(item.id));
 	    }
 	  }, {
 	    key: '_itemResourceUrl',
