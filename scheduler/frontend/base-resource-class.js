@@ -30,8 +30,9 @@ export default class baseResourceClass {
   }
 
   post(data) {
-    this.itemList.push(data);
-    return this._$http.post(this._resourceUrl, data).then(null, () => this.itemList.pop());
+    return this._$http.post(this._resourceUrl, data).then(
+      response => this.itemList.push(response.data),
+      () => this.itemList.pop());
   }
 
   put(item) {

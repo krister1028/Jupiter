@@ -9,7 +9,7 @@ export default class HomeController {
     this.products = [];
     productService.get().then(products => this.products.push(...products));
     this.jobs = [];
-    jobService.get().then(jobs => this.jobs.push(...jobs));
+    jobService.get().then(jobs => this.jobs = jobs);
     this.jobService = jobService;
     this._$mdDialog = $mdDialog;
 

@@ -68370,9 +68370,7 @@
 	    });
 	    this.jobs = [];
 	    jobService.get().then(function (jobs) {
-	      var _jobs;
-	
-	      return (_jobs = _this.jobs).push.apply(_jobs, _toConsumableArray(jobs));
+	      return _this.jobs = jobs;
 	    });
 	    this.jobService = jobService;
 	    this._$mdDialog = $mdDialog;
@@ -68771,8 +68769,9 @@
 	    value: function post(data) {
 	      var _this2 = this;
 	
-	      this.itemList.push(data);
-	      return this._$http.post(this._resourceUrl, data).then(null, function () {
+	      return this._$http.post(this._resourceUrl, data).then(function (response) {
+	        return _this2.itemList.push(response.data);
+	      }, function () {
 	        return _this2.itemList.pop();
 	      });
 	    }
