@@ -60,7 +60,10 @@ class ProductSerializer(serializers.ModelSerializer):
             setattr(instance, field, value)
         instance.save()
 
-        # save associated tasks
+        # delete removed tasks
+        ProductTask.objects.filter(product=instance).exclude(task__in=[t['task'].id for t in product_tasks]).delete()
+
+        # update associated tasks
         for task in product_tasks:
             product_task = ProductTask.objects.get_or_create(
                 product=instance,
