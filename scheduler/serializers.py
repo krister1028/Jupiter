@@ -29,6 +29,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class ProductTaskSerializer(serializers.ModelSerializer):
+    description = serializers.CharField(read_only=True)
 
     class Meta:
         model = ProductTask

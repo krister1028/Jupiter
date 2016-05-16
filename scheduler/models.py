@@ -83,6 +83,10 @@ class ProductTask(models.Model):
     task = models.ForeignKey(Task, related_name='product_tasks')
     completion_time = models.IntegerField()
 
+    @property
+    def description(self):
+        return self.task.description
+
     def __unicode__(self):
         return self.task.description
 
