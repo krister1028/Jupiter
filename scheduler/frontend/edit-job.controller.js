@@ -12,9 +12,7 @@ export default class EditJobController {
     this.groupUsers = groupUserService.groupUsers;
     this.jobTypes = jobTypeService.jobTypes;
     this.jobStatuses = jobStatusService.jobStatuses;
-    jobService.loading.then(() => {
-      this.job = jobService.jobs.filter(j => j.id === $stateParams.jobId)[0];
-    });
+    jobService.getItemById($stateParams.jobId).then(job => this.job = job);
   }
 
   static _taskComplete(task) {

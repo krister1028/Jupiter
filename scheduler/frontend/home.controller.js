@@ -7,7 +7,7 @@ export default class HomeController {
   constructor(userService, productService, jobService, $mdDialog) {
     this.user = userService.user;
     this.products = productService.products;
-    this.jobs = jobService.jobs;
+    jobService.get().then(jobs => this.jobs = jobs);
     this.jobService = jobService;
     this._$mdDialog = $mdDialog;
 

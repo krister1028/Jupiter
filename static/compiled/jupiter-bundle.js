@@ -68048,7 +68048,7 @@
 
 /***/ },
 /* 19 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -68058,20 +68058,28 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var jobService = (function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(34);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var jobService = (function (_baseResourceClass) {
+	  _inherits(jobService, _baseResourceClass);
+	
 	  /* @ngInject */
 	
-	  function jobService($http, productService, taskService) {
+	  function jobService($http, $q, $state, productService, taskService) {
 	    _classCallCheck(this, jobService);
 	
-	    this._$http = $http;
-	    this._getJobUrl = '/api/jobs/';
-	    this.jobs = [];
-	    this.loading = this.get();
+	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q, $state);
+	    this._resourceUrl = '/api/jobs/';
 	    this._productService = productService;
 	    this._taskService = taskService;
 	    this.taskCompleteStatus = 3;
@@ -68079,62 +68087,16 @@
 	  }
 	
 	  _createClass(jobService, [{
-	    key: '_detailUrl',
-	    value: function _detailUrl(jobId) {
-	      return '' + this._getJobUrl + jobId + '/';
-	    }
-	  }, {
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
-	
-	      return this._$http.get(this._getJobUrl).then(function (response) {
-	        var _jobs;
-	
-	        return (_jobs = _this.jobs).push.apply(_jobs, _toConsumableArray(response.data));
-	      });
-	    }
-	  }, {
-	    key: 'post',
-	    value: function post(data) {
-	      var _this2 = this;
-	
-	      return this._$http.post(this._getJobUrl, data).then(function (response) {
-	        return _this2.jobs.push(response.data);
-	      });
-	    }
-	  }, {
-	    key: 'patch',
-	    value: function patch(jobId, data) {
-	      return this._$http.patch(this._detailUrl(jobId), data);
-	    }
-	  }, {
-	    key: 'put',
-	    value: function put(job) {
-	      return this._$http.put(this._detailUrl(job.id), job);
-	    }
-	  }, {
-	    key: 'delete',
-	    value: function _delete(jobId) {
-	      return this._$http['delete'](this._detailUrl(jobId));
-	    }
-	  }, {
-	    key: 'deleteJob',
-	    value: function deleteJob(job) {
-	      this.jobs.splice(this.jobs.indexOf(job), 1);
-	      this['delete'](job.id);
-	    }
-	  }, {
 	    key: 'getProgress',
 	    value: function getProgress(job) {
-	      var _this3 = this;
+	      var _this = this;
 	
 	      var totalTime = 0;
 	      var remainingTime = 0;
 	
 	      job.job_tasks.forEach(function (t) {
 	        totalTime += t.completion_time;
-	        if (t.status === _this3._productService.taskCompleteCode) {
+	        if (t.status === _this._productService.taskCompleteCode) {
 	          remainingTime += t.completion_time;
 	        }
 	      });
@@ -68157,7 +68119,7 @@
 	  }, {
 	    key: 'setJobDescription',
 	    value: function setJobDescription(newDescription, jobId) {
-	      var job = this.jobs.filter(function (j) {
+	      var job = this.itemList.filter(function (j) {
 	        return j.id === jobId;
 	      })[0];
 	      var oldDescription = job.description;
@@ -68169,7 +68131,7 @@
 	  }]);
 	
 	  return jobService;
-	})();
+	})(_baseResourceClass3['default']);
 	
 	exports['default'] = jobService;
 	module.exports = exports['default'];
@@ -68393,7 +68355,9 @@
 	
 	    this.user = userService.user;
 	    this.products = productService.products;
-	    this.jobs = jobService.jobs;
+	    jobService.get().then(function (jobs) {
+	      return _this.jobs = jobs;
+	    });
 	    this.jobService = jobService;
 	    this._$mdDialog = $mdDialog;
 	
@@ -68554,10 +68518,8 @@
 	    this.groupUsers = groupUserService.groupUsers;
 	    this.jobTypes = jobTypeService.jobTypes;
 	    this.jobStatuses = jobStatusService.jobStatuses;
-	    jobService.loading.then(function () {
-	      _this.job = jobService.jobs.filter(function (j) {
-	        return j.id === $stateParams.jobId;
-	      })[0];
+	    jobService.getItemById($stateParams.jobId).then(function (job) {
+	      return _this.job = job;
 	    });
 	  }
 	
@@ -68751,11 +68713,12 @@
 	var baseResourceClass = (function () {
 	  /* @ngInject */
 	
-	  function baseResourceClass($http, $q) {
+	  function baseResourceClass($http, $q, $state) {
 	    _classCallCheck(this, baseResourceClass);
 	
 	    this._$http = $http;
 	    this._$q = $q;
+	    this._$state = $state;
 	    this._deferred = $q.defer();
 	    this.itemList = [];
 	    this._resourceUrl = null;
@@ -68781,6 +68744,10 @@
 	
 	          (_itemList = _this.itemList).push.apply(_itemList, _toConsumableArray(response.data));
 	          _this._deferred.resolve(_this.itemList);
+	        }, function (response) {
+	          if (response.status === 403) {
+	            return _this._$state.go('login');
+	          }
 	        });
 	      }
 	      return this._deferred.promise;

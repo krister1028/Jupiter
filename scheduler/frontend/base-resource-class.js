@@ -2,9 +2,10 @@ import angular from 'angular';
 
 export default class baseResourceClass {
   /* @ngInject */
-  constructor($http, $q) {
+  constructor($http, $q, $state) {
     this._$http = $http;
     this._$q = $q;
+    this._$state = $state;
     this._deferred = $q.defer();
     this.itemList = [];
     this._resourceUrl = null;
@@ -16,10 +17,16 @@ export default class baseResourceClass {
 
   get() {
     if (this._deferred.promise.$$state.status === 0) {
-      this._$http.get(this._resourceUrl).then(response => {
-        this.itemList.push(...response.data);
-        this._deferred.resolve(this.itemList);
-      });
+      this._$http.get(this._resourceUrl).then(
+        response => {
+          this.itemList.push(...response.data);
+          this._deferred.resolve(this.itemList);
+        },
+        response => {
+          if (response.status === 403) {
+            return this._$state.go('login');
+          }
+        });
     }
     return this._deferred.promise;
   }
