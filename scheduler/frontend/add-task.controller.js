@@ -24,6 +24,6 @@ export default class AddTaskController {
     if (this.created) {
       return this._taskService.post(this.newTask).then(() => this._$state.go('addProduct'));
     }
-    return this._taskService.put(this.newTask).then(() => this._$state.go('addProduct'));
+    return this._taskService.put(this.newTask).then(() => this._$state.go('home'));
   }
 }

@@ -67920,7 +67920,7 @@
 	        });
 	      }
 	      return this._taskService.put(this.newTask).then(function () {
-	        return _this2._$state.go('addProduct');
+	        return _this2._$state.go('home');
 	      });
 	    }
 	  }]);
