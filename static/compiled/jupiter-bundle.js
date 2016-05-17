@@ -67660,7 +67660,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout=\"row\" style=\"height: 100%\"> <md-button class=\"centered md-fab md-primary md-button md-ink-ripple\" aria-label=\"Login\" ng-click=\"vm.showLogin()\"> <md-icon class=\"material-icons\" style=\"color: white\">vpn_key</md-icon> </md-button> </div>";
+	var v1="<div layout=\"row\" layout-fill style=\"padding-top: 100px\"> <md-button layout-align=\"center center\" class=\"centered md-fab md-primary md-button md-ink-ripple\" aria-label=\"Login\" ng-click=\"vm.showLogin()\"> <md-icon class=\"material-icons\" style=\"color: white\">vpn_key</md-icon> </md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("login.html",v1)}]);
 	module.exports=v1;
 
