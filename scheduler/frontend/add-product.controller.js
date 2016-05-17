@@ -2,8 +2,8 @@ import baseFormClass from './base-form-class';
 
 export default class AddProductController extends baseFormClass{
   /* @ngInject */
-  constructor(taskService, productService, $state, $stateParams) {
-    super($stateParams);
+  constructor(taskService, productService, $state, $stateParams, $q) {
+    super($stateParams, $q);
     this.paramIdName = 'productId';
     this.resourceService = productService;
 
@@ -12,13 +12,15 @@ export default class AddProductController extends baseFormClass{
     this._productService = productService;
     this._$state = $state;
 
-    this._getFormItem();
+    this._getFormItem().then(formItem => {
+      this.formItem = formItem;
+      this.refreshUnselectedTasks();
+    });
 
     // set all task times to max to start with
     taskService.get().then(tasks => {
       this._allTasks = tasks;
       this._allTasks.forEach(t => t.completion_time = t.max_completion_time);
-      this.refreshUnselectedTasks();
     });
 
   }
@@ -33,7 +35,7 @@ export default class AddProductController extends baseFormClass{
 
   refreshUnselectedTasks() {
     const selectedTasks = this.formItem.tasks.map(t => t.task);
-    this.unselectedTasks = this._allTasks.filter(at => selectedTasks.indexOf(at.id) === -1);
+    this.unselectedTasks = this._allTasks.filter(t => selectedTasks.indexOf(t.id) === -1);
   }
 
   searchTasks(query) {
@@ -43,5 +45,6 @@ export default class AddProductController extends baseFormClass{
   addTask(task) {
     task.task = task.id;
     this.formItem.tasks.push(task);
+    this.refreshUnselectedTasks();
   }
 }

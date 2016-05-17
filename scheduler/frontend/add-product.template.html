@@ -48,7 +48,7 @@
     <div layout="column" layout-align="end end" flex="33">
         <h2 flex>Assign Tasks</h2>
         <div flex ng-repeat="task in vm.unselectedTasks track by $index" ng-click="vm.addTask(task)">
-            (x) {{ task.description }}
+            {{ task.description }}
         </div>
         <md-button flex ui-sref="addTask">Add New Task</md-button>
     </div>

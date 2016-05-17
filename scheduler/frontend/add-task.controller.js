@@ -2,8 +2,8 @@ import baseFormClass from './base-form-class';
 
 export default class AddTaskController extends baseFormClass {
   /* @ngInject */
-  constructor(taskService, $state, $stateParams) {
-    super($stateParams);
+  constructor(taskService, $state, $stateParams, $q) {
+    super($stateParams, $q);
     this.paramIdName = 'taskId';
     this.resourceService = taskService;
 

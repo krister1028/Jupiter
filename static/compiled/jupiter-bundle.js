@@ -67816,12 +67816,12 @@
 	
 	  /* @ngInject */
 	
-	  function AddProductController(taskService, productService, $state, $stateParams) {
+	  function AddProductController(taskService, productService, $state, $stateParams, $q) {
 	    var _this = this;
 	
 	    _classCallCheck(this, AddProductController);
 	
-	    _get(Object.getPrototypeOf(AddProductController.prototype), 'constructor', this).call(this, $stateParams);
+	    _get(Object.getPrototypeOf(AddProductController.prototype), 'constructor', this).call(this, $stateParams, $q);
 	    this.paramIdName = 'productId';
 	    this.resourceService = productService;
 	
@@ -67830,7 +67830,10 @@
 	    this._productService = productService;
 	    this._$state = $state;
 	
-	    this._getFormItem();
+	    this._getFormItem().then(function (formItem) {
+	      _this.formItem = formItem;
+	      _this.refreshUnselectedTasks();
+	    });
 	
 	    // set all task times to max to start with
 	    taskService.get().then(function (tasks) {
@@ -67838,7 +67841,6 @@
 	      _this._allTasks.forEach(function (t) {
 	        return t.completion_time = t.max_completion_time;
 	      });
-	      _this.refreshUnselectedTasks();
 	    });
 	  }
 	
@@ -67862,8 +67864,8 @@
 	      var selectedTasks = this.formItem.tasks.map(function (t) {
 	        return t.task;
 	      });
-	      this.unselectedTasks = this._allTasks.filter(function (at) {
-	        return selectedTasks.indexOf(at.id) === -1;
+	      this.unselectedTasks = this._allTasks.filter(function (t) {
+	        return selectedTasks.indexOf(t.id) === -1;
 	      });
 	    }
 	  }, {
@@ -67878,6 +67880,7 @@
 	    value: function addTask(task) {
 	      task.task = task.id;
 	      this.formItem.tasks.push(task);
+	      this.refreshUnselectedTasks();
 	    }
 	  }]);
 	
@@ -67902,13 +67905,14 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var baseFormClass = (function () {
-	  function baseFormClass($stateParams) {
+	  function baseFormClass($stateParams, $q) {
 	    _classCallCheck(this, baseFormClass);
 	
 	    this._$stateParams = $stateParams;
+	    this._$q = $q;
 	    this.paramIdName = null;
 	    this.resourceService = null;
-	    this.formItem = this.getDefaultFormItem();
+	    this.formItem = null;
 	  }
 	
 	  _createClass(baseFormClass, [{
@@ -67916,13 +67920,18 @@
 	    value: function _getFormItem() {
 	      var _this = this;
 	
+	      var deferred = this._$q.defer();
 	      if (this._$stateParams[this.paramIdName] !== undefined) {
 	        this.resourceService.getItemById(this._$stateParams[this.paramIdName]).then(function (item) {
-	          return _this.formItem = item;
+	          _this.formItem = item;
+	          deferred.resolve(_this.formItem);
 	        });
 	      } else {
 	        this.created = true;
+	        this.formItem = this.getDefaultFormItem();
+	        deferred.resolve(this.formItem);
 	      }
+	      return deferred.promise;
 	    }
 	  }, {
 	    key: "getDefaultFormItem",
@@ -67974,10 +67983,10 @@
 	
 	  /* @ngInject */
 	
-	  function AddTaskController(taskService, $state, $stateParams) {
+	  function AddTaskController(taskService, $state, $stateParams, $q) {
 	    _classCallCheck(this, AddTaskController);
 	
-	    _get(Object.getPrototypeOf(AddTaskController.prototype), 'constructor', this).call(this, $stateParams);
+	    _get(Object.getPrototypeOf(AddTaskController.prototype), 'constructor', this).call(this, $stateParams, $q);
 	    this.paramIdName = 'taskId';
 	    this.resourceService = taskService;
 	
@@ -68836,7 +68845,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Product</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.formItem.code\" required> </md-input-container> <md-chips ng-model=\"vm.formItem.tasks\" md-autocomplete-snap md-on-add=\"vm.refreshUnselectedTasks()\" md-on-remove=\"vm.refreshUnselectedTasks()\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.formItem.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"end end\" flex=\"33\"> <h2 flex>Assign Tasks</h2> <div flex ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> (x) {{ task.description }} </div> <md-button flex ui-sref=\"addTask\">Add New Task</md-button> </div> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">Publish Product</md-button>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Product</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.formItem.code\" required> </md-input-container> <md-chips ng-model=\"vm.formItem.tasks\" md-autocomplete-snap md-on-add=\"vm.refreshUnselectedTasks()\" md-on-remove=\"vm.refreshUnselectedTasks()\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.formItem.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"end end\" flex=\"33\"> <h2 flex>Assign Tasks</h2> <div flex ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> <md-button flex ui-sref=\"addTask\">Add New Task</md-button> </div> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">Publish Product</md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
 	module.exports=v1;
 
