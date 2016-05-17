@@ -83,59 +83,59 @@
 	
 	var _addProductController2 = _interopRequireDefault(_addProductController);
 	
-	var _addTaskController = __webpack_require__(16);
+	var _addTaskController = __webpack_require__(17);
 	
 	var _addTaskController2 = _interopRequireDefault(_addTaskController);
 	
-	var _userService = __webpack_require__(17);
+	var _userService = __webpack_require__(18);
 	
 	var _userService2 = _interopRequireDefault(_userService);
 	
-	var _productService = __webpack_require__(18);
+	var _productService = __webpack_require__(19);
 	
 	var _productService2 = _interopRequireDefault(_productService);
 	
-	var _jobService = __webpack_require__(19);
+	var _jobService = __webpack_require__(21);
 	
 	var _jobService2 = _interopRequireDefault(_jobService);
 	
-	var _taskService = __webpack_require__(20);
+	var _taskService = __webpack_require__(22);
 	
 	var _taskService2 = _interopRequireDefault(_taskService);
 	
-	var _groupUserService = __webpack_require__(21);
+	var _groupUserService = __webpack_require__(23);
 	
 	var _groupUserService2 = _interopRequireDefault(_groupUserService);
 	
-	var _jobTypeService = __webpack_require__(22);
+	var _jobTypeService = __webpack_require__(24);
 	
 	var _jobTypeService2 = _interopRequireDefault(_jobTypeService);
 	
-	var _jobStatusService = __webpack_require__(23);
+	var _jobStatusService = __webpack_require__(25);
 	
 	var _jobStatusService2 = _interopRequireDefault(_jobStatusService);
 	
-	var _homeController = __webpack_require__(24);
+	var _homeController = __webpack_require__(26);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _editJobController = __webpack_require__(27);
+	var _editJobController = __webpack_require__(29);
 	
 	var _editJobController2 = _interopRequireDefault(_editJobController);
 	
-	var _homeTemplateHtml = __webpack_require__(30);
+	var _homeTemplateHtml = __webpack_require__(32);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _addProductTemplateHtml = __webpack_require__(31);
+	var _addProductTemplateHtml = __webpack_require__(33);
 	
 	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
 	
-	var _addTaskTemplateHtml = __webpack_require__(32);
+	var _addTaskTemplateHtml = __webpack_require__(34);
 	
 	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
 	
-	var _editJobTemplateHtml = __webpack_require__(33);
+	var _editJobTemplateHtml = __webpack_require__(35);
 	
 	var _editJobTemplateHtml2 = _interopRequireDefault(_editJobTemplateHtml);
 	
@@ -67807,7 +67807,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseFormClass2 = __webpack_require__(35);
+	var _baseFormClass2 = __webpack_require__(16);
 	
 	var _baseFormClass3 = _interopRequireDefault(_baseFormClass2);
 	
@@ -67889,6 +67889,64 @@
 
 /***/ },
 /* 16 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var baseFormClass = (function () {
+	  function baseFormClass($stateParams) {
+	    _classCallCheck(this, baseFormClass);
+	
+	    this._$stateParams = $stateParams;
+	    this.paramIdName = null;
+	    this.resourceService = null;
+	    this.formItem = this.getDefaultFormItem();
+	  }
+	
+	  _createClass(baseFormClass, [{
+	    key: "_getFormItem",
+	    value: function _getFormItem() {
+	      var _this = this;
+	
+	      if (this._$stateParams[this.paramIdName] !== undefined) {
+	        this.resourceService.getItemById(this._$stateParams[this.paramIdName]).then(function (item) {
+	          return _this.formItem = item;
+	        });
+	      } else {
+	        this.created = true;
+	      }
+	    }
+	  }, {
+	    key: "getDefaultFormItem",
+	    value: function getDefaultFormItem() {
+	      return {};
+	    }
+	  }, {
+	    key: "publishItem",
+	    value: function publishItem() {
+	      if (this.created) {
+	        return this.resourceService.post(this.formItem);
+	      }
+	      return this.resourceService.put(this.formItem);
+	    }
+	  }]);
+	
+	  return baseFormClass;
+	})();
+	
+	exports["default"] = baseFormClass;
+	module.exports = exports["default"];
+
+/***/ },
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67907,7 +67965,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseFormClass2 = __webpack_require__(35);
+	var _baseFormClass2 = __webpack_require__(16);
 	
 	var _baseFormClass3 = _interopRequireDefault(_baseFormClass2);
 	
@@ -67950,7 +68008,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -67974,7 +68032,6 @@
 	    this._$state = $state;
 	    this._authUrl = '/rest-auth/login/';
 	    this._getUserUrl = '/rest-auth/user/';
-	    this.loading = this.getUser();
 	  }
 	
 	  _createClass(userService, [{
@@ -67987,6 +68044,7 @@
 	        _this.user.isSuperUser = response.data.is_superuser;
 	        _this.user.name = response.data.first_name + ' ' + response.data.last_name;
 	        _this.user.userType = response.data.profile;
+	        return _this.user;
 	      }, function (response) {
 	        if (response.status === 403) {
 	          return _this._$state.go('login');
@@ -68012,7 +68070,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68029,7 +68087,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseResourceClass2 = __webpack_require__(34);
+	var _baseResourceClass2 = __webpack_require__(20);
 	
 	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
 	
@@ -68053,661 +68111,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _baseResourceClass2 = __webpack_require__(34);
-	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
-	
-	var jobService = (function (_baseResourceClass) {
-	  _inherits(jobService, _baseResourceClass);
-	
-	  /* @ngInject */
-	
-	  function jobService($http, $q, $state, productService, taskService) {
-	    _classCallCheck(this, jobService);
-	
-	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q, $state);
-	    this._resourceUrl = '/api/jobs/';
-	    this._productService = productService;
-	    this._taskService = taskService;
-	    this.taskCompleteStatus = 3;
-	    this.taskIncompleteStatus = 1;
-	  }
-	
-	  _createClass(jobService, [{
-	    key: 'getProgress',
-	    value: function getProgress(job) {
-	      var _this = this;
-	
-	      var totalTime = 0;
-	      var remainingTime = 0;
-	
-	      job.job_tasks.forEach(function (t) {
-	        totalTime += t.completion_time;
-	        if (t.status === _this._productService.taskCompleteCode) {
-	          remainingTime += t.completion_time;
-	        }
-	      });
-	      return remainingTime / totalTime;
-	    }
-	  }, {
-	    key: 'markTaskComplete',
-	    value: function markTaskComplete(userId, task, job) {
-	      task.status = this.taskCompleteStatus;
-	      task.completed_by = userId;
-	      this.patch(job.id, { job_tasks: job.job_tasks });
-	    }
-	  }, {
-	    key: 'markTaskIncomplete',
-	    value: function markTaskIncomplete(task, job) {
-	      task.status = this.taskIncompleteStatus;
-	      task.completed_by = null;
-	      this.patch(job.id, { job_tasks: job.job_tasks });
-	    }
-	  }, {
-	    key: 'setJobDescription',
-	    value: function setJobDescription(newDescription, jobId) {
-	      var job = this.itemList.filter(function (j) {
-	        return j.id === jobId;
-	      })[0];
-	      var oldDescription = job.description;
-	      job.description = newDescription;
-	      return this.patch(jobId, { description: newDescription }).then(null, function () {
-	        return job.description = oldDescription;
-	      });
-	    }
-	  }]);
-	
-	  return jobService;
-	})(_baseResourceClass3['default']);
-	
-	exports['default'] = jobService;
-	module.exports = exports['default'];
-
-/***/ },
 /* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _baseResourceClass2 = __webpack_require__(34);
-	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
-	
-	var taskService = (function (_baseResourceClass) {
-	  _inherits(taskService, _baseResourceClass);
-	
-	  /* @ngInject */
-	
-	  function taskService($http, $q) {
-	    _classCallCheck(this, taskService);
-	
-	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q);
-	    this._resourceUrl = '/api/tasks/';
-	  }
-	
-	  return taskService;
-	})(_baseResourceClass3['default']);
-	
-	exports['default'] = taskService;
-	module.exports = exports['default'];
-
-/***/ },
-/* 21 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var groupUserService = (function () {
-	  /* @ngInject */
-	
-	  function groupUserService($http) {
-	    _classCallCheck(this, groupUserService);
-	
-	    this._$http = $http;
-	    this._groupUserUrl = '/api/users/';
-	    this.groupUsers = [];
-	    this.loading = this.get();
-	  }
-	
-	  _createClass(groupUserService, [{
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
-	
-	      return this._$http.get(this._groupUserUrl).then(function (response) {
-	        var _groupUsers;
-	
-	        return (_groupUsers = _this.groupUsers).push.apply(_groupUsers, _toConsumableArray(response.data));
-	      });
-	    }
-	  }]);
-	
-	  return groupUserService;
-	})();
-	
-	exports['default'] = groupUserService;
-	module.exports = exports['default'];
-
-/***/ },
-/* 22 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var jobTypeService = (function () {
-	  /* @ngInject */
-	
-	  function jobTypeService($http) {
-	    _classCallCheck(this, jobTypeService);
-	
-	    this._$http = $http;
-	    this.jobTypes = [];
-	    this._resourceUrl = '/api/job-types/';
-	    this.get();
-	  }
-	
-	  _createClass(jobTypeService, [{
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
-	
-	      return this._$http.get(this._resourceUrl).then(function (response) {
-	        var _jobTypes;
-	
-	        return (_jobTypes = _this.jobTypes).push.apply(_jobTypes, _toConsumableArray(response.data));
-	      });
-	    }
-	  }]);
-	
-	  return jobTypeService;
-	})();
-	
-	exports['default'] = jobTypeService;
-	module.exports = exports['default'];
-
-/***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var jobStatusService = (function () {
-	  /* @ngInject */
-	
-	  function jobStatusService($http) {
-	    _classCallCheck(this, jobStatusService);
-	
-	    this._$http = $http;
-	    this.jobStatuses = [];
-	    this._resourceUrl = '/api/job-statuses/';
-	    this.get();
-	  }
-	
-	  _createClass(jobStatusService, [{
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
-	
-	      return this._$http.get(this._resourceUrl).then(function (response) {
-	        var _jobStatuses;
-	
-	        return (_jobStatuses = _this.jobStatuses).push.apply(_jobStatuses, _toConsumableArray(response.data));
-	      });
-	    }
-	  }]);
-	
-	  return jobStatusService;
-	})();
-	
-	exports['default'] = jobStatusService;
-	module.exports = exports['default'];
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var _addJobModalTemplateHtml = __webpack_require__(25);
-	
-	var _addJobModalTemplateHtml2 = _interopRequireDefault(_addJobModalTemplateHtml);
-	
-	var _addJobModalController = __webpack_require__(26);
-	
-	var _addJobModalController2 = _interopRequireDefault(_addJobModalController);
-	
-	var _angular = __webpack_require__(2);
-	
-	var _angular2 = _interopRequireDefault(_angular);
-	
-	var HomeController = (function () {
-	  /* @ngInject */
-	
-	  function HomeController(userService, productService, jobService, $mdDialog) {
-	    var _this = this;
-	
-	    _classCallCheck(this, HomeController);
-	
-	    this.user = userService.user;
-	    this.products = [];
-	    productService.get().then(function (products) {
-	      var _products;
-	
-	      return (_products = _this.products).push.apply(_products, _toConsumableArray(products));
-	    });
-	    this.jobs = [];
-	    jobService.get().then(function (jobs) {
-	      return _this.jobs = jobs;
-	    });
-	    this.jobService = jobService;
-	    this._$mdDialog = $mdDialog;
-	
-	    this.showFullNames = true;
-	
-	    this.loading = true;
-	    userService.loading.then(function () {
-	      return _this.loading = false;
-	    });
-	  }
-	
-	  _createClass(HomeController, [{
-	    key: 'addJob',
-	    value: function addJob(ev) {
-	      this._$mdDialog.show({
-	        template: _addJobModalTemplateHtml2['default'],
-	        controller: _addJobModalController2['default'],
-	        controllerAs: 'vm',
-	        parent: _angular2['default'].element(document.body),
-	        targetEvent: ev,
-	        clickOutsideToClose: true
-	      });
-	    }
-	  }, {
-	    key: 'getProductText',
-	    value: function getProductText(product) {
-	      if (this.showFullNames) {
-	        return product.description;
-	      }
-	      return product.code;
-	    }
-	  }, {
-	    key: 'nameAbbreviationToggleText',
-	    value: function nameAbbreviationToggleText() {
-	      if (this.showFullNames) {
-	        return 'Show Product Code';
-	      }
-	      return 'Show Product Name';
-	    }
-	  }]);
-	
-	  return HomeController;
-	})();
-	
-	exports['default'] = HomeController;
-	module.exports = exports['default'];
-
-/***/ },
-/* 25 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.newJob.description\"/> </md-input-container> <md-autocomplete required md-search-text=\"vm.searchText\" md-selected-item-change=\"vm.addProduct(item)\" md-items=\"item in vm.searchProducts(vm.searchText)\" md-item-text=\"item.description\" placeholder=\"Add Product\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.newJob.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.newJob.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox layout=\"row\" ng-model=\"vm.newJob.rework\">Is Rework</md-checkbox> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.addJob()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
-	ngModule.run(["$templateCache",function(c){c.put("add-job-modal.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 26 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var AddJobModalController = (function () {
-	  /* @ngInject */
-	
-	  function AddJobModalController($mdDialog, jobService, productService, jobTypeService, jobStatusService) {
-	    var _this = this;
-	
-	    _classCallCheck(this, AddJobModalController);
-	
-	    this._$mdDialog = $mdDialog;
-	    this._jobService = jobService;
-	    productService.get().then(function (products) {
-	      return _this.products = products;
-	    });
-	    this.jobTypes = jobTypeService.jobTypes;
-	    this.jobStatuses = jobStatusService.jobStatuses;
-	    this.newJob = {};
-	  }
-	
-	  _createClass(AddJobModalController, [{
-	    key: "cancel",
-	    value: function cancel() {
-	      this._$mdDialog.cancel();
-	    }
-	  }, {
-	    key: "addJob",
-	    value: function addJob() {
-	      this._$mdDialog.cancel();
-	      this._jobService.post(this.newJob);
-	    }
-	  }, {
-	    key: "addProduct",
-	    value: function addProduct(product) {
-	      this.newJob.product_id = product.id;
-	    }
-	  }, {
-	    key: "searchProducts",
-	    value: function searchProducts(query) {
-	      return this.products.filter(function (f) {
-	        return f.description.toLowerCase().indexOf(query.toLowerCase()) > -1;
-	      });
-	    }
-	  }]);
-	
-	  return AddJobModalController;
-	})();
-	
-	exports["default"] = AddJobModalController;
-	module.exports = exports["default"];
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var _angular = __webpack_require__(2);
-	
-	var _angular2 = _interopRequireDefault(_angular);
-	
-	var _selectUserTemplateHtml = __webpack_require__(28);
-	
-	var _selectUserTemplateHtml2 = _interopRequireDefault(_selectUserTemplateHtml);
-	
-	var _selectUserController = __webpack_require__(29);
-	
-	var _selectUserController2 = _interopRequireDefault(_selectUserController);
-	
-	var EditJobController = (function () {
-	  /* @ngInject */
-	
-	  function EditJobController($state, $stateParams, jobService, taskService, groupUserService, $mdDialog, jobTypeService, jobStatusService) {
-	    var _this = this;
-	
-	    _classCallCheck(this, EditJobController);
-	
-	    this._$state = $state;
-	    this._jobService = jobService;
-	    this._taskService = taskService;
-	    this._$mdDialog = $mdDialog;
-	    this.groupUsers = groupUserService.groupUsers;
-	    this.jobTypes = jobTypeService.jobTypes;
-	    this.jobStatuses = jobStatusService.jobStatuses;
-	    jobService.getItemById($stateParams.jobId).then(function (job) {
-	      return _this.job = job;
-	    });
-	  }
-	
-	  _createClass(EditJobController, [{
-	    key: 'getTaskStyle',
-	    value: function getTaskStyle(task) {
-	      if (EditJobController._taskComplete(task)) {
-	        return { 'text-decoration': 'line-through' };
-	      }
-	    }
-	  }, {
-	    key: 'taskToggleText',
-	    value: function taskToggleText(task) {
-	      if (!EditJobController._taskComplete(task)) {
-	        return 'Mark as complete';
-	      }
-	      return 'Mark as in progress';
-	    }
-	  }, {
-	    key: 'updateJob',
-	    value: function updateJob() {
-	      var _this2 = this;
-	
-	      this._jobService.put(this.job).then(function () {
-	        return _this2._$state.go('home');
-	      });
-	    }
-	  }, {
-	    key: 'deleteJob',
-	    value: function deleteJob() {
-	      this._jobService['delete'](this.job);
-	      this._$state.go('home');
-	    }
-	  }, {
-	    key: 'toggleTask',
-	    value: function toggleTask(task) {
-	      if (EditJobController._taskComplete(task)) {
-	        return this._jobService.markTaskIncomplete(task, this.job);
-	      }
-	      return this.openMarkCompleteDialog(task);
-	    }
-	  }, {
-	    key: 'openMarkCompleteDialog',
-	    value: function openMarkCompleteDialog(task) {
-	      var _this3 = this;
-	
-	      this._$mdDialog.show({
-	        template: _selectUserTemplateHtml2['default'],
-	        controller: _selectUserController2['default'],
-	        controllerAs: 'vm',
-	        parent: _angular2['default'].element(document.body),
-	        clickOutsideToClose: true,
-	        locals: { job: this.job, task: task }
-	      }).then(function (userId) {
-	        return _this3._jobService.markTaskComplete(userId, task, _this3.job);
-	      });
-	    }
-	  }], [{
-	    key: '_taskComplete',
-	    value: function _taskComplete(task) {
-	      return task.completed_by !== null;
-	    }
-	  }]);
-	
-	  return EditJobController;
-	})();
-	
-	exports['default'] = EditJobController;
-	module.exports = exports['default'];
-
-/***/ },
-/* 28 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Mark Complete\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Mark {{ vm.task }} as complete</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container> <label>Select User</label> <md-select ng-model=\"vm.selectedUser\"> <md-option ng-repeat=\"user in vm.groupUsers track by $index\" value=\"{{user.id}}\"> {{user.first_name}} </md-option> </md-select> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.markComplete()\" style=\"margin-right:20px\"> Mark Complete </md-button> </md-dialog-actions> </md-dialog>";
-	ngModule.run(["$templateCache",function(c){c.put("select-user.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 29 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var SelectUserController = (function () {
-	  /* @ngInject */
-	
-	  function SelectUserController(groupUserService, $mdDialog) {
-	    _classCallCheck(this, SelectUserController);
-	
-	    this.groupUsers = groupUserService.groupUsers;
-	    this._$mdDialog = $mdDialog;
-	    this.selectedUser = null;
-	  }
-	
-	  _createClass(SelectUserController, [{
-	    key: "cancel",
-	    value: function cancel() {
-	      this._$mdDialog.cancel();
-	    }
-	  }, {
-	    key: "markComplete",
-	    value: function markComplete() {
-	      this._$mdDialog.hide(this.selectedUser);
-	    }
-	  }]);
-	
-	  return SelectUserController;
-	})();
-	
-	exports["default"] = SelectUserController;
-	module.exports = exports["default"];
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\"> <a ui-sref=\"editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"addProduct({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-button class=\"md-raised md-primary\">Add Job Status Option</md-button> <md-button class=\"md-raised md-primary\">Add Job Type</md-button> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Product</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.formItem.code\" required> </md-input-container> <md-chips ng-model=\"vm.formItem.tasks\" md-autocomplete-snap md-on-add=\"vm.refreshUnselectedTasks()\" md-on-remove=\"vm.refreshUnselectedTasks()\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.formItem.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"end end\" flex=\"33\"> <h2 flex>Assign Tasks</h2> <div flex ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> (x) {{ task.description }} </div> <md-button flex ui-sref=\"addTask\">Add New Task</md-button> </div> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">Publish Product</md-button>";
-	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.formItem.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <md-select ng-model=\"vm.formItem.expertise_level\"> <md-option ng-repeat=\"level in vm.expertiseLevels\" value=\"{{level.value}}\"> {{level.description}} </md-option> </md-select> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.formItem.min_completion_time\" required> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.formItem.max_completion_time\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.formItem.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">Publish Task</md-button>";
-	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 34 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -68805,7 +68209,385 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 35 */
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(20);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var jobService = (function (_baseResourceClass) {
+	  _inherits(jobService, _baseResourceClass);
+	
+	  /* @ngInject */
+	
+	  function jobService($http, $q, $state, productService, taskService) {
+	    _classCallCheck(this, jobService);
+	
+	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q, $state);
+	    this._resourceUrl = '/api/jobs/';
+	    this._productService = productService;
+	    this._taskService = taskService;
+	    this.taskCompleteStatus = 3;
+	    this.taskIncompleteStatus = 1;
+	  }
+	
+	  _createClass(jobService, [{
+	    key: 'getProgress',
+	    value: function getProgress(job) {
+	      var _this = this;
+	
+	      var totalTime = 0;
+	      var remainingTime = 0;
+	
+	      job.job_tasks.forEach(function (t) {
+	        totalTime += t.completion_time;
+	        if (t.status === _this._productService.taskCompleteCode) {
+	          remainingTime += t.completion_time;
+	        }
+	      });
+	      return remainingTime / totalTime;
+	    }
+	  }, {
+	    key: 'markTaskComplete',
+	    value: function markTaskComplete(userId, task, job) {
+	      task.status = this.taskCompleteStatus;
+	      task.completed_by = userId;
+	      this.patch(job.id, { job_tasks: job.job_tasks });
+	    }
+	  }, {
+	    key: 'markTaskIncomplete',
+	    value: function markTaskIncomplete(task, job) {
+	      task.status = this.taskIncompleteStatus;
+	      task.completed_by = null;
+	      this.patch(job.id, { job_tasks: job.job_tasks });
+	    }
+	  }, {
+	    key: 'setJobDescription',
+	    value: function setJobDescription(newDescription, jobId) {
+	      var job = this.itemList.filter(function (j) {
+	        return j.id === jobId;
+	      })[0];
+	      var oldDescription = job.description;
+	      job.description = newDescription;
+	      return this.patch(jobId, { description: newDescription }).then(null, function () {
+	        return job.description = oldDescription;
+	      });
+	    }
+	  }]);
+	
+	  return jobService;
+	})(_baseResourceClass3['default']);
+	
+	exports['default'] = jobService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(20);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var taskService = (function (_baseResourceClass) {
+	  _inherits(taskService, _baseResourceClass);
+	
+	  /* @ngInject */
+	
+	  function taskService($http, $q) {
+	    _classCallCheck(this, taskService);
+	
+	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q);
+	    this._resourceUrl = '/api/tasks/';
+	  }
+	
+	  return taskService;
+	})(_baseResourceClass3['default']);
+	
+	exports['default'] = taskService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var groupUserService = (function () {
+	  /* @ngInject */
+	
+	  function groupUserService($http) {
+	    _classCallCheck(this, groupUserService);
+	
+	    this._$http = $http;
+	    this._groupUserUrl = '/api/users/';
+	    this.groupUsers = [];
+	    this.loading = this.get();
+	  }
+	
+	  _createClass(groupUserService, [{
+	    key: 'get',
+	    value: function get() {
+	      var _this = this;
+	
+	      return this._$http.get(this._groupUserUrl).then(function (response) {
+	        var _groupUsers;
+	
+	        return (_groupUsers = _this.groupUsers).push.apply(_groupUsers, _toConsumableArray(response.data));
+	      });
+	    }
+	  }]);
+	
+	  return groupUserService;
+	})();
+	
+	exports['default'] = groupUserService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var jobTypeService = (function () {
+	  /* @ngInject */
+	
+	  function jobTypeService($http) {
+	    _classCallCheck(this, jobTypeService);
+	
+	    this._$http = $http;
+	    this.jobTypes = [];
+	    this._resourceUrl = '/api/job-types/';
+	    this.get();
+	  }
+	
+	  _createClass(jobTypeService, [{
+	    key: 'get',
+	    value: function get() {
+	      var _this = this;
+	
+	      return this._$http.get(this._resourceUrl).then(function (response) {
+	        var _jobTypes;
+	
+	        return (_jobTypes = _this.jobTypes).push.apply(_jobTypes, _toConsumableArray(response.data));
+	      });
+	    }
+	  }]);
+	
+	  return jobTypeService;
+	})();
+	
+	exports['default'] = jobTypeService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var jobStatusService = (function () {
+	  /* @ngInject */
+	
+	  function jobStatusService($http) {
+	    _classCallCheck(this, jobStatusService);
+	
+	    this._$http = $http;
+	    this.jobStatuses = [];
+	    this._resourceUrl = '/api/job-statuses/';
+	    this.get();
+	  }
+	
+	  _createClass(jobStatusService, [{
+	    key: 'get',
+	    value: function get() {
+	      var _this = this;
+	
+	      return this._$http.get(this._resourceUrl).then(function (response) {
+	        var _jobStatuses;
+	
+	        return (_jobStatuses = _this.jobStatuses).push.apply(_jobStatuses, _toConsumableArray(response.data));
+	      });
+	    }
+	  }]);
+	
+	  return jobStatusService;
+	})();
+	
+	exports['default'] = jobStatusService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _addJobModalTemplateHtml = __webpack_require__(27);
+	
+	var _addJobModalTemplateHtml2 = _interopRequireDefault(_addJobModalTemplateHtml);
+	
+	var _addJobModalController = __webpack_require__(28);
+	
+	var _addJobModalController2 = _interopRequireDefault(_addJobModalController);
+	
+	var _angular = __webpack_require__(2);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	var HomeController = (function () {
+	  /* @ngInject */
+	
+	  function HomeController(userService, productService, jobService, $mdDialog) {
+	    var _this = this;
+	
+	    _classCallCheck(this, HomeController);
+	
+	    this.products = [];
+	    productService.get().then(function (products) {
+	      var _products;
+	
+	      return (_products = _this.products).push.apply(_products, _toConsumableArray(products));
+	    });
+	    this.jobs = [];
+	    jobService.get().then(function (jobs) {
+	      return _this.jobs = jobs;
+	    });
+	    this.jobService = jobService;
+	    this._$mdDialog = $mdDialog;
+	
+	    this.showFullNames = true;
+	
+	    this.loading = true;
+	    userService.getUser().then(function (user) {
+	      _this.loading = false;
+	      _this.user = user;
+	    });
+	  }
+	
+	  _createClass(HomeController, [{
+	    key: 'addJob',
+	    value: function addJob(ev) {
+	      this._$mdDialog.show({
+	        template: _addJobModalTemplateHtml2['default'],
+	        controller: _addJobModalController2['default'],
+	        controllerAs: 'vm',
+	        parent: _angular2['default'].element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose: true
+	      });
+	    }
+	  }, {
+	    key: 'getProductText',
+	    value: function getProductText(product) {
+	      if (this.showFullNames) {
+	        return product.description;
+	      }
+	      return product.code;
+	    }
+	  }, {
+	    key: 'nameAbbreviationToggleText',
+	    value: function nameAbbreviationToggleText() {
+	      if (this.showFullNames) {
+	        return 'Show Product Code';
+	      }
+	      return 'Show Product Name';
+	    }
+	  }]);
+	
+	  return HomeController;
+	})();
+	
+	exports['default'] = HomeController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.newJob.description\"/> </md-input-container> <md-autocomplete required md-search-text=\"vm.searchText\" md-selected-item-change=\"vm.addProduct(item)\" md-items=\"item in vm.searchProducts(vm.searchText)\" md-item-text=\"item.description\" placeholder=\"Add Product\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.newJob.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.newJob.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox layout=\"row\" ng-model=\"vm.newJob.rework\">Is Rework</md-checkbox> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.addJob()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
+	ngModule.run(["$templateCache",function(c){c.put("add-job-modal.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 28 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -68818,49 +68600,267 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var baseFormClass = (function () {
-	  function baseFormClass($stateParams) {
-	    _classCallCheck(this, baseFormClass);
+	var AddJobModalController = (function () {
+	  /* @ngInject */
 	
-	    this._$stateParams = $stateParams;
-	    this.paramIdName = null;
-	    this.resourceService = null;
-	    this.formItem = this.getDefaultFormItem();
+	  function AddJobModalController($mdDialog, jobService, productService, jobTypeService, jobStatusService) {
+	    var _this = this;
+	
+	    _classCallCheck(this, AddJobModalController);
+	
+	    this._$mdDialog = $mdDialog;
+	    this._jobService = jobService;
+	    productService.get().then(function (products) {
+	      return _this.products = products;
+	    });
+	    this.jobTypes = jobTypeService.jobTypes;
+	    this.jobStatuses = jobStatusService.jobStatuses;
+	    this.newJob = {};
 	  }
 	
-	  _createClass(baseFormClass, [{
-	    key: "_getFormItem",
-	    value: function _getFormItem() {
-	      var _this = this;
-	
-	      if (this._$stateParams[this.paramIdName] !== undefined) {
-	        this.resourceService.getItemById(this._$stateParams[this.paramIdName]).then(function (item) {
-	          return _this.formItem = item;
-	        });
-	      } else {
-	        this.created = true;
-	      }
+	  _createClass(AddJobModalController, [{
+	    key: "cancel",
+	    value: function cancel() {
+	      this._$mdDialog.cancel();
 	    }
 	  }, {
-	    key: "getDefaultFormItem",
-	    value: function getDefaultFormItem() {
-	      return {};
+	    key: "addJob",
+	    value: function addJob() {
+	      this._$mdDialog.cancel();
+	      this._jobService.post(this.newJob);
 	    }
 	  }, {
-	    key: "publishItem",
-	    value: function publishItem() {
-	      if (this.created) {
-	        return this.resourceService.post(this.formItem);
-	      }
-	      return this.resourceService.put(this.formItem);
+	    key: "addProduct",
+	    value: function addProduct(product) {
+	      this.newJob.product_id = product.id;
+	    }
+	  }, {
+	    key: "searchProducts",
+	    value: function searchProducts(query) {
+	      return this.products.filter(function (f) {
+	        return f.description.toLowerCase().indexOf(query.toLowerCase()) > -1;
+	      });
 	    }
 	  }]);
 	
-	  return baseFormClass;
+	  return AddJobModalController;
 	})();
 	
-	exports["default"] = baseFormClass;
+	exports["default"] = AddJobModalController;
 	module.exports = exports["default"];
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _angular = __webpack_require__(2);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	var _selectUserTemplateHtml = __webpack_require__(30);
+	
+	var _selectUserTemplateHtml2 = _interopRequireDefault(_selectUserTemplateHtml);
+	
+	var _selectUserController = __webpack_require__(31);
+	
+	var _selectUserController2 = _interopRequireDefault(_selectUserController);
+	
+	var EditJobController = (function () {
+	  /* @ngInject */
+	
+	  function EditJobController($state, $stateParams, jobService, taskService, groupUserService, $mdDialog, jobTypeService, jobStatusService) {
+	    var _this = this;
+	
+	    _classCallCheck(this, EditJobController);
+	
+	    this._$state = $state;
+	    this._jobService = jobService;
+	    this._taskService = taskService;
+	    this._$mdDialog = $mdDialog;
+	    this.groupUsers = groupUserService.groupUsers;
+	    this.jobTypes = jobTypeService.jobTypes;
+	    this.jobStatuses = jobStatusService.jobStatuses;
+	    jobService.getItemById($stateParams.jobId).then(function (job) {
+	      return _this.job = job;
+	    });
+	  }
+	
+	  _createClass(EditJobController, [{
+	    key: 'getTaskStyle',
+	    value: function getTaskStyle(task) {
+	      if (EditJobController._taskComplete(task)) {
+	        return { 'text-decoration': 'line-through' };
+	      }
+	    }
+	  }, {
+	    key: 'taskToggleText',
+	    value: function taskToggleText(task) {
+	      if (!EditJobController._taskComplete(task)) {
+	        return 'Mark as complete';
+	      }
+	      return 'Mark as in progress';
+	    }
+	  }, {
+	    key: 'updateJob',
+	    value: function updateJob() {
+	      var _this2 = this;
+	
+	      this._jobService.put(this.job).then(function () {
+	        return _this2._$state.go('home');
+	      });
+	    }
+	  }, {
+	    key: 'deleteJob',
+	    value: function deleteJob() {
+	      this._jobService['delete'](this.job);
+	      this._$state.go('home');
+	    }
+	  }, {
+	    key: 'toggleTask',
+	    value: function toggleTask(task) {
+	      if (EditJobController._taskComplete(task)) {
+	        return this._jobService.markTaskIncomplete(task, this.job);
+	      }
+	      return this.openMarkCompleteDialog(task);
+	    }
+	  }, {
+	    key: 'openMarkCompleteDialog',
+	    value: function openMarkCompleteDialog(task) {
+	      var _this3 = this;
+	
+	      this._$mdDialog.show({
+	        template: _selectUserTemplateHtml2['default'],
+	        controller: _selectUserController2['default'],
+	        controllerAs: 'vm',
+	        parent: _angular2['default'].element(document.body),
+	        clickOutsideToClose: true,
+	        locals: { job: this.job, task: task }
+	      }).then(function (userId) {
+	        return _this3._jobService.markTaskComplete(userId, task, _this3.job);
+	      });
+	    }
+	  }], [{
+	    key: '_taskComplete',
+	    value: function _taskComplete(task) {
+	      return task.completed_by !== null;
+	    }
+	  }]);
+	
+	  return EditJobController;
+	})();
+	
+	exports['default'] = EditJobController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-dialog aria-label=\"Mark Complete\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Mark {{ vm.task }} as complete</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container> <label>Select User</label> <md-select ng-model=\"vm.selectedUser\"> <md-option ng-repeat=\"user in vm.groupUsers track by $index\" value=\"{{user.id}}\"> {{user.first_name}} </md-option> </md-select> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.markComplete()\" style=\"margin-right:20px\"> Mark Complete </md-button> </md-dialog-actions> </md-dialog>";
+	ngModule.run(["$templateCache",function(c){c.put("select-user.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var SelectUserController = (function () {
+	  /* @ngInject */
+	
+	  function SelectUserController(groupUserService, $mdDialog) {
+	    _classCallCheck(this, SelectUserController);
+	
+	    this.groupUsers = groupUserService.groupUsers;
+	    this._$mdDialog = $mdDialog;
+	    this.selectedUser = null;
+	  }
+	
+	  _createClass(SelectUserController, [{
+	    key: "cancel",
+	    value: function cancel() {
+	      this._$mdDialog.cancel();
+	    }
+	  }, {
+	    key: "markComplete",
+	    value: function markComplete() {
+	      this._$mdDialog.hide(this.selectedUser);
+	    }
+	  }]);
+	
+	  return SelectUserController;
+	})();
+	
+	exports["default"] = SelectUserController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Admin Welcome Page</h2> </div> </md-toolbar> <div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\"> <a ui-sref=\"editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"addProduct({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-button class=\"md-raised md-primary\">Add Job Status Option</md-button> <md-button class=\"md-raised md-primary\">Add Job Type</md-button> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Product</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.formItem.code\" required> </md-input-container> <md-chips ng-model=\"vm.formItem.tasks\" md-autocomplete-snap md-on-add=\"vm.refreshUnselectedTasks()\" md-on-remove=\"vm.refreshUnselectedTasks()\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.formItem.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"end end\" flex=\"33\"> <h2 flex>Assign Tasks</h2> <div flex ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> (x) {{ task.description }} </div> <md-button flex ui-sref=\"addTask\">Add New Task</md-button> </div> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">Publish Product</md-button>";
+	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Task</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Task Description</label> <input name=\"taskDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Task Abbreviation</label> <input name=\"taskAbbr\" ng-model=\"vm.formItem.abbreviation\" required> </md-input-container> <md-input-container> <label>Required Expertise Level</label> <md-select ng-model=\"vm.formItem.expertise_level\"> <md-option ng-repeat=\"level in vm.expertiseLevels\" value=\"{{level.value}}\"> {{level.description}} </md-option> </md-select> </md-input-container> <md-input-container> <label>Min Time To Complete (mins)</label> <input name=\"minTime\" ng-model=\"vm.formItem.min_completion_time\" required> </md-input-container> <md-input-container> <label>Max Time To Complete (mins)</label> <input name=\"maxTime\" ng-model=\"vm.formItem.max_completion_time\" required> </md-input-container> <md-input-container> <label>Cost</label> <input name=\"cost\" ng-model=\"vm.formItem.cost\" required> </md-input-container> </form> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">Publish Task</md-button>";
+	ngModule.run(["$templateCache",function(c){c.put("add-task.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Edit {{ vm.job.description }}</h2> </div> </md-toolbar> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
+	module.exports=v1;
 
 /***/ }
 /******/ ]);

@@ -6,7 +6,6 @@ export default class userService {
     this._$state = $state;
     this._authUrl = '/rest-auth/login/';
     this._getUserUrl = '/rest-auth/user/';
-    this.loading = this.getUser();
   }
 
   getUser() {
@@ -16,6 +15,7 @@ export default class userService {
         this.user.isSuperUser = response.data.is_superuser;
         this.user.name = `${response.data.first_name} ${response.data.last_name}`;
         this.user.userType = response.data.profile;
+        return this.user;
       },
       response => {
         if (response.status === 403) {

@@ -5,7 +5,6 @@ import angular from 'angular';
 export default class HomeController {
   /* @ngInject */
   constructor(userService, productService, jobService, $mdDialog) {
-    this.user = userService.user;
     this.products = [];
     productService.get().then(products => this.products.push(...products));
     this.jobs = [];
@@ -16,7 +15,10 @@ export default class HomeController {
     this.showFullNames = true;
 
     this.loading = true;
-    userService.loading.then(() => this.loading = false);
+    userService.getUser().then(user => {
+      this.loading = false;
+      this.user = user;
+    });
   }
 
   addJob(ev) {
