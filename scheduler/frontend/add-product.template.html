@@ -29,6 +29,9 @@
             </span>
           </md-chip-template>
         </md-chips>
+        <div layout-align="start start">
+            <md-button class="md-raised md-primary" ng-click="vm.publishItem()">{{ vm.getSubmitText() }} Product</md-button>
+        </div>
     </form>
 
     <div layout="column" flex="33">
@@ -54,5 +57,3 @@
     </div>
 
 </div>
-
-<md-button class="md-raised md-primary" ng-click="vm.publishItem()">{{ vm.getSubmitText() }} Product</md-button>
