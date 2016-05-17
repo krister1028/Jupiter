@@ -7,13 +7,21 @@
     <form name="addProduct" layout="column" flex="66">
       <md-input-container>
         <label>Product Description</label>
-        <input name="productDescription" ng-model="vm.formItem.description" required>
+        <input name="description" ng-model="vm.formItem.description" required>
+        <div ng-messages="addProduct.description.$error">
+          <div ng-message="required">This field is required.</div>
+        </div>
       </md-input-container>
       <md-input-container>
         <label>Product Code</label>
-        <input name="productCode" ng-model="vm.formItem.code" required>
+        <input md-maxlength="8" name="productCode" ng-model="vm.formItem.code" required>
+        <div ng-messages="addProduct.productCode.$error">
+          <div ng-message="required">This field is required.</div>
+          <div ng-message="md-maxlength">Maximum allowable product code is 8 characters</div>
+        </div>
       </md-input-container>
-        <md-chips ng-model="vm.formItem.tasks" md-autocomplete-snap
+        <md-chips
+                  ng-model="vm.formItem.tasks" md-autocomplete-snap
                   md-on-add="vm.refreshUnselectedTasks()"
                   md-on-remove="vm.refreshUnselectedTasks()"
                   md-require-match="true">

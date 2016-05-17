@@ -1,5 +1,6 @@
 import angular from 'angular';
 import angularMaterial from 'angular-material';
+import angularMessages from 'angular-messages';
 import uiRouter from 'angular-ui-router';
 import loginTemplate from './login/login.html';
 import LoginController from './login/login.controller';
@@ -20,7 +21,7 @@ import addTaskTemplate from './add-task.template.html';
 import editJobTemplate from './edit-job.template.html';
 
 const jupiter = angular
-  .module('jupiter', [angularMaterial, uiRouter])
+  .module('jupiter', [angularMaterial, uiRouter, angularMessages])
   .controller('LoginController', LoginController)
   .controller('AddProductController', AddProductController)
   .controller('AddTaskController', AddTaskController)
