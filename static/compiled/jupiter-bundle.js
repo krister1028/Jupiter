@@ -67841,6 +67841,7 @@
 	      _this._allTasks.forEach(function (t) {
 	        return t.completion_time = t.max_completion_time;
 	      });
+	      _this.refreshUnselectedTasks();
 	    });
 	  }
 	
@@ -67894,15 +67895,15 @@
 /* 16 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var baseFormClass = (function () {
 	  function baseFormClass($stateParams, $q) {
@@ -67916,7 +67917,7 @@
 	  }
 	
 	  _createClass(baseFormClass, [{
-	    key: "_getFormItem",
+	    key: '_getFormItem',
 	    value: function _getFormItem() {
 	      var _this = this;
 	
@@ -67934,25 +67935,33 @@
 	      return deferred.promise;
 	    }
 	  }, {
-	    key: "getDefaultFormItem",
+	    key: 'getDefaultFormItem',
 	    value: function getDefaultFormItem() {
 	      return {};
 	    }
 	  }, {
-	    key: "publishItem",
+	    key: 'publishItem',
 	    value: function publishItem() {
 	      if (this.created) {
 	        return this.resourceService.post(this.formItem);
 	      }
 	      return this.resourceService.put(this.formItem);
 	    }
+	  }, {
+	    key: 'getSubmitText',
+	    value: function getSubmitText() {
+	      if (this.created) {
+	        return 'Publish';
+	      }
+	      return 'Update';
+	    }
 	  }]);
 	
 	  return baseFormClass;
 	})();
 	
-	exports["default"] = baseFormClass;
-	module.exports = exports["default"];
+	exports['default'] = baseFormClass;
+	module.exports = exports['default'];
 
 /***/ },
 /* 17 */
@@ -68845,7 +68854,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Product</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.formItem.code\" required> </md-input-container> <md-chips ng-model=\"vm.formItem.tasks\" md-autocomplete-snap md-on-add=\"vm.refreshUnselectedTasks()\" md-on-remove=\"vm.refreshUnselectedTasks()\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.formItem.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"end end\" flex=\"33\"> <h2 flex>Assign Tasks</h2> <div flex ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> <md-button flex ui-sref=\"addTask\">Add New Task</md-button> </div> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">Publish Product</md-button>";
+	var v1="<md-toolbar> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">Add Product</h2> </div> </md-toolbar> <div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"productDescription\" ng-model=\"vm.formItem.description\" required> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.formItem.code\" required> </md-input-container> <md-chips ng-model=\"vm.formItem.tasks\" md-autocomplete-snap md-on-add=\"vm.refreshUnselectedTasks()\" md-on-remove=\"vm.refreshUnselectedTasks()\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.formItem.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"start start\" flex=\"33\"> <h2 flex>Assign Tasks</h2> <div flex flex ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> <md-button flex ui-sref=\"addTask\">Add New Task</md-button> </div> </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">{{ vm.getSubmitText() }} Product</md-button>";
 	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
 	module.exports=v1;
 

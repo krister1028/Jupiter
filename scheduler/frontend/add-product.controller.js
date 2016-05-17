@@ -21,6 +21,7 @@ export default class AddProductController extends baseFormClass{
     taskService.get().then(tasks => {
       this._allTasks = tasks;
       this._allTasks.forEach(t => t.completion_time = t.max_completion_time);
+      this.refreshUnselectedTasks();
     });
 
   }

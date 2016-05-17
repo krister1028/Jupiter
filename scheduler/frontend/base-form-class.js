@@ -32,4 +32,11 @@ export default class baseFormClass {
     }
     return this.resourceService.put(this.formItem);
   }
+
+  getSubmitText() {
+    if (this.created) {
+      return 'Publish';
+    }
+    return 'Update';
+  }
 }

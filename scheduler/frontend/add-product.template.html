@@ -45,9 +45,9 @@
         </div>
     </div>
 
-    <div layout="column" layout-align="end end" flex="33">
+    <div layout="column" layout-align="start start" flex="33">
         <h2 flex>Assign Tasks</h2>
-        <div flex ng-repeat="task in vm.unselectedTasks track by $index" ng-click="vm.addTask(task)">
+        <div flex flex ng-repeat="task in vm.unselectedTasks track by $index" ng-click="vm.addTask(task)">
             {{ task.description }}
         </div>
         <md-button flex ui-sref="addTask">Add New Task</md-button>
@@ -55,4 +55,4 @@
 
 </div>
 
-<md-button class="md-raised md-primary" ng-click="vm.publishItem()">Publish Product</md-button>
+<md-button class="md-raised md-primary" ng-click="vm.publishItem()">{{ vm.getSubmitText() }} Product</md-button>
