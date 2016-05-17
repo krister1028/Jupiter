@@ -8,14 +8,19 @@ export default class AddProductController extends baseFormClass{
     this.resourceService = productService;
 
     this._allTasks = [];
-    taskService.get().then(tasks => this._allTasks = tasks);
+    this.unselectedTasks = [];
     this._productService = productService;
     this._$state = $state;
 
-    // set all task times to max to start with
-    taskService.get().then(() => this._allTasks.forEach(t => t.completion_time = t.max_completion_time));
-
     this._getFormItem();
+
+    // set all task times to max to start with
+    taskService.get().then(tasks => {
+      this._allTasks = tasks;
+      this._allTasks.forEach(t => t.completion_time = t.max_completion_time);
+      this.refreshUnselectedTasks();
+    });
+
   }
 
   getDefaultFormItem() {
@@ -26,9 +31,9 @@ export default class AddProductController extends baseFormClass{
     super.publishItem().then(() => this._$state.go('home'));
   }
 
-  unselectedTasks() {
-    const selectedTasks = this.formItem.tasks.map(t => t.id);
-    return this._allTasks.filter(t => selectedTasks.indexOf(t.id) === -1);
+  refreshUnselectedTasks() {
+    const selectedTasks = this.formItem.tasks.map(t => t.task);
+    this.unselectedTasks = this._allTasks.filter(at => selectedTasks.indexOf(at.id) === -1);
   }
 
   searchTasks(query) {

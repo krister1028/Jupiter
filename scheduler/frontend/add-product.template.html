@@ -14,6 +14,8 @@
         <input name="productCode" ng-model="vm.formItem.code" required>
       </md-input-container>
         <md-chips ng-model="vm.formItem.tasks" md-autocomplete-snap
+                  md-on-add="vm.refreshUnselectedTasks()"
+                  md-on-remove="vm.refreshUnselectedTasks()"
                   md-require-match="true">
           <md-autocomplete
               md-search-text="vm.searchText"
@@ -45,7 +47,7 @@
 
     <div layout="column" layout-align="end end" flex="33">
         <h2 flex>Assign Tasks</h2>
-        <div flex ng-repeat="task in vm.unselectedTasks() track by $index" ng-click="vm.addTask(task)">
+        <div flex ng-repeat="task in vm.unselectedTasks track by $index" ng-click="vm.addTask(task)">
             (x) {{ task.description }}
         </div>
         <md-button flex ui-sref="addTask">Add New Task</md-button>
