@@ -16,6 +16,7 @@ import jobTypeService from './job-type.service';
 import jobStatusService from './job-status.service';
 import HomeController from './home.controller';
 import EditJobController from './edit-job.controller';
+import HeaderController from './header.controller';
 import homeTemplate from './home.template.html';
 import addProductTemplate from './add-product.template.html';
 import addTaskTemplate from './add-task.template.html';
@@ -52,7 +53,9 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
       url: '',
       views: {
         header: {
-          template: headerTemplate
+          template: headerTemplate,
+          controller: HeaderController,
+          controllerAs: 'vm'
         }
       }
     })

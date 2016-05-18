@@ -1,8 +1,9 @@
 <md-toolbar layout="row">
-      <md-button aria-label="menu" ng-if="$state.current.data.pageTitle !== 'Login'">
+      <md-button aria-label="menu" ng-if="!vm.isLogin()">
         <md-icon class="material-icons" ui-sref="root.home">home</md-icon>
       </md-button>
     <div class="md-toolbar-tools">
-      <h2 class="md-flex" ng-bind="$state.current.data.pageTitle"></h2>
+      <h2 class="md-flex">{{ vm.getPageTitle() }}</h2>
     </div>
+    <md-button ng-show="!vm.isLogin()" layout-align="center end" ng-click="vm.logout()">Logout</md-button>
 </md-toolbar>

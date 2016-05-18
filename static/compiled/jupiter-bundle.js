@@ -131,6 +131,10 @@
 	
 	var _editJobController2 = _interopRequireDefault(_editJobController);
 	
+	var _headerController = __webpack_require__(39);
+	
+	var _headerController2 = _interopRequireDefault(_headerController);
+	
 	var _homeTemplateHtml = __webpack_require__(35);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
@@ -162,7 +166,9 @@
 	    url: '',
 	    views: {
 	      header: {
-	        template: _headerTemplateHtml2['default']
+	        template: _headerTemplateHtml2['default'],
+	        controller: _headerController2['default'],
+	        controllerAs: 'vm'
 	      }
 	    }
 	  }).state('root.home', {
@@ -68455,7 +68461,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar layout=\"row\"> <md-button aria-label=\"menu\" ng-if=\"$state.current.data.pageTitle !== 'Login'\"> <md-icon class=\"material-icons\" ui-sref=\"root.home\">home</md-icon> </md-button> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\" ng-bind=\"$state.current.data.pageTitle\"></h2> </div> </md-toolbar>";
+	var v1="<md-toolbar layout=\"row\"> <md-button aria-label=\"menu\" ng-if=\"!vm.isLogin()\"> <md-icon class=\"material-icons\" ui-sref=\"root.home\">home</md-icon> </md-button> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">{{ vm.getPageTitle() }}</h2> </div> <md-button ng-show=\"!vm.isLogin()\" layout-align=\"center end\" ng-click=\"vm.logout()\">Logout</md-button> </md-toolbar>";
 	ngModule.run(["$templateCache",function(c){c.put("header.template.html",v1)}]);
 	module.exports=v1;
 
@@ -68845,6 +68851,7 @@
 	    this._$state = $state;
 	    this._authUrl = '/rest-auth/login/';
 	    this._getUserUrl = '/rest-auth/user/';
+	    this._logoutUrl = '/rest-auth/logout/';
 	  }
 	
 	  _createClass(userService, [{
@@ -68873,6 +68880,11 @@
 	        _this2.user.username = response.data.username;
 	        _this2.user.isSuperUser = response.data.is_superuser;
 	      });
+	    }
+	  }, {
+	    key: 'logOutUser',
+	    value: function logOutUser() {
+	      return this._$http.post(this._logoutUrl);
 	    }
 	  }]);
 	
@@ -69690,6 +69702,56 @@
 	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.jobProduct.description }}</div> <div><b>Product Code:</b> {{ vm.jobProduct.code }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var HeaderController = (function () {
+	  function HeaderController($state, userService) {
+	    _classCallCheck(this, HeaderController);
+	
+	    this._$state = $state;
+	    this._userService = userService;
+	    this.getPageTitle();
+	  }
+	
+	  _createClass(HeaderController, [{
+	    key: 'logout',
+	    value: function logout() {
+	      var _this = this;
+	
+	      this._userService.logOutUser().then(function () {
+	        _this._$state.go('root.login');
+	      });
+	    }
+	  }, {
+	    key: 'getPageTitle',
+	    value: function getPageTitle() {
+	      return this._$state.current.data.pageTitle;
+	    }
+	  }, {
+	    key: 'isLogin',
+	    value: function isLogin() {
+	      return this._$state.$current.name === 'root.login';
+	    }
+	  }]);
+	
+	  return HeaderController;
+	})();
+	
+	exports['default'] = HeaderController;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

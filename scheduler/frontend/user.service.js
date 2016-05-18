@@ -6,6 +6,7 @@ export default class userService {
     this._$state = $state;
     this._authUrl = '/rest-auth/login/';
     this._getUserUrl = '/rest-auth/user/';
+    this._logoutUrl = '/rest-auth/logout/';
   }
 
   getUser() {
@@ -32,5 +33,9 @@ export default class userService {
         this.user.isSuperUser = response.data.is_superuser;
       }
     );
+  }
+
+  logOutUser() {
+    return this._$http.post(this._logoutUrl);
   }
 }
