@@ -35,8 +35,10 @@ export default class AddProductController extends baseFormClass{
   }
 
   refreshUnselectedTasks() {
-    const selectedTasks = this.formItem.tasks.map(t => t.task);
-    this.unselectedTasks = this._allTasks.filter(t => selectedTasks.indexOf(t.id) === -1);
+    if (this.formItem && this._allTasks) {
+      const selectedTasks = this.formItem.tasks.map(t => t.task);
+      this.unselectedTasks = this._allTasks.filter(t => selectedTasks.indexOf(t.id) === -1);
+    }
   }
 
   searchTasks(query) {

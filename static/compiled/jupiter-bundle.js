@@ -68663,12 +68663,18 @@
 	  }, {
 	    key: 'refreshUnselectedTasks',
 	    value: function refreshUnselectedTasks() {
-	      var selectedTasks = this.formItem.tasks.map(function (t) {
-	        return t.task;
-	      });
-	      this.unselectedTasks = this._allTasks.filter(function (t) {
-	        return selectedTasks.indexOf(t.id) === -1;
-	      });
+	      var _this3 = this;
+	
+	      if (this.formItem && this._allTasks) {
+	        (function () {
+	          var selectedTasks = _this3.formItem.tasks.map(function (t) {
+	            return t.task;
+	          });
+	          _this3.unselectedTasks = _this3._allTasks.filter(function (t) {
+	            return selectedTasks.indexOf(t.id) === -1;
+	          });
+	        })();
+	      }
 	    }
 	  }, {
 	    key: 'searchTasks',
