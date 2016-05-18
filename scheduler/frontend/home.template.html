@@ -1,61 +1,68 @@
 <div layout-margin>
-    <div layout="row">
+    <div>
         Welcome {{ vm.user.name }}
     </div>
-    <md-divider flex></md-divider>
+    <md-divider></md-divider>
+</div>
 
-    <div layout="row" layout-margin>
-        <div flex="66">
-            <h2>
-                Production Schedule
-            </h2>
-            <md-list ng-show="vm.jobs.length">
-                <md-list-item ng-repeat="job in vm.jobs track by $index">
-                    <a ui-sref="root.editJob({jobId:job.id})" layout-margin>{{ job.description }}</a>
-                    <md-progress-linear md-mode="determinate" value="{{ vm.jobService.getProgress(job) * 100 }}"></md-progress-linear>
-                </md-list-item>
-            </md-list>
-            <div ng-show="vm.jobs.length == 0" layout-margin>
-                You don't currently have any scheduled Jobs
-            </div>
-            <md-divider></md-divider>
-            <md-button class="md-raised md-primary" ng-click="vm.addJob()">Add Job</md-button>
+<div layout-margin>
+    <h2>
+        Production Schedule
+    </h2>
+    <md-list ng-show="vm.jobs.length">
+        <md-list-item ng-repeat="job in vm.jobs track by $index" layout="row">
+            <a flex="15" ui-sref="root.editJob({jobId:job.id})" layout-margin>{{ job.description }}</a>
+            <md-progress-linear flex="85" md-mode="determinate" value="{{ vm.jobService.getProgress(job) * 100 }}"></md-progress-linear>
+        </md-list-item>
+    </md-list>
+    <div ng-show="vm.jobs.length == 0" layout-margin>
+        You don't currently have any scheduled Jobs
+    </div>
+    <md-button class="md-raised md-primary" ng-click="vm.addJob()">Add Job</md-button>
+    <md-divider></md-divider>
+</div>
+
+
+<div layout="row" layout-margin>
+    <div flex="50">
+        <h2>
+            Products
+        </h2>
+        <md-list ng-show="vm.products.length">
+            <md-list-item ui-sref="root.addProduct({productId: product.id})" ng-repeat="product in vm.products track by $index">
+                {{ vm.getProductText(product) }}
+            </md-list-item>
+        </md-list>
+        <div ng-show="vm.products.length == 0" layout-margin>
+            You don't currently have any listed products
         </div>
-
-        <div flex="33">
-            <h2>
-                Products
-            </h2>
-            <md-list ng-show="vm.products.length">
-                <md-list-item ui-sref="root.addProduct({productId: product.id})" ng-repeat="product in vm.products track by $index">
-                    {{ vm.getProductText(product) }}
-                </md-list-item>
-            </md-list>
-            <div ng-show="vm.products.length == 0" layout-margin>
-                You don't currently have any listed products
-            </div>
-            <md-divider></md-divider>
+        <md-divider></md-divider>
+        <div layout="row">
             <md-button class="md-raised md-primary" ui-sref="root.addProduct">Add Product</md-button>
-            <md-button ng-if="vm.products.length > 0" class="md-raised md-primary" ng-click="vm.showFullNames = !vm.showFullNames">
+            <md-button ng-if="vm.products.length > 0" class="md-raised md-primary"
+                       ng-click="vm.showFullNames = !vm.showFullNames">
                 {{ vm.nameAbbreviationToggleText() }}
             </md-button>
         </div>
-        <div flex="33">
-            <h2>
-                Tasks
-            </h2>
-            <md-list ng-show="vm.tasks.length">
-                <md-list-item ui-sref="root.addTask({taskId: task.id})" ng-repeat="task in vm.tasks track by $index">
-                    {{ task.description }}
-                </md-list-item>
-            </md-list>
-            <div ng-show="vm.tasks.length == 0" layout-margin>
-                You don't currently have any tasks
-            </div>
-            <md-divider></md-divider>
-            <md-button class="md-raised md-primary" ui-sref="root.addTask">Add Task</md-button>
+
+    </div>
+    <md-divider></md-divider>
+    <div flex="50">
+        <h2>
+            Tasks
+        </h2>
+        <md-list ng-show="vm.tasks.length">
+            <md-list-item ui-sref="root.addTask({taskId: task.id})" ng-repeat="task in vm.tasks track by $index">
+                {{ task.description }}
+            </md-list-item>
+        </md-list>
+        <div ng-show="vm.tasks.length == 0" layout-margin>
+            You don't currently have any tasks
         </div>
+        <md-divider></md-divider>
+        <md-button class="md-raised md-primary" ui-sref="root.addTask">Add Task</md-button>
     </div>
 </div>
+
 
 
