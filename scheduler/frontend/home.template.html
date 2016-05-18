@@ -1,8 +1,3 @@
-<md-toolbar>
-    <div class="md-toolbar-tools">
-      <h2 class="md-flex">Admin Welcome Page</h2>
-    </div>
-</md-toolbar>
 <div layout-margin>
     <div layout="row">
         Welcome {{ vm.user.name }}
@@ -16,7 +11,7 @@
             </h2>
             <md-list ng-show="vm.jobs.length">
                 <md-list-item ng-repeat="job in vm.jobs track by $index">
-                    <a ui-sref="editJob({jobId:job.id})" layout-margin>{{ job.description }}</a>
+                    <a ui-sref="root.editJob({jobId:job.id})" layout-margin>{{ job.description }}</a>
                     <md-progress-linear md-mode="determinate" value="{{ vm.jobService.getProgress(job) * 100 }}"></md-progress-linear>
                 </md-list-item>
             </md-list>
@@ -32,7 +27,7 @@
                 Products
             </h2>
             <md-list ng-show="vm.products.length">
-                <md-list-item ui-sref="addProduct({productId: product.id})" ng-repeat="product in vm.products track by $index">
+                <md-list-item ui-sref="root.addProduct({productId: product.id})" ng-repeat="product in vm.products track by $index">
                     {{ vm.getProductText(product) }}
                 </md-list-item>
             </md-list>
@@ -40,7 +35,7 @@
                 You don't currently have any listed products
             </div>
             <md-divider></md-divider>
-            <md-button class="md-raised md-primary" ui-sref="addProduct">Add Product</md-button>
+            <md-button class="md-raised md-primary" ui-sref="root.addProduct">Add Product</md-button>
             <md-button ng-if="vm.products.length > 0" class="md-raised md-primary" ng-click="vm.showFullNames = !vm.showFullNames">
                 {{ vm.nameAbbreviationToggleText() }}
             </md-button>

@@ -1,8 +1,3 @@
-<md-toolbar>
-    <div class="md-toolbar-tools">
-      <h2 class="md-flex">Add Product</h2>
-    </div>
-</md-toolbar>
 <div layout-margin layout="row">
     <form name="addProduct" layout="column" flex="66">
       <md-input-container>
@@ -61,7 +56,7 @@
         <div ng-repeat="task in vm.unselectedTasks track by $index" ng-click="vm.addTask(task)">
             {{ task.description }}
         </div>
-        <md-button ui-sref="addTask">Add New Task</md-button>
+        <md-button ui-sref="root.addTask">Add New Task</md-button>
     </div>
 
 </div>

@@ -33,12 +33,12 @@ export default class EditJobController {
   }
 
   updateJob() {
-    this._jobService.put(this.job).then(() => this._$state.go('home'));
+    this._jobService.put(this.job).then(() => this._$state.go('root.home'));
   }
 
   deleteJob() {
     this._jobService.delete(this.job);
-    this._$state.go('home');
+    this._$state.go('root.home');
   }
 
   toggleTask(task) {

@@ -1,0 +1,8 @@
+<md-toolbar layout="row">
+      <md-button aria-label="menu" ng-if="$state.current.data.pageTitle !== 'Login'">
+        <md-icon class="material-icons" ui-sref="root.home">home</md-icon>
+      </md-button>
+    <div class="md-toolbar-tools">
+      <h2 class="md-flex" ng-bind="$state.current.data.pageTitle"></h2>
+    </div>
+</md-toolbar>

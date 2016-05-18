@@ -14,6 +14,8 @@ export default class LoginModalController {
 
   doLogin() {
     this._$mdDialog.cancel();
-    this._userService.loginUser(this.username, this.password).then(() => this._$state.go('home'), this._$state.go('login'));
+    this._userService.loginUser(this.username, this.password).then(
+      () => this._$state.go('root.home'), this._$state.go('root.login')
+    );
   }
 }

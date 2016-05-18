@@ -19,7 +19,7 @@ export default class userService {
       },
       response => {
         if (response.status === 403) {
-          return this._$state.go('login');
+          return this._$state.go('root.login');
         }
       }
     );

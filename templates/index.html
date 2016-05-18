@@ -9,9 +9,10 @@
     <link type="text/css" rel="stylesheet" href="{% static "angular-material-1.0.7-min.css" %}">
     <link type="text/css" rel="stylesheet" href="{% static "base.css" %}">
 </head>
-<body layout="row">
+<body layout="row" ng-cloak>
     <md-content flex>
-        <ui-view ng-cloak></ui-view>
+        <div ui-view="header"></div>
+        <div ui-view="body"></div>
     </md-content>
 </body>
 </html>

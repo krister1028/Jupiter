@@ -20,9 +20,9 @@ export default class AddTaskController extends baseFormClass {
   publishItem() {
     super.publishItem().then(() => {
       if (this.created) {
-        this._$state.go('addProduct');
+        this._$state.go('root.addProduct');
       } else {
-        this._$state.go('home');
+        this._$state.go('root.home');
       }
     });
   }

@@ -3,6 +3,7 @@ import angularMaterial from 'angular-material';
 import angularMessages from 'angular-messages';
 import uiRouter from 'angular-ui-router';
 import loginTemplate from './login/login.html';
+import headerTemplate from './header.template.html';
 import LoginController from './login/login.controller';
 import AddProductController from './add-product.controller';
 import AddTaskController from './add-task.controller';
@@ -33,36 +34,79 @@ const jupiter = angular
   .service('groupUserService', groupUserService)
   .service('jobTypeService', jobTypeService)
   .service('jobStatusService', jobStatusService)
-  .config(configuration);
+  .config(configuration)
+  .run(run)
+;
+
+/* @ngInject */
+function run($rootScope, $state, $stateParams) {
+  $rootScope.$state = $state;
+  $rootScope.$stateParams = $stateParams;
+}
 
 /* @ngInject */
 function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
   $stateProvider
-    .state('home', {
+    .state('root', {
+      abstract: true,
+      url: '',
+      views: {
+        header: {
+          template: headerTemplate
+        }
+      }
+    })
+    .state('root.home', {
       url: '/',
-      template: homeTemplate,
-      controller: HomeController,
-      controllerAs: 'vm'
+      data: {pageTitle: 'Admin Welcome Page'},
+      views: {
+        'body@': {
+          template: homeTemplate,
+          controller: HomeController,
+          controllerAs: 'vm'
+        }
+      }
     })
-    .state('login', {
+    .state('root.login', {
       url: '/login/',
-      template: loginTemplate,
-      controller: 'LoginController as vm'
+      data: {pageTitle: 'Login'},
+      views: {
+        'body@': {
+          template: loginTemplate,
+          controller: 'LoginController as vm'
+        }
+      }
     })
-    .state('addProduct', {
+    .state('root.addProduct', {
       url: '/add-product/?productId',
-      template: addProductTemplate,
-      controller: 'AddProductController as vm'
+      data: {pageTitle: 'Add Product'},
+      views: {
+        'body@': {
+          template: addProductTemplate,
+          controller: 'AddProductController as vm'
+        }
+      }
     })
-    .state('editJob', {
+    .state('root.editJob', {
       url: '/edit-job/{jobId:int}',
-      template: editJobTemplate,
-      controller: 'EditJobController as vm'
+      data: {pageTitle: 'Edit Job'},
+      views: {
+        'body@': {
+          template: editJobTemplate,
+          controller: 'EditJobController as vm'
+        }
+      }
+
     })
-    .state('addTask', {
+    .state('root.addTask', {
       url: '/add-task/?taskId',
-      template: addTaskTemplate,
-      controller: 'AddTaskController as vm'
+      data: {pageTitle: 'Add Task'},
+      views: {
+        'body@': {
+          template: addTaskTemplate,
+          controller: 'AddTaskController as vm'
+        }
+      }
     })
   ;
 
