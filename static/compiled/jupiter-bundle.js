@@ -69163,10 +69163,10 @@
 	
 	  /* @ngInject */
 	
-	  function taskService($http, $q) {
+	  function taskService($http, $q, $state) {
 	    _classCallCheck(this, taskService);
 	
-	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q, $state);
 	    this._resourceUrl = '/api/tasks/';
 	  }
 	

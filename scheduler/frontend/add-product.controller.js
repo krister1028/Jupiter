@@ -1,6 +1,6 @@
 import baseFormClass from './base-form-class';
 
-export default class AddProductController extends baseFormClass{
+export default class AddProductController extends baseFormClass {
   /* @ngInject */
   constructor(taskService, productService, $state, $stateParams, $q) {
     super($stateParams, $q);
