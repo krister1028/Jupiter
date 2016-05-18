@@ -4,11 +4,15 @@ import angular from 'angular';
 
 export default class HomeController {
   /* @ngInject */
-  constructor(userService, productService, jobService, $mdDialog) {
+  constructor(userService, productService, jobService, $mdDialog, taskService) {
+    // initialize services
     this.products = [];
     productService.get().then(products => this.products.push(...products));
     this.jobs = [];
     jobService.get().then(jobs => this.jobs = jobs);
+    this.tasks = [];
+    taskService.get().then(tasks => this.tasks = tasks);
+
     this.jobService = jobService;
     this._$mdDialog = $mdDialog;
 

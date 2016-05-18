@@ -40,6 +40,21 @@
                 {{ vm.nameAbbreviationToggleText() }}
             </md-button>
         </div>
+        <div flex="33">
+            <h2>
+                Tasks
+            </h2>
+            <md-list ng-show="vm.tasks.length">
+                <md-list-item ui-sref="root.addTask({taskId: task.id})" ng-repeat="task in vm.tasks track by $index">
+                    {{ task.description }}
+                </md-list-item>
+            </md-list>
+            <div ng-show="vm.tasks.length == 0" layout-margin>
+                You don't currently have any tasks
+            </div>
+            <md-divider></md-divider>
+            <md-button class="md-raised md-primary" ui-sref="root.addTask">Add Task</md-button>
+        </div>
     </div>
 </div>
 

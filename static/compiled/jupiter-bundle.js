@@ -69350,11 +69350,12 @@
 	var HomeController = (function () {
 	  /* @ngInject */
 	
-	  function HomeController(userService, productService, jobService, $mdDialog) {
+	  function HomeController(userService, productService, jobService, $mdDialog, taskService) {
 	    var _this = this;
 	
 	    _classCallCheck(this, HomeController);
 	
+	    // initialize services
 	    this.products = [];
 	    productService.get().then(function (products) {
 	      var _products;
@@ -69365,6 +69366,11 @@
 	    jobService.get().then(function (jobs) {
 	      return _this.jobs = jobs;
 	    });
+	    this.tasks = [];
+	    taskService.get().then(function (tasks) {
+	      return _this.tasks = tasks;
+	    });
+	
 	    this.jobService = jobService;
 	    this._$mdDialog = $mdDialog;
 	
@@ -69672,7 +69678,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\"> <a ui-sref=\"root.editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"root.addProduct({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> </div>";
+	var v1="<div layout-margin> <div layout=\"row\"> Welcome {{ vm.user.name }} </div> <md-divider flex></md-divider> <div layout=\"row\" layout-margin> <div flex=\"66\"> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\"> <a ui-sref=\"root.editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <div flex=\"33\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"root.addProduct({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> <div flex=\"33\"> <h2> Tasks </h2> <md-list ng-show=\"vm.tasks.length\"> <md-list-item ui-sref=\"root.addTask({taskId: task.id})\" ng-repeat=\"task in vm.tasks track by $index\"> {{ task.description }} </md-list-item> </md-list> <div ng-show=\"vm.tasks.length == 0\" layout-margin> You don't currently have any tasks </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addTask\">Add Task</md-button> </div> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
