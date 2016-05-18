@@ -24,6 +24,10 @@ export default class jobService extends baseResourceClass {
     return remainingTime / totalTime;
   }
 
+  getJobProduct(job) {
+    return this._productService.getItemById(job.product_id).then(product => product);
+  }
+
   markTaskComplete(userId, task, job) {
     task.status = this.taskCompleteStatus;
     task.completed_by = userId;

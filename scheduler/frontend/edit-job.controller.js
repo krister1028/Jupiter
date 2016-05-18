@@ -6,13 +6,21 @@ export default class EditJobController {
   /* @ngInject */
   constructor($state, $stateParams, jobService, taskService, groupUserService, $mdDialog, jobTypeService, jobStatusService) {
     this._$state = $state;
+    this._$stateParams = $stateParams;
     this._jobService = jobService;
     this._taskService = taskService;
     this._$mdDialog = $mdDialog;
     this.groupUsers = groupUserService.groupUsers;
     this.jobTypes = jobTypeService.jobTypes;
     this.jobStatuses = jobStatusService.jobStatuses;
-    jobService.getItemById($stateParams.jobId).then(job => this.job = job);
+    this.init();
+  }
+
+  init() {
+    this._jobService.getItemById(this._$stateParams.jobId).then(job => {
+      this.job = job;
+      this._jobService.getJobProduct(job).then(product => this.jobProduct = product);
+    });
   }
 
   static _taskComplete(task) {

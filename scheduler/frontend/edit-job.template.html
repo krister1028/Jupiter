@@ -1,3 +1,12 @@
+<div layout-margin layout="column">
+    <h3>Job Product:</h3>
+    <div layout-margin>
+        <div><b>Product Name:</b> {{ vm.jobProduct.description }}</div>
+        <div><b>Product Code:</b> {{ vm.jobProduct.code }}</div>
+    </div>
+
+</div>
+
 <div layout-margin>
     <h3>Job Tasks</h3>
     <div ng-repeat="task in vm.job.job_tasks track by $index">
