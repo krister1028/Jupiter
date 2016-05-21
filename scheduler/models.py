@@ -73,6 +73,7 @@ class Job(models.Model):
     rework = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
+    completed_time = models.DateTimeField(null=True)
 
     def __unicode__(self):
         return self.description
@@ -113,6 +114,7 @@ class JobTask(models.Model):
     product_task = models.ForeignKey(ProductTask, related_name='job_tasks')
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     completed_by = models.ForeignKey(User, null=True)
+    completed_time = models.DateTimeField(null=True)
 
     @property
     def description(self):
@@ -127,3 +129,20 @@ class JobTask(models.Model):
         for product_task in job.product.tasks.all():
             cls.objects.create(job=job, product_task=product_task, status=cls.PENDING)
 
+
+class DailyMetric(models.Model):
+    group = models.ForeignKey(Group)
+    active_task_hours = models.TextField()  # stores a json string of tasks
+    pending_task_hours = models.TextField()
+    job_count_by_type = models.TextField()
+    time_stamp = models.DateField(auto_now_add=True)
+
+
+class JobLog(models.Model):
+    DAILY_METRICS = 1
+    JOB_CHOICES = (
+        (DAILY_METRICS, 'Daily Metric Job'),
+    )
+    job = models.IntegerField(choices=JOB_CHOICES)
+    error = models.CharField(max_length=255, null=True)
+    successful = models.BooleanField(default=False)
