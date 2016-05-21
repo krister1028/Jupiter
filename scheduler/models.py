@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.models import User, Group
 from django.db import models
+from django.utils import timezone
 
 
 class UserProfile(models.Model):
@@ -116,6 +117,20 @@ class JobTask(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     completed_by = models.ForeignKey(User, null=True)
     completed_time = models.DateTimeField(null=True)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.completed_by and not self.completed_time:
+            self.completed_time = timezone.now()
+        elif not self.completed_by:
+            self.completed_time = None
+
+        super(JobTask, self).save(force_insert, force_update, using, update_fields)
+        self.update_job_completion()
+
+    def update_job_completion(self):
+        if all([j.completed_by for j in self.job.job_tasks.all()]) and not self.job.completed_timestamp:
+            self.job.completed_timestamp = timezone.now()
+            self.job.save()
 
     @property
     def description(self):
