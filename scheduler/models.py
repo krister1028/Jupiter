@@ -73,7 +73,8 @@ class Job(models.Model):
     rework = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
-    completed_time = models.DateTimeField(null=True)
+    started_timestamp = models.DateTimeField(null=True)
+    completed_timestamp = models.DateTimeField(null=True)
 
     def __unicode__(self):
         return self.description
@@ -82,7 +83,7 @@ class Job(models.Model):
 class ProductTask(models.Model):
     product = models.ForeignKey(Product, related_name='tasks')
     task = models.ForeignKey(Task, related_name='product_tasks')
-    completion_time = models.IntegerField()
+    completion_time = models.IntegerField()  # in minutes
 
     @property
     def description(self):
@@ -132,8 +133,11 @@ class JobTask(models.Model):
 
 class DailyMetric(models.Model):
     group = models.ForeignKey(Group)
-    active_task_hours = models.TextField()  # stores a json string of tasks
+    # all text fields store json strings, as tasks and types are dynamic
+    active_task_hours = models.TextField()
     pending_task_hours = models.TextField()
+    active_type_hours = models.TextField()
+    pending_type_hours = models.TextField()
     job_count_by_type = models.TextField()
     time_stamp = models.DateField(auto_now_add=True)
 
