@@ -69738,7 +69738,7 @@
 	  metricsService.get().then(function (metrics) {
 	    return _this.metrics = metrics;
 	  });
-	  this.chartConfig = highchartService.getChartConfig();
+	  this.jobsByProductChart = highchartService.getJobsCompletedByProductChart();
 	};
 	
 	exports["default"] = MetricsController;
@@ -70040,6 +70040,32 @@
 	        return job.description = oldDescription;
 	      });
 	    }
+	  }, {
+	    key: 'getJobsCompletedByProduct',
+	    value: function getJobsCompletedByProduct() {
+	      var _this2 = this;
+	
+	      var jobByProduct = {};
+	      var productName = undefined;
+	      // generate object with product name and job count
+	      this.itemList.forEach(function (job) {
+	        if (job.completed_timestamp) {
+	          productName = _this2._productService.itemList.filter(function (product) {
+	            return product.id === job.product_id;
+	          })[0].description;
+	          if (jobByProduct.hasOwnProperty(productName)) {
+	            jobByProduct[productName] += 1;
+	          } else {
+	            jobByProduct[productName] = 1;
+	          }
+	        }
+	      });
+	      var returnArray = [];
+	      Object.keys(jobByProduct).forEach(function (p) {
+	        return returnArray.push([p, jobByProduct[p]]);
+	      });
+	      return returnArray;
+	    }
 	  }]);
 	
 	  return jobService;
@@ -70244,8 +70270,10 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var highchartService = (function () {
-	  function highchartService() {
+	  function highchartService(jobService) {
 	    _classCallCheck(this, highchartService);
+	
+	    this._jobService = jobService;
 	  }
 	
 	  /*
@@ -70300,14 +70328,12 @@
 	   */
 	
 	  _createClass(highchartService, [{
-	    key: 'getChartConfig',
-	    value: function getChartConfig() {
+	    key: '_getBaseChartConfig',
+	    value: function _getBaseChartConfig() {
 	      var chartConfig = {
 	        options: {
-	          //This is the Main Highcharts chart config. Any Highchart options are valid here.
-	          //will be overriden by values specified below.
 	          chart: {
-	            type: 'bar'
+	            type: 'line'
 	          },
 	
 	          tooltip: {
@@ -70317,28 +70343,54 @@
 	            }
 	          }
 	        },
-	        series: [{
-	          data: [10, 15, 12, 8, 7]
-	        }],
+	        series: [],
 	        title: {
-	          text: 'Hello'
+	          text: ''
 	        },
-	
-	        loading: false,
-	        xAxis: {
-	          currentMin: 0,
-	          currentMax: 20,
-	          title: {
-	            text: 'values'
+	        legend: {
+	          enabled: false
+	        },
+	        plotOptions: {
+	          series: {
+	            borderWidth: 0,
+	            dataLabels: {
+	              enabled: true,
+	              format: '{point.y:.1f}%'
+	            }
 	          }
 	        },
-	        useHighStocks: false,
-	        size: {
-	          width: 400,
-	          height: 300
+	        loading: false,
+	        xAxis: {
+	          currentMin: undefined,
+	          currentMax: undefined,
+	          title: {
+	            text: ''
+	          }
+	        },
+	        yAxis: {
+	          currentMin: undefined,
+	          currentMax: undefined,
+	          title: {
+	            text: ''
+	          }
 	        }
 	      };
 	      return chartConfig;
+	    }
+	  }, {
+	    key: 'getJobsCompletedByProductChart',
+	    value: function getJobsCompletedByProductChart() {
+	      var config = this._getBaseChartConfig();
+	      config.options.chart.type = 'column';
+	      config.title.text = 'Jobs Completed By Product';
+	      config.xAxis.title.text = 'Product';
+	      config.xAxis.type = 'category';
+	      config.yAxis.title.text = 'Job Count';
+	      config.series = [{
+	        showInLegend: false,
+	        data: this._jobService.getJobsCompletedByProduct()
+	      }];
+	      return config;
 	    }
 	  }]);
 	
@@ -70841,7 +70893,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<h3>Metrics Dashboard</h3> <highchart id=\"chart1\" config=\"vm.chartConfig\"></highchart>";
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <highchart config=\"vm.jobsByProductChart\"></highchart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
 

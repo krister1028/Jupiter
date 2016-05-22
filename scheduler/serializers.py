@@ -139,7 +139,8 @@ class JobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Job
-        fields = ('id', 'description', 'product_id', 'group', 'created', 'job_tasks', 'type', 'status', 'rework')
+        fields = ('id', 'description', 'product_id', 'group', 'created', 'job_tasks', 'type', 'status', 'rework',
+                  'completed_timestamp')
 
 
 class DailyMetricSerializer(serializers.ModelSerializer):

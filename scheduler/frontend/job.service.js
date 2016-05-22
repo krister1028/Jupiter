@@ -46,4 +46,23 @@ export default class jobService extends baseResourceClass {
     job.description = newDescription;
     return this.patch(jobId, {description: newDescription}).then(null, () => job.description = oldDescription);
   }
+
+  getJobsCompletedByProduct() {
+    const jobByProduct = {};
+    let productName;
+    // generate object with product name and job count
+    this.itemList.forEach(job => {
+      if (job.completed_timestamp) {
+        productName = this._productService.itemList.filter(product => product.id === job.product_id)[0].description;
+        if (jobByProduct.hasOwnProperty(productName)) {
+          jobByProduct[productName] += 1;
+        } else {
+          jobByProduct[productName] = 1;
+        }
+      }
+    });
+    const returnArray = [];
+    Object.keys(jobByProduct).forEach(p => returnArray.push([p, jobByProduct[p]]));
+    return returnArray;
+  }
 }

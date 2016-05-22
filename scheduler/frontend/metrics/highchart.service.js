@@ -1,14 +1,13 @@
 export default class highchartService {
-  constructor() {
+  constructor(jobService) {
+    this._jobService = jobService;
   }
 
-  getChartConfig() {
+  _getBaseChartConfig() {
     const chartConfig = {
       options: {
-        //This is the Main Highcharts chart config. Any Highchart options are valid here.
-        //will be overriden by values specified below.
         chart: {
-          type: 'bar'
+          type: 'line'
         }
         ,
         tooltip: {
@@ -18,29 +17,57 @@ export default class highchartService {
           }
         }
       },
-      series: [{
-        data: [10, 15, 12, 8, 7]
-      }],
+      series: [],
       title: {
-        text: 'Hello'
+        text: ''
       },
-
-      loading: false,
-      xAxis: {
-        currentMin: 0,
-        currentMax: 20,
-        title: {
-          text: 'values'
+      legend: {
+        enabled: false
+      },
+      plotOptions: {
+        series: {
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            format: '{point.y:.1f}%'
+          }
         }
       },
-      useHighStocks: false,
-      size: {
-        width: 400,
-        height: 300
+      loading: false,
+      xAxis: {
+        currentMin: undefined,
+        currentMax: undefined,
+        title: {
+          text: ''
+        }
+      },
+      yAxis: {
+        currentMin: undefined,
+        currentMax: undefined,
+        title: {
+          text: ''
+        }
       }
     };
     return chartConfig;
   }
+
+  getJobsCompletedByProductChart() {
+    const config = this._getBaseChartConfig();
+    config.options.chart.type = 'column';
+    config.title.text = 'Jobs Completed By Product';
+    config.xAxis.title.text = 'Product';
+    config.xAxis.type = 'category';
+    config.yAxis.title.text = 'Job Count';
+    config.series = [
+      {
+        showInLegend: false,
+        data: this._jobService.getJobsCompletedByProduct()
+      }
+    ];
+    return config;
+  }
+
 }
 
 /*
