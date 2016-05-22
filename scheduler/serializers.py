@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from scheduler.models import Product, Task, Job, ProductTask, JobTask, JobType, JobStatus
+from scheduler.models import Product, Task, Job, ProductTask, JobTask, JobType, JobStatus, DailyMetric
 
 
 class CurrentGroupDefault(serializers.CurrentUserDefault):
@@ -140,3 +140,10 @@ class JobSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
         fields = ('id', 'description', 'product_id', 'group', 'created', 'job_tasks', 'type', 'status', 'rework')
+
+
+class DailyMetricSerializer(serializers.ModelSerializer):
+    group = serializers.HiddenField(default=CurrentGroupDefault())
+
+    class Meta:
+        model = DailyMetric

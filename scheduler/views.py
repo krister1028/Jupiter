@@ -3,9 +3,9 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 
-from scheduler.models import Product, Task, Job, JobStatus, JobType
+from scheduler.models import Product, Task, Job, JobStatus, JobType, DailyMetric
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
-    JobTypeSerializer
+    JobTypeSerializer, DailyMetricSerializer
 
 
 def index(request):
@@ -59,3 +59,8 @@ class CustomLoginView(LoginView):
 
     def get_response(self):
         return Response(self.response_serializer(self.request.user).data)
+
+
+class DailyMetricViewSet(viewsets.ModelViewSet, IsolateGroupMixin):
+    queryset = DailyMetric.objects.all()
+    serializer_class = DailyMetricSerializer
