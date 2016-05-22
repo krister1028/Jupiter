@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/home/krister/Envs/jupiter/bin python
 import os
 import sys
 
