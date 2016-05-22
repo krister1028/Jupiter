@@ -17,6 +17,7 @@ export default class HomeController {
     this._$mdDialog = $mdDialog;
 
     this.showFullNames = true;
+    this.showMetrics = false;
 
     this.loading = true;
     userService.getUser().then(user => {

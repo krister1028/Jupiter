@@ -1,12 +1,18 @@
+import Highcharts from 'highcharts';
+// kinda weird, but we need to define this explicitly: https://github.com/highcharts/highcharts/issues/4994
+window.Highcharts = Highcharts;
+
 import angular from 'angular';
 import angularMaterial from 'angular-material';
 import angularMessages from 'angular-messages';
 import uiRouter from 'angular-ui-router';
+import highChartsNg from 'highcharts-ng';
 import loginTemplate from './login/login.html';
 import headerTemplate from './header.template.html';
 import LoginController from './login/login.controller';
 import AddProductController from './add-product.controller';
 import AddTaskController from './add-task.controller';
+import MetricsController from './metrics.controller';
 import userService from './user.service';
 import productService from './product.service';
 import jobService from './job.service';
@@ -14,6 +20,8 @@ import taskService from './task.service';
 import groupUserService from './group-user.service';
 import jobTypeService from './job-type.service';
 import jobStatusService from './job-status.service';
+import highchartService from './metrics/highchart.service.js';
+import metricsService from './metrics.service';
 import HomeController from './home.controller';
 import EditJobController from './edit-job.controller';
 import HeaderController from './header.controller';
@@ -21,9 +29,10 @@ import homeTemplate from './home.template.html';
 import addProductTemplate from './add-product.template.html';
 import addTaskTemplate from './add-task.template.html';
 import editJobTemplate from './edit-job.template.html';
+import metricsTemplate from './metrics.template.html';
 
 const jupiter = angular
-  .module('jupiter', [angularMaterial, uiRouter, angularMessages])
+  .module('jupiter', [angularMaterial, uiRouter, angularMessages, highChartsNg])
   .controller('LoginController', LoginController)
   .controller('AddProductController', AddProductController)
   .controller('AddTaskController', AddTaskController)
@@ -35,6 +44,8 @@ const jupiter = angular
   .service('groupUserService', groupUserService)
   .service('jobTypeService', jobTypeService)
   .service('jobStatusService', jobStatusService)
+  .service('metricsService', metricsService)
+  .service('highchartService', highchartService)
   .config(configuration)
   .run(run)
 ;
@@ -66,6 +77,11 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
         'body@': {
           template: homeTemplate,
           controller: HomeController,
+          controllerAs: 'vm'
+        },
+        'metrics@root.home': {
+          template: metricsTemplate,
+          controller: MetricsController,
           controllerAs: 'vm'
         }
       }

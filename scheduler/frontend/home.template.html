@@ -22,6 +22,9 @@
     <md-divider></md-divider>
 </div>
 
+<md-button class="md-primary" ng-click="vm.showMetrics = !vm.showMetrics">Toggle Metrics</md-button>
+<div ng-if="vm.showMetrics" ui-view="metrics"></div>
+
 
 <div layout="row" layout-margin>
     <div flex="50">
