@@ -27,6 +27,7 @@ class StatusHistoryMixin(object):
     corresponding to the last recorded status change that day.)
     """
     def save(self, *args, **kwargs):
+        super(StatusHistoryMixin, self).save(*args, **kwargs)
         if self.status:
             status_log = StatusHistory.objects.get_or_create(
                 model=self.status_model,
@@ -37,7 +38,6 @@ class StatusHistoryMixin(object):
             else:
                 status_log.status = self.status.id
             status_log.save()
-        super(StatusHistoryMixin, self).save(*args, **kwargs)
 
 
 class UserProfile(models.Model):

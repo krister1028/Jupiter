@@ -70019,7 +70019,8 @@
 	    value: function markTaskComplete(userId, task, job) {
 	      task.status = this.taskCompleteStatus;
 	      task.completed_by = userId;
-	      this.patch(job.id, { job_tasks: job.job_tasks });
+	      this.checkJobComplete(job);
+	      this.put(job);
 	    }
 	  }, {
 	    key: 'markTaskIncomplete',
@@ -70065,6 +70066,19 @@
 	        return returnArray.push([p, jobByProduct[p]]);
 	      });
 	      return returnArray;
+	    }
+	  }, {
+	    key: 'checkJobComplete',
+	    value: function checkJobComplete(job) {
+	      var _this3 = this;
+	
+	      var incompleteTasks = job.job_tasks.filter(function (t) {
+	        return t.status !== _this3.taskCompleteStatus;
+	      });
+	      if (!incompleteTasks.length && !job.completed_timestamp) {
+	        job.completed_timestamp = new Date();
+	        this.put(job);
+	      }
 	    }
 	  }]);
 	
