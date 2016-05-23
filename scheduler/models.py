@@ -1,8 +1,43 @@
 from __future__ import unicode_literals
 
+import datetime
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.utils import timezone
+
+
+class StatusHistory(models.Model):
+    JOB = 1
+    JOB_TASK = 2
+    MODEL_CHOICES = (
+        (JOB, 'Job'),
+        (JOB_TASK, 'Job Task')
+    )
+    model = models.IntegerField(choices=MODEL_CHOICES)
+    model_id = models.IntegerField()
+    status = models.IntegerField(null=True)
+    date = models.DateField()
+
+
+class StatusHistoryMixin(object):
+    """
+    Quick and dirty way to capture updates to a Job or JobTask status.  Note that status_model must be defined, and
+    that a 'status' field must exist.
+    Status updates are overwritten daily (i.e. there's only a single status for any given record on a single day -
+    corresponding to the last recorded status change that day.)
+    """
+    def save(self, *args, **kwargs):
+        if self.status:
+            status_log = StatusHistory.objects.get_or_create(
+                model=self.status_model,
+                model_id=self.pk,
+                date=datetime.datetime.today())[0]
+            if type(self.status) == int:
+                status_log.status = self.status
+            else:
+                status_log.status = self.status.id
+            status_log.save()
+        super(StatusHistoryMixin, self).save(*args, **kwargs)
 
 
 class UserProfile(models.Model):
@@ -66,7 +101,9 @@ class JobType(models.Model):
         return self.description
 
 
-class Job(models.Model):
+class Job(StatusHistoryMixin, models.Model):
+    status_model = StatusHistory.JOB
+
     group = models.ForeignKey(Group)
     product = models.ForeignKey(Product)
     status = models.ForeignKey(JobStatus, null=True)
@@ -102,7 +139,8 @@ class ProductTask(models.Model):
         return self.task.description
 
 
-class JobTask(models.Model):
+class JobTask(StatusHistoryMixin, models.Model):
+    status_model = StatusHistory.JOB_TASK
     PENDING = 1
     IN_PROGRESS = 2
     COMPLETE = 3
@@ -118,19 +156,13 @@ class JobTask(models.Model):
     completed_by = models.ForeignKey(User, null=True)
     completed_time = models.DateTimeField(null=True)
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, *args, **kwargs):
         if self.completed_by and not self.completed_time:
             self.completed_time = timezone.now()
         elif not self.completed_by:
             self.completed_time = None
 
-        super(JobTask, self).save(force_insert, force_update, using, update_fields)
-        self.update_job_completion()
-
-    def update_job_completion(self):
-        if all([j.completed_by for j in self.job.job_tasks.all()]) and not self.job.completed_timestamp:
-            self.job.completed_timestamp = timezone.now()
-            self.job.save()
+        super(JobTask, self).save(*args, **kwargs)
 
     @property
     def description(self):
