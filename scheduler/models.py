@@ -27,7 +27,6 @@ class StatusHistoryMixin(object):
     corresponding to the last recorded status change that day.)
     """
     def save(self, *args, **kwargs):
-        print 'saving'
         if self.status:
             status_log = StatusHistory.objects.get_or_create(
                 model=self.status_model,
