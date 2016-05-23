@@ -31,7 +31,7 @@ export default class AddProductController extends baseFormClass {
   }
 
   publishItem() {
-    super.publishItem().then(() => this._$state.go('home'));
+    super.publishItem().then(() => this._$state.go('root.home'));
   }
 
   refreshUnselectedTasks() {

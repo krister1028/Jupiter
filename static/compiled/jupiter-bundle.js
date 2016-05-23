@@ -69543,7 +69543,7 @@
 	      var _this2 = this;
 	
 	      _get(Object.getPrototypeOf(AddProductController.prototype), 'publishItem', this).call(this).then(function () {
-	        return _this2._$state.go('home');
+	        return _this2._$state.go('root.home');
 	      });
 	    }
 	  }, {
