@@ -1,6 +1,13 @@
 <div layout-margin>
     <h3>Metrics Dashboard</h3>
-    <highchart config="vm.jobsByProduct"></highchart>
-    <highchart config="vm.jobsByType"></highchart>
-    <date-chart chart-config="vm.jobsByType" start-date-model="vm.startDate" end-date-model="vm.endDate"></date-chart>
+    <date-chart
+            chart-config="vm.jobsByProduct"
+            start-date-model="vm.jobsByProduct.startDate"
+            end-date-model="vm.jobsByProduct.endDate">
+    </date-chart>
+    <date-chart
+            chart-config="vm.jobsByType"
+            start-date-model="vm.jobsByType.startDate"
+            end-date-model="vm.jobsByType.endDate">
+    </date-chart>
 </div>

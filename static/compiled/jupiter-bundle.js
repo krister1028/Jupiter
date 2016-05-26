@@ -70359,6 +70359,11 @@
 	        title: {
 	          text: ''
 	        },
+	        size: {
+	          height: 400
+	        },
+	        startDate: undefined,
+	        endDate: undefined,
 	        legend: {
 	          enabled: false
 	        },
@@ -70400,17 +70405,15 @@
 	      config.yAxis.title.text = 'Job Count';
 	      config.series = [{
 	        showInLegend: false,
-	        data: this._jobService.getJobsCompletedByProduct()
+	        data: this._jobService.getJobsCompletedByProduct(config.startDate, config.endDate)
 	      }];
 	      return config;
 	    }
 	  }, {
 	    key: 'getJobsCompletedByTypeChart',
 	    value: function getJobsCompletedByTypeChart() {
-	      var _this = this;
-	
-	      return this.getJobsCompletedByJobType().then(function (seriesData) {
-	        var config = _this._getBaseChartConfig();
+	      var config = this._getBaseChartConfig();
+	      return this.getJobsCompletedByJobType(config.startDate, config.endDate).then(function (seriesData) {
 	        config.options.chart.type = 'column';
 	        config.title.text = 'Jobs Completed By Type';
 	        config.xAxis.title.text = 'Job Type';
@@ -70426,15 +70429,16 @@
 	  }, {
 	    key: 'getJobsCompletedByJobType',
 	    value: function getJobsCompletedByJobType() {
-	      var _this2 = this;
+	      var _this = this;
 	
+	      var config = this._getBaseChartConfig();
 	      return this._jobTypeService.get().then(function () {
 	        var jobByType = {};
 	        var typeName = undefined;
 	        // generate object with product name and job count
-	        _this2._jobService.itemList.forEach(function (job) {
+	        _this._filterJobsByDate(config.startDate, config.endDate).forEach(function (job) {
 	          if (job.completed_timestamp) {
-	            typeName = _this2._jobTypeService.itemList.filter(function (jt) {
+	            typeName = _this._jobTypeService.itemList.filter(function (jt) {
 	              return jt.id === job.type;
 	            })[0].description;
 	            if (jobByType.hasOwnProperty(typeName)) {
@@ -70450,6 +70454,22 @@
 	        });
 	        return returnArray;
 	      });
+	    }
+	  }, {
+	    key: '_filterJobsByDate',
+	    value: function _filterJobsByDate(startDate, endDate) {
+	      var jobs = this._jobService.itemList;
+	      if (startDate) {
+	        jobs = jobs.filter(function (j) {
+	          return new Date(j.completion_date) >= startDate;
+	        });
+	      }
+	      if (endDate) {
+	        jobs = jobs.filter(function (j) {
+	          return new Date(j.completion_date) <= endDate;
+	        });
+	      }
+	      return jobs;
 	    }
 	  }]);
 	
@@ -70954,7 +70974,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <highchart config=\"vm.jobsByProduct\"></highchart> <highchart config=\"vm.jobsByType\"></highchart> <date-chart chart-config=\"vm.jobsByType\" start-date-model=\"vm.startDate\" end-date-model=\"vm.endDate\"></date-chart> </div>";
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart chart-config=\"vm.jobsByProduct\" start-date-model=\"vm.jobsByProduct.startDate\" end-date-model=\"vm.jobsByProduct.endDate\"> </date-chart> <date-chart chart-config=\"vm.jobsByType\" start-date-model=\"vm.jobsByType.startDate\" end-date-model=\"vm.jobsByType.endDate\"> </date-chart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
 
@@ -70995,7 +71015,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div flex layout=\"row\"> <div flex=\"20\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"startDateModel\" placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"endDateModel\" placeholder=\"N/A\"></md-datepicker> </div> <highchart flex=\"80\" config=\"chartConfig\"></highchart> </div>";
+	var v1="<div flex layout=\"row\"> <div flex=\"20\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"startDateModel\" md-placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"endDateModel\" md-placeholder=\"N/A\"></md-datepicker> </div> <highchart flex=\"80\" config=\"chartConfig\"></highchart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("date-chart.template.html",v1)}]);
 	module.exports=v1;
 

@@ -22,6 +22,11 @@ export default class highchartService {
       title: {
         text: ''
       },
+      size: {
+        height: 400
+      },
+      startDate: undefined,
+      endDate: undefined,
       legend: {
         enabled: false
       },
@@ -63,15 +68,15 @@ export default class highchartService {
     config.series = [
       {
         showInLegend: false,
-        data: this._jobService.getJobsCompletedByProduct()
+        data: this._jobService.getJobsCompletedByProduct(config.startDate, config.endDate)
       }
     ];
     return config;
   }
 
   getJobsCompletedByTypeChart() {
-    return this.getJobsCompletedByJobType().then(seriesData => {
-      const config = this._getBaseChartConfig();
+    const config = this._getBaseChartConfig();
+    return this.getJobsCompletedByJobType(config.startDate, config.endDate).then(seriesData => {
       config.options.chart.type = 'column';
       config.title.text = 'Jobs Completed By Type';
       config.xAxis.title.text = 'Job Type';
@@ -88,11 +93,12 @@ export default class highchartService {
   }
 
   getJobsCompletedByJobType() {
+    const config = this._getBaseChartConfig();
     return this._jobTypeService.get().then(() => {
       const jobByType = {};
       let typeName;
       // generate object with product name and job count
-      this._jobService.itemList.forEach(job => {
+      this._filterJobsByDate(config.startDate, config.endDate).forEach(job => {
         if (job.completed_timestamp) {
           typeName = this._jobTypeService.itemList.filter(jt => jt.id === job.type)[0].description;
           if (jobByType.hasOwnProperty(typeName)) {
@@ -106,6 +112,17 @@ export default class highchartService {
       Object.keys(jobByType).forEach(p => returnArray.push([p, jobByType[p]]));
       return returnArray;
     });
+  }
+
+  _filterJobsByDate(startDate, endDate) {
+    let jobs = this._jobService.itemList;
+    if (startDate) {
+      jobs = jobs.filter(j => new Date(j.completion_date) >= startDate);
+    }
+    if (endDate) {
+      jobs = jobs.filter(j => new Date(j.completion_date) <= endDate);
+    }
+    return jobs
   }
 
 }
