@@ -6,6 +6,9 @@ export default class highchartService {
 
   _getBaseChartConfig() {
     const chartConfig = {
+      credits: {
+        enabled: false
+      },
       options: {
         chart: {
           type: 'line'

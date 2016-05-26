@@ -70343,6 +70343,9 @@
 	    key: '_getBaseChartConfig',
 	    value: function _getBaseChartConfig() {
 	      var chartConfig = {
+	        credits: {
+	          enabled: false
+	        },
 	        options: {
 	          chart: {
 	            type: 'line'
