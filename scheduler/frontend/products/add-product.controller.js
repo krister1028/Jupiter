@@ -1,4 +1,4 @@
-import baseFormClass from './base-form-class';
+import baseFormClass from '../base-form-class';
 
 export default class AddProductController extends baseFormClass {
   /* @ngInject */

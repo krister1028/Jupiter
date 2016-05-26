@@ -97,61 +97,61 @@
 	
 	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
 	
-	var _addProductController = __webpack_require__(20);
+	var _productsAddProductController = __webpack_require__(20);
 	
-	var _addProductController2 = _interopRequireDefault(_addProductController);
+	var _productsAddProductController2 = _interopRequireDefault(_productsAddProductController);
 	
-	var _addTaskController = __webpack_require__(22);
+	var _tasksAddTaskController = __webpack_require__(22);
 	
-	var _addTaskController2 = _interopRequireDefault(_addTaskController);
+	var _tasksAddTaskController2 = _interopRequireDefault(_tasksAddTaskController);
 	
-	var _metricsController = __webpack_require__(23);
+	var _metricsMetricsController = __webpack_require__(23);
 	
-	var _metricsController2 = _interopRequireDefault(_metricsController);
+	var _metricsMetricsController2 = _interopRequireDefault(_metricsMetricsController);
 	
-	var _userService = __webpack_require__(24);
+	var _loginUserService = __webpack_require__(24);
 	
-	var _userService2 = _interopRequireDefault(_userService);
+	var _loginUserService2 = _interopRequireDefault(_loginUserService);
 	
-	var _productService = __webpack_require__(25);
+	var _productsProductService = __webpack_require__(25);
 	
-	var _productService2 = _interopRequireDefault(_productService);
+	var _productsProductService2 = _interopRequireDefault(_productsProductService);
 	
-	var _jobService = __webpack_require__(27);
+	var _jobsJobService = __webpack_require__(27);
 	
-	var _jobService2 = _interopRequireDefault(_jobService);
+	var _jobsJobService2 = _interopRequireDefault(_jobsJobService);
 	
-	var _taskService = __webpack_require__(28);
+	var _tasksTaskService = __webpack_require__(28);
 	
-	var _taskService2 = _interopRequireDefault(_taskService);
+	var _tasksTaskService2 = _interopRequireDefault(_tasksTaskService);
 	
-	var _groupUserService = __webpack_require__(29);
+	var _jobsGroupUserService = __webpack_require__(29);
 	
-	var _groupUserService2 = _interopRequireDefault(_groupUserService);
+	var _jobsGroupUserService2 = _interopRequireDefault(_jobsGroupUserService);
 	
-	var _jobTypeService = __webpack_require__(30);
+	var _jobsJobTypeService = __webpack_require__(30);
 	
-	var _jobTypeService2 = _interopRequireDefault(_jobTypeService);
+	var _jobsJobTypeService2 = _interopRequireDefault(_jobsJobTypeService);
 	
-	var _jobStatusService = __webpack_require__(31);
+	var _jobsJobStatusService = __webpack_require__(31);
 	
-	var _jobStatusService2 = _interopRequireDefault(_jobStatusService);
+	var _jobsJobStatusService2 = _interopRequireDefault(_jobsJobStatusService);
 	
 	var _metricsHighchartServiceJs = __webpack_require__(32);
 	
 	var _metricsHighchartServiceJs2 = _interopRequireDefault(_metricsHighchartServiceJs);
 	
-	var _metricsService = __webpack_require__(33);
+	var _metricsMetricsService = __webpack_require__(33);
 	
-	var _metricsService2 = _interopRequireDefault(_metricsService);
+	var _metricsMetricsService2 = _interopRequireDefault(_metricsMetricsService);
 	
 	var _homeController = __webpack_require__(34);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _editJobController = __webpack_require__(37);
+	var _jobsEditJobController = __webpack_require__(37);
 	
-	var _editJobController2 = _interopRequireDefault(_editJobController);
+	var _jobsEditJobController2 = _interopRequireDefault(_jobsEditJobController);
 	
 	var _headerController = __webpack_require__(40);
 	
@@ -161,25 +161,25 @@
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _addProductTemplateHtml = __webpack_require__(42);
+	var _productsAddProductTemplateHtml = __webpack_require__(42);
 	
-	var _addProductTemplateHtml2 = _interopRequireDefault(_addProductTemplateHtml);
+	var _productsAddProductTemplateHtml2 = _interopRequireDefault(_productsAddProductTemplateHtml);
 	
-	var _addTaskTemplateHtml = __webpack_require__(43);
+	var _tasksAddTaskTemplateHtml = __webpack_require__(43);
 	
-	var _addTaskTemplateHtml2 = _interopRequireDefault(_addTaskTemplateHtml);
+	var _tasksAddTaskTemplateHtml2 = _interopRequireDefault(_tasksAddTaskTemplateHtml);
 	
-	var _editJobTemplateHtml = __webpack_require__(44);
+	var _jobsEditJobTemplateHtml = __webpack_require__(44);
 	
-	var _editJobTemplateHtml2 = _interopRequireDefault(_editJobTemplateHtml);
+	var _jobsEditJobTemplateHtml2 = _interopRequireDefault(_jobsEditJobTemplateHtml);
 	
-	var _metricsTemplateHtml = __webpack_require__(45);
+	var _metricsMetricsTemplateHtml = __webpack_require__(45);
 	
-	var _metricsTemplateHtml2 = _interopRequireDefault(_metricsTemplateHtml);
+	var _metricsMetricsTemplateHtml2 = _interopRequireDefault(_metricsMetricsTemplateHtml);
 	
 	window.Highcharts = _highcharts2['default'];
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _addProductController2['default']).controller('AddTaskController', _addTaskController2['default']).controller('EditJobController', _editJobController2['default']).service('userService', _userService2['default']).service('productService', _productService2['default']).service('jobService', _jobService2['default']).service('taskService', _taskService2['default']).service('groupUserService', _groupUserService2['default']).service('jobTypeService', _jobTypeService2['default']).service('jobStatusService', _jobStatusService2['default']).service('metricsService', _metricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).config(configuration).run(run);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).config(configuration).run(run);
 	
 	/* @ngInject */
 	function run($rootScope, $state, $stateParams) {
@@ -209,8 +209,8 @@
 	        controllerAs: 'vm'
 	      },
 	      'metrics@root.home': {
-	        template: _metricsTemplateHtml2['default'],
-	        controller: _metricsController2['default'],
+	        template: _metricsMetricsTemplateHtml2['default'],
+	        controller: _metricsMetricsController2['default'],
 	        controllerAs: 'vm'
 	      }
 	    }
@@ -228,7 +228,7 @@
 	    data: { pageTitle: 'Add Product' },
 	    views: {
 	      'body@': {
-	        template: _addProductTemplateHtml2['default'],
+	        template: _productsAddProductTemplateHtml2['default'],
 	        controller: 'AddProductController as vm'
 	      }
 	    }
@@ -237,7 +237,7 @@
 	    data: { pageTitle: 'Edit Job' },
 	    views: {
 	      'body@': {
-	        template: _editJobTemplateHtml2['default'],
+	        template: _jobsEditJobTemplateHtml2['default'],
 	        controller: 'EditJobController as vm'
 	      }
 	    }
@@ -247,7 +247,7 @@
 	    data: { pageTitle: 'Add Task' },
 	    views: {
 	      'body@': {
-	        template: _addTaskTemplateHtml2['default'],
+	        template: _tasksAddTaskTemplateHtml2['default'],
 	        controller: 'AddTaskController as vm'
 	      }
 	    }
@@ -70469,13 +70469,13 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _addJobModalTemplateHtml = __webpack_require__(35);
+	var _jobsAddJobModalTemplateHtml = __webpack_require__(35);
 	
-	var _addJobModalTemplateHtml2 = _interopRequireDefault(_addJobModalTemplateHtml);
+	var _jobsAddJobModalTemplateHtml2 = _interopRequireDefault(_jobsAddJobModalTemplateHtml);
 	
-	var _addJobModalController = __webpack_require__(36);
+	var _jobsAddJobModalController = __webpack_require__(36);
 	
-	var _addJobModalController2 = _interopRequireDefault(_addJobModalController);
+	var _jobsAddJobModalController2 = _interopRequireDefault(_jobsAddJobModalController);
 	
 	var _angular = __webpack_require__(3);
 	
@@ -70522,8 +70522,8 @@
 	    key: 'addJob',
 	    value: function addJob(ev) {
 	      this._$mdDialog.show({
-	        template: _addJobModalTemplateHtml2['default'],
-	        controller: _addJobModalController2['default'],
+	        template: _jobsAddJobModalTemplateHtml2['default'],
+	        controller: _jobsAddJobModalController2['default'],
 	        controllerAs: 'vm',
 	        parent: _angular2['default'].element(document.body),
 	        targetEvent: ev,

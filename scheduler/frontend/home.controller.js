@@ -1,5 +1,5 @@
-import addJobTemplate from './add-job-modal.template.html';
-import AddJobModalController from './add-job-modal.controller';
+import addJobTemplate from './jobs/add-job-modal.template.html';
+import AddJobModalController from './jobs/add-job-modal.controller';
 import angular from 'angular';
 
 export default class HomeController {

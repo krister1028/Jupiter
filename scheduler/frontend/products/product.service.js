@@ -1,4 +1,4 @@
-import baseResourceClass from './base-resource-class';
+import baseResourceClass from '../base-resource-class';
 
 export default class productService extends baseResourceClass {
   /* @ngInject */
