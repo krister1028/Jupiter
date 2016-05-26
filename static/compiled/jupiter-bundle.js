@@ -69730,15 +69730,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var MetricsController = function MetricsController(metricsService, highchartService) {
-	  var _this = this;
-	
+	var MetricsController = function MetricsController(highchartService) {
 	  _classCallCheck(this, MetricsController);
 	
-	  metricsService.get().then(function (metrics) {
-	    return _this.metrics = metrics;
-	  });
-	  this.jobsByProductChart = highchartService.getJobsCompletedByProductChart();
+	  this.jobsByProduct = highchartService.getJobsCompletedByProductChart();
+	  this.jobByType = highchartService.getJobsCompletedByTypeChart();
 	};
 	
 	exports["default"] = MetricsController;
@@ -70177,7 +70173,7 @@
 
 /***/ },
 /* 30 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -70185,39 +70181,32 @@
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var jobTypeService = (function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(26);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var jobTypeService = (function (_baseResourceClass) {
+	  _inherits(jobTypeService, _baseResourceClass);
+	
 	  /* @ngInject */
 	
-	  function jobTypeService($http) {
+	  function jobTypeService($http, $q, $state) {
 	    _classCallCheck(this, jobTypeService);
 	
-	    this._$http = $http;
-	    this.jobTypes = [];
+	    _get(Object.getPrototypeOf(jobTypeService.prototype), 'constructor', this).call(this, $http, $q, $state);
 	    this._resourceUrl = '/api/job-types/';
-	    this.get();
 	  }
 	
-	  _createClass(jobTypeService, [{
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
-	
-	      return this._$http.get(this._resourceUrl).then(function (response) {
-	        var _jobTypes;
-	
-	        return (_jobTypes = _this.jobTypes).push.apply(_jobTypes, _toConsumableArray(response.data));
-	      });
-	    }
-	  }]);
-	
 	  return jobTypeService;
-	})();
+	})(_baseResourceClass3['default']);
 	
 	exports['default'] = jobTypeService;
 	module.exports = exports['default'];
@@ -70284,10 +70273,11 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var highchartService = (function () {
-	  function highchartService(jobService) {
+	  function highchartService(jobService, jobTypeService) {
 	    _classCallCheck(this, highchartService);
 	
 	    this._jobService = jobService;
+	    this._jobTypeService = jobTypeService;
 	  }
 	
 	  /*
@@ -70405,6 +70395,49 @@
 	        data: this._jobService.getJobsCompletedByProduct()
 	      }];
 	      return config;
+	    }
+	  }, {
+	    key: 'getJobsCompletedByTypeChart',
+	    value: function getJobsCompletedByTypeChart() {
+	      var config = this._getBaseChartConfig();
+	      config.options.chart.type = 'column';
+	      config.title.text = 'Jobs Completed By Type';
+	      config.xAxis.title.text = 'Job Type';
+	      config.xAxis.type = 'category';
+	      config.yAxis.title.text = 'Job Count';
+	      config.series = [{
+	        showInLegend: false,
+	        data: this.getJobsCompletedByJobType()
+	      }];
+	      return config;
+	    }
+	  }, {
+	    key: 'getJobsCompletedByJobType',
+	    value: function getJobsCompletedByJobType() {
+	      var _this = this;
+	
+	      this._jobTypeService.get().then(function () {
+	        var jobByType = {};
+	        var typeName = undefined;
+	        // generate object with product name and job count
+	        _this._jobService.itemList.forEach(function (job) {
+	          if (job.completed_timestamp) {
+	            typeName = _this._jobTypeService.itemList.filter(function (jt) {
+	              return jt.id === job.type;
+	            })[0].description;
+	            if (jobByType.hasOwnProperty(typeName)) {
+	              jobByType[typeName] += 1;
+	            } else {
+	              jobByType[typeName] = 1;
+	            }
+	          }
+	        });
+	        var returnArray = [];
+	        Object.keys(jobByType).forEach(function (p) {
+	          return returnArray.push([p, jobByType[p]]);
+	        });
+	        return returnArray;
+	      });
 	    }
 	  }]);
 	
@@ -70907,7 +70940,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <highchart config=\"vm.jobsByProductChart\"></highchart> </div>";
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <highchart config=\"vm.jobsByProduct\"></highchart> <highchart config=\"vm.jobsByType\"></highchart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
 

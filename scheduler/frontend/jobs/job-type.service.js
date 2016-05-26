@@ -1,13 +1,8 @@
-export default class jobTypeService {
+import baseResourceClass from '../base-resource-class';
+export default class jobTypeService extends baseResourceClass {
   /* @ngInject */
-  constructor($http) {
-    this._$http = $http;
-    this.jobTypes = [];
+  constructor($http, $q, $state) {
+    super($http, $q, $state);
     this._resourceUrl = '/api/job-types/';
-    this.get();
-  }
-
-  get() {
-    return this._$http.get(this._resourceUrl).then(response => this.jobTypes.push(...response.data));
   }
 }
