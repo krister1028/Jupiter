@@ -1,6 +1,8 @@
 export default class MetricsController {
   constructor(highchartService) {
     this.jobsByProduct = highchartService.getJobsCompletedByProductChart();
-    this.jobByType = highchartService.getJobsCompletedByTypeChart();
+    highchartService.getJobsCompletedByTypeChart().then(config => {
+      this.jobsByType = config;
+    });
   }
 }

@@ -69731,10 +69731,14 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var MetricsController = function MetricsController(highchartService) {
+	  var _this = this;
+	
 	  _classCallCheck(this, MetricsController);
 	
 	  this.jobsByProduct = highchartService.getJobsCompletedByProductChart();
-	  this.jobByType = highchartService.getJobsCompletedByTypeChart();
+	  highchartService.getJobsCompletedByTypeChart().then(function (config) {
+	    _this.jobsByType = config;
+	  });
 	};
 	
 	exports["default"] = MetricsController;
@@ -70399,30 +70403,34 @@
 	  }, {
 	    key: 'getJobsCompletedByTypeChart',
 	    value: function getJobsCompletedByTypeChart() {
-	      var config = this._getBaseChartConfig();
-	      config.options.chart.type = 'column';
-	      config.title.text = 'Jobs Completed By Type';
-	      config.xAxis.title.text = 'Job Type';
-	      config.xAxis.type = 'category';
-	      config.yAxis.title.text = 'Job Count';
-	      config.series = [{
-	        showInLegend: false,
-	        data: this.getJobsCompletedByJobType()
-	      }];
-	      return config;
+	      var _this = this;
+	
+	      return this.getJobsCompletedByJobType().then(function (seriesData) {
+	        var config = _this._getBaseChartConfig();
+	        config.options.chart.type = 'column';
+	        config.title.text = 'Jobs Completed By Type';
+	        config.xAxis.title.text = 'Job Type';
+	        config.xAxis.type = 'category';
+	        config.yAxis.title.text = 'Job Count';
+	        config.series = [{
+	          showInLegend: false,
+	          data: seriesData
+	        }];
+	        return config;
+	      });
 	    }
 	  }, {
 	    key: 'getJobsCompletedByJobType',
 	    value: function getJobsCompletedByJobType() {
-	      var _this = this;
+	      var _this2 = this;
 	
-	      this._jobTypeService.get().then(function () {
+	      return this._jobTypeService.get().then(function () {
 	        var jobByType = {};
 	        var typeName = undefined;
 	        // generate object with product name and job count
-	        _this._jobService.itemList.forEach(function (job) {
+	        _this2._jobService.itemList.forEach(function (job) {
 	          if (job.completed_timestamp) {
-	            typeName = _this._jobTypeService.itemList.filter(function (jt) {
+	            typeName = _this2._jobTypeService.itemList.filter(function (jt) {
 	              return jt.id === job.type;
 	            })[0].description;
 	            if (jobByType.hasOwnProperty(typeName)) {
@@ -70625,7 +70633,9 @@
 	    productService.get().then(function (products) {
 	      return _this.products = products;
 	    });
-	    this.jobTypes = jobTypeService.jobTypes;
+	    jobTypeService.get().then(function (types) {
+	      return _this.jobTypes = types;
+	    });
 	    this.jobStatuses = jobStatusService.jobStatuses;
 	    this.newJob = {};
 	  }

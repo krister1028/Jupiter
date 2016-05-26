@@ -1,6 +1,7 @@
 export default class highchartService {
-  constructor(jobService) {
+  constructor(jobService, jobTypeService) {
     this._jobService = jobService;
+    this._jobTypeService = jobTypeService;
   }
 
   _getBaseChartConfig() {
@@ -66,6 +67,45 @@ export default class highchartService {
       }
     ];
     return config;
+  }
+
+  getJobsCompletedByTypeChart() {
+    return this.getJobsCompletedByJobType().then(seriesData => {
+      const config = this._getBaseChartConfig();
+      config.options.chart.type = 'column';
+      config.title.text = 'Jobs Completed By Type';
+      config.xAxis.title.text = 'Job Type';
+      config.xAxis.type = 'category';
+      config.yAxis.title.text = 'Job Count';
+      config.series = [
+        {
+          showInLegend: false,
+          data: seriesData
+        }
+      ];
+      return config;
+    });
+  }
+
+  getJobsCompletedByJobType() {
+    return this._jobTypeService.get().then(() => {
+      const jobByType = {};
+      let typeName;
+      // generate object with product name and job count
+      this._jobService.itemList.forEach(job => {
+        if (job.completed_timestamp) {
+          typeName = this._jobTypeService.itemList.filter(jt => jt.id === job.type)[0].description;
+          if (jobByType.hasOwnProperty(typeName)) {
+            jobByType[typeName] += 1;
+          } else {
+            jobByType[typeName] = 1;
+          }
+        }
+      });
+      const returnArray = [];
+      Object.keys(jobByType).forEach(p => returnArray.push([p, jobByType[p]]));
+      return returnArray;
+    });
   }
 
 }
