@@ -31,6 +31,8 @@ import addTaskTemplate from './tasks/add-task.template.html';
 import editJobTemplate from './jobs/edit-job.template.html';
 import metricsTemplate from './metrics/metrics.template.html';
 
+import dateChart from './metrics/date-select-chart.directive';
+
 const jupiter = angular
   .module('jupiter', [angularMaterial, uiRouter, angularMessages, highChartsNg])
   .controller('LoginController', LoginController)
@@ -46,6 +48,7 @@ const jupiter = angular
   .service('jobStatusService', jobStatusService)
   .service('metricsService', metricsService)
   .service('highchartService', highchartService)
+  .directive('dateChart', dateChart)
   .config(configuration)
   .run(run)
 ;

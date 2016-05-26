@@ -177,9 +177,13 @@
 	
 	var _metricsMetricsTemplateHtml2 = _interopRequireDefault(_metricsMetricsTemplateHtml);
 	
+	var _metricsDateSelectChartDirective = __webpack_require__(46);
+	
+	var _metricsDateSelectChartDirective2 = _interopRequireDefault(_metricsDateSelectChartDirective);
+	
 	window.Highcharts = _highcharts2['default'];
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).config(configuration).run(run);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).directive('dateChart', _metricsDateSelectChartDirective2['default']).config(configuration).run(run);
 	
 	/* @ngInject */
 	function run($rootScope, $state, $stateParams) {
@@ -70950,8 +70954,49 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <highchart config=\"vm.jobsByProduct\"></highchart> <highchart config=\"vm.jobsByType\"></highchart> </div>";
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <highchart config=\"vm.jobsByProduct\"></highchart> <highchart config=\"vm.jobsByType\"></highchart> <date-chart chart-config=\"vm.jobsByType\" start-date-model=\"vm.startDate\" end-date-model=\"vm.endDate\"></date-chart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _dateChartTemplateHtml = __webpack_require__(47);
+	
+	var _dateChartTemplateHtml2 = _interopRequireDefault(_dateChartTemplateHtml);
+	
+	exports['default'] = function () {
+	  'ngInject';
+	  return {
+	    scope: {
+	      startDateModel: '=',
+	      endDateModel: '=',
+	      chartConfig: '='
+	    },
+	    template: _dateChartTemplateHtml2['default']
+	  };
+	};
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 47 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div flex layout=\"row\"> <div flex=\"20\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"startDateModel\" placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"endDateModel\" placeholder=\"N/A\"></md-datepicker> </div> <highchart flex=\"80\" config=\"chartConfig\"></highchart> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("date-chart.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ }
