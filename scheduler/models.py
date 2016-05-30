@@ -4,6 +4,7 @@ import datetime
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.utils import timezone
+from simple_history.models import HistoricalRecords
 
 
 class StatusHistory(models.Model):
@@ -101,7 +102,7 @@ class JobType(models.Model):
         return self.description
 
 
-class Job(StatusHistoryMixin, models.Model):
+class Job(models.Model):
     status_model = StatusHistory.JOB
 
     group = models.ForeignKey(Group)
@@ -113,6 +114,7 @@ class Job(StatusHistoryMixin, models.Model):
     description = models.CharField(max_length=255)
     started_timestamp = models.DateTimeField(null=True)
     completed_timestamp = models.DateTimeField(null=True)
+    history = HistoricalRecords()
 
     def __unicode__(self):
         return self.description
@@ -139,7 +141,7 @@ class ProductTask(models.Model):
         return self.task.description
 
 
-class JobTask(StatusHistoryMixin, models.Model):
+class JobTask(models.Model):
     status_model = StatusHistory.JOB_TASK
     PENDING = 1
     IN_PROGRESS = 2
@@ -155,6 +157,7 @@ class JobTask(StatusHistoryMixin, models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     completed_by = models.ForeignKey(User, null=True)
     completed_time = models.DateTimeField(null=True)
+    history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
         if self.completed_by and not self.completed_time:
