@@ -69732,18 +69732,31 @@
 	  value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var MetricsController = function MetricsController(highchartService) {
-	  var _this = this;
+	var MetricsController = (function () {
+	  function MetricsController(highchartService) {
+	    var _this = this;
 	
-	  _classCallCheck(this, MetricsController);
+	    _classCallCheck(this, MetricsController);
 	
-	  this.jobsByProduct = highchartService.getJobsCompletedByProductChart();
-	  highchartService.getJobsCompletedByTypeChart().then(function (config) {
-	    _this.jobsByType = config;
-	  });
-	};
+	    this.jobsByProduct = highchartService.getJobsCompletedByProductChart();
+	    highchartService.getJobsCompletedByTypeChart().then(function (config) {
+	      _this.jobsByType = config;
+	    });
+	  }
+	
+	  _createClass(MetricsController, [{
+	    key: "applyDates",
+	    value: function applyDates(chartConfig) {
+	      chartConfig.series.data = chartConfig.dataCallBack();
+	    }
+	  }]);
+	
+	  return MetricsController;
+	})();
 	
 	exports["default"] = MetricsController;
 	module.exports = exports["default"];
@@ -70398,9 +70411,15 @@
 	      return chartConfig;
 	    }
 	  }, {
+	    key: 'updateData',
+	    value: function updateData(config) {
+	      config.series.data = config.dataCallback(config.startDate, config.endDate);
+	    }
+	  }, {
 	    key: 'getJobsCompletedByProductChart',
 	    value: function getJobsCompletedByProductChart() {
 	      var config = this._getBaseChartConfig();
+	      config.dataCallback = this._jobService.getJobsCompletedByProduct;
 	      config.options.chart.type = 'column';
 	      config.title.text = 'Jobs Completed By Product';
 	      config.xAxis.title.text = 'Product';
@@ -70416,6 +70435,7 @@
 	    key: 'getJobsCompletedByTypeChart',
 	    value: function getJobsCompletedByTypeChart() {
 	      var config = this._getBaseChartConfig();
+	      config.dataCallback = highchartService.getJobsCompletedByJobType;
 	      return this.getJobsCompletedByJobType(config.startDate, config.endDate).then(function (seriesData) {
 	        config.options.chart.type = 'column';
 	        config.title.text = 'Jobs Completed By Type';
@@ -71005,10 +71025,17 @@
 	      endDateModel: '=',
 	      chartConfig: '='
 	    },
-	    template: _dateChartTemplateHtml2['default']
+	    template: _dateChartTemplateHtml2['default'],
+	    controller: controller,
+	    controllerAs: 'vm'
 	  };
 	};
 	
+	function controller(highchartService) {
+	  this.applyDates = function (config) {
+	    highchartService.updateData(config);
+	  };
+	}
 	module.exports = exports['default'];
 
 /***/ },
@@ -71018,7 +71045,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div flex layout=\"row\"> <div flex=\"20\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"startDateModel\" md-placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"endDateModel\" md-placeholder=\"N/A\"></md-datepicker> </div> <highchart flex=\"80\" config=\"chartConfig\"></highchart> </div>";
+	var v1="<div flex layout=\"row\"> <div flex=\"15\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"startDateModel\" md-placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"endDateModel\" md-placeholder=\"N/A\"></md-datepicker> <md-button ng-click=\"vm.applyDates(chartConfig)\">Apply Date Filter</md-button> </div> <highchart flex=\"85\" config=\"chartConfig\"></highchart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("date-chart.template.html",v1)}]);
 	module.exports=v1;
 

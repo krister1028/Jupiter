@@ -5,4 +5,8 @@ export default class MetricsController {
       this.jobsByType = config;
     });
   }
+
+  applyDates(chartConfig) {
+    chartConfig.series.data = chartConfig.dataCallBack();
+  }
 }

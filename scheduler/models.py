@@ -7,40 +7,6 @@ from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 
-class StatusHistory(models.Model):
-    JOB = 1
-    JOB_TASK = 2
-    MODEL_CHOICES = (
-        (JOB, 'Job'),
-        (JOB_TASK, 'Job Task')
-    )
-    model = models.IntegerField(choices=MODEL_CHOICES)
-    model_id = models.IntegerField()
-    status = models.IntegerField(null=True)
-    date = models.DateField()
-
-
-class StatusHistoryMixin(object):
-    """
-    Quick and dirty way to capture updates to a Job or JobTask status.  Note that status_model must be defined, and
-    that a 'status' field must exist.
-    Status updates are overwritten daily (i.e. there's only a single status for any given record on a single day -
-    corresponding to the last recorded status change that day.)
-    """
-    def save(self, *args, **kwargs):
-        super(StatusHistoryMixin, self).save(*args, **kwargs)
-        if self.status:
-            status_log = StatusHistory.objects.get_or_create(
-                model=self.status_model,
-                model_id=self.pk,
-                date=datetime.datetime.today())[0]
-            if type(self.status) == int:
-                status_log.status = self.status
-            else:
-                status_log.status = self.status.id
-            status_log.save()
-
-
 class UserProfile(models.Model):
     TECHNICIAN = 1
     ADMINISTRATOR = 2
@@ -103,7 +69,6 @@ class JobType(models.Model):
 
 
 class Job(models.Model):
-    status_model = StatusHistory.JOB
 
     group = models.ForeignKey(Group)
     product = models.ForeignKey(Product)
@@ -142,7 +107,6 @@ class ProductTask(models.Model):
 
 
 class JobTask(models.Model):
-    status_model = StatusHistory.JOB_TASK
     PENDING = 1
     IN_PROGRESS = 2
     COMPLETE = 3
