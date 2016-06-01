@@ -2,11 +2,13 @@ import baseResourceClass from '../base-resource-class';
 
 export default class jobService extends baseResourceClass {
   /* @ngInject */
-  constructor($http, $q, productService) {
+  constructor($http, $q, productService, jobTypeService, utilityService) {
     super($http, $q);
     this._$q = $q;
     this.resourceUrl = '/api/jobs/';
     this._productService = productService;
+    this._jobTypeService = jobTypeService;
+    this._utilityService = utilityService;
     this.taskCompleteStatus = 3;
     this.taskIncompleteStatus = 1;
   }
@@ -31,10 +33,25 @@ export default class jobService extends baseResourceClass {
     });
   }
 
+  getJobType(job) {
+    return this._jobTypeService.get(job.type).then(type => {
+      job.jobType = type;
+      return type;
+    });
+  }
+
   getAllJobProducts() {
     const promises = [];
     this.itemList.forEach(job => {
       promises.push(this.getJobProduct(job));
+    });
+    return this._$q.all(promises);
+  }
+
+  getAllJobTypes() {
+    const promises = [];
+    this.itemList.forEach(job => {
+      promises.push(this.getJobType(job));
     });
     return this._$q.all(promises);
   }
@@ -60,22 +77,32 @@ export default class jobService extends baseResourceClass {
   }
 
   getJobsCompletedByProduct(startDate, endDate) {
-    const jobByProduct = {};
-    let productName;
-
     return this.getAllJobProducts().then(() => {
-      this.itemList.forEach(job => {
-        if (job.completed_timestamp && (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate)) {
-          productName = job.product.description;
-          if (jobByProduct.hasOwnProperty(productName)) {
-            jobByProduct[productName] += 1;
-          } else {
-            jobByProduct[productName] = 1;
-          }
-        }
-      });
-      return jobByProduct;
+      return this._aggregateJobsByAttribute('product.description', startDate, endDate);
     });
+  }
+
+  getJobsCompletedByType(startDate, endDate) {
+    return this.getAllJobTypes().then(() => {
+      return this._aggregateJobsByAttribute('jobType.description', startDate, endDate);
+    });
+  }
+
+  _aggregateJobsByAttribute(attr, startDate, endDate) {
+    const aggregate = {};
+    let attrValue;
+
+    this.itemList.forEach(job => {
+      if (job.completed_timestamp && (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate)) {
+        attrValue = this._utilityService.getDotAttribute(attr, job);
+        if (aggregate.hasOwnProperty(attrValue)) {
+          aggregate[attrValue] += 1;
+        } else {
+          aggregate[attrValue] = 1;
+        }
+      }
+    });
+    return aggregate;
   }
 
   checkJobComplete(job) {

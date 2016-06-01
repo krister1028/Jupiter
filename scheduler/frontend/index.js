@@ -19,6 +19,7 @@ import productService from './products/product.service';
 import jobService from './jobs/job.service';
 import taskService from './tasks/task.service';
 import groupUserService from './jobs/group-user.service';
+import utilityService from './utility.service';
 import jobTypeService from './jobs/job-type.service';
 import jobStatusService from './jobs/job-status.service';
 import highchartService from './metrics/highchart.service.js';
@@ -49,6 +50,7 @@ const jupiter = angular
   .service('jobStatusService', jobStatusService)
   .service('metricsService', metricsService)
   .service('highchartService', highchartService)
+  .service('utilityService', utilityService)
   .directive('dateChart', dateChart)
   .config(configuration)
   .run(run)
