@@ -71297,7 +71297,11 @@
 	      var subVal = object;
 	      var attributes = dotString.split('.');
 	      attributes.forEach(function (attr) {
-	        subVal = subVal[attr];
+	        try {
+	          subVal = subVal[attr];
+	        } catch (TypeError) {
+	          return undefined;
+	        }
 	      });
 	      return subVal;
 	    }

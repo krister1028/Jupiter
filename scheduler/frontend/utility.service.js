@@ -3,7 +3,11 @@ export default class utilityService {
     let subVal = object;
     const attributes = dotString.split('.');
     attributes.forEach(attr => {
-      subVal = subVal[attr];
+      try {
+        subVal = subVal[attr];
+      } catch (TypeError) {
+        return undefined;
+      }
     });
     return subVal;
   }
