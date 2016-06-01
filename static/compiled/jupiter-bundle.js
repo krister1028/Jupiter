@@ -69959,6 +69959,7 @@
 	      if (this._initialRequest.promise.$$state.status === 0) {
 	        // if successful get request has not yet resolved
 	        this._$http.get(this.resourceUrl).then(function (response) {
+	          _this._initialRequest.resolve();
 	          _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
 	          _this._makeItemListPristine();
 	          deferred.resolve(_this.itemList);

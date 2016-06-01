@@ -29,6 +29,7 @@ export default class baseResourceClass {
     if (this._initialRequest.promise.$$state.status === 0) { // if successful get request has not yet resolved
       this._$http.get(this.resourceUrl).then(
         response => {
+          this._initialRequest.resolve();
           this._pristineItemList = [...this.transformResponse(response)];
           this._makeItemListPristine();
           deferred.resolve(this.itemList);
