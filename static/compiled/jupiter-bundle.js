@@ -69630,7 +69630,8 @@
 	
 	      var deferred = this._$q.defer();
 	      if (this._$stateParams[this.paramIdName] !== undefined) {
-	        this.resourceService.get(this._$stateParams[this.paramIdName]).then(function (item) {
+	        var id = parseInt(this._$stateParams[this.paramIdName], 10);
+	        this.resourceService.get(id).then(function (item) {
 	          _this.formItem = item;
 	          deferred.resolve(_this.formItem);
 	        });
