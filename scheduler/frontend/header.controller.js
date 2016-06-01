@@ -7,7 +7,7 @@ export default class HeaderController {
 
   logout() {
     this._userService.logOutUser().then(() => {
-      this._$state.go('root.login');
+      this._$state.go('login');
     });
   }
 
@@ -16,7 +16,7 @@ export default class HeaderController {
   }
 
   isLogin() {
-    return this._$state.$current.name === 'root.login';
+    return this._$state.$current.name === 'login';
   }
 
 }

@@ -1,3 +1,4 @@
+/* eslint no-shadow: 0 */
 import Highcharts from 'highcharts';
 // kinda weird, but we need to define this explicitly: https://github.com/highcharts/highcharts/issues/4994
 window.Highcharts = Highcharts;
@@ -71,7 +72,8 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
           controller: HeaderController,
           controllerAs: 'vm'
         }
-      }
+      },
+      resolve: {user: userService => userService.getUser().then(user => user)}
     })
     .state('root.home', {
       url: '/',
@@ -89,7 +91,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
         }
       }
     })
-    .state('root.login', {
+    .state('login', {
       url: '/login/',
       data: {pageTitle: 'Login'},
       views: {

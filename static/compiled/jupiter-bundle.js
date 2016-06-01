@@ -51,6 +51,7 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* eslint no-shadow: 0 */
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -202,7 +203,12 @@
 	        controller: _headerController2['default'],
 	        controllerAs: 'vm'
 	      }
-	    }
+	    },
+	    resolve: { user: function user(userService) {
+	        return userService.getUser().then(function (user) {
+	          return user;
+	        });
+	      } }
 	  }).state('root.home', {
 	    url: '/',
 	    data: { pageTitle: 'Admin Welcome Page' },
@@ -218,7 +224,7 @@
 	        controllerAs: 'vm'
 	      }
 	    }
-	  }).state('root.login', {
+	  }).state('login', {
 	    url: '/login/',
 	    data: { pageTitle: 'Login' },
 	    views: {
@@ -69813,12 +69819,13 @@
 	var userService = (function () {
 	  /* @ngInject */
 	
-	  function userService($http, $state) {
+	  function userService($http, $state, $q) {
 	    _classCallCheck(this, userService);
 	
 	    this.user = { username: null, isSuperUser: false, name: null };
 	    this._$http = $http;
 	    this._$state = $state;
+	    this._$q = $q;
 	    this._authUrl = '/rest-auth/login/';
 	    this._getUserUrl = '/rest-auth/user/';
 	    this._logoutUrl = '/rest-auth/logout/';
@@ -69837,7 +69844,8 @@
 	        return _this.user;
 	      }, function (response) {
 	        if (response.status === 403) {
-	          return _this._$state.go('root.login');
+	          _this._$state.go('login');
+	          return _this._$q.reject();
 	        }
 	      });
 	    }
@@ -70741,7 +70749,7 @@
 	var HomeController = (function () {
 	  /* @ngInject */
 	
-	  function HomeController(userService, productService, jobService, $mdDialog, taskService) {
+	  function HomeController(userService, productService, jobService, $mdDialog, taskService, user) {
 	    var _this = this;
 	
 	    _classCallCheck(this, HomeController);
@@ -70769,10 +70777,7 @@
 	    this.showMetrics = false;
 	
 	    this.loading = true;
-	    userService.getUser().then(function (user) {
-	      _this.loading = false;
-	      _this.user = user;
-	    });
+	    this.user = user;
 	  }
 	
 	  _createClass(HomeController, [{
@@ -71094,7 +71099,7 @@
 	      var _this = this;
 	
 	      this._userService.logOutUser().then(function () {
-	        _this._$state.go('root.login');
+	        _this._$state.go('login');
 	      });
 	    }
 	  }, {
@@ -71105,7 +71110,7 @@
 	  }, {
 	    key: 'isLogin',
 	    value: function isLogin() {
-	      return this._$state.$current.name === 'root.login';
+	      return this._$state.$current.name === 'login';
 	    }
 	  }]);
 	

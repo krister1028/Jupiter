@@ -4,7 +4,7 @@ import angular from 'angular';
 
 export default class HomeController {
   /* @ngInject */
-  constructor(userService, productService, jobService, $mdDialog, taskService) {
+  constructor(userService, productService, jobService, $mdDialog, taskService, user) {
     // initialize services
     this.products = [];
     productService.getList().then(products => this.products.push(...products));
@@ -20,10 +20,7 @@ export default class HomeController {
     this.showMetrics = false;
 
     this.loading = true;
-    userService.getUser().then(user => {
-      this.loading = false;
-      this.user = user;
-    });
+    this.user = user;
   }
 
   addJob(ev) {
