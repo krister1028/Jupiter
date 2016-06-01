@@ -4,7 +4,7 @@ export default class highchartService {
     this._jobTypeService = jobTypeService;
   }
 
-  _getBaseChartConfig() {
+  static _getBaseChartConfig() {
     const chartConfig = {
       credits: {
         enabled: false
@@ -62,11 +62,15 @@ export default class highchartService {
   }
 
   getCategoryConfig(configDetail) {
-    const config = this._getBaseChartConfig();
+    const config = highchartService._getBaseChartConfig();
     config.xAxis.type = 'category';
     config.title.text = configDetail.title;
     config.xAxis.title.text = configDetail.xAxisLabel;
     config.yAxis.title.text = configDetail.yAxisLabel;
+    config.series = [{
+      showInLegend: false,
+      data: []
+    }];
     return config;
   }
 
@@ -124,17 +128,6 @@ export default class highchartService {
       Object.keys(jobByType).forEach(p => returnArray.push([p, jobByType[p]]));
       return returnArray;
     });
-  }
-
-  _filterJobsByDate(startDate, endDate) {
-    let jobs = this._jobService.itemList;
-    if (startDate) {
-      jobs = jobs.filter(j => new Date(j.completion_date) >= startDate);
-    }
-    if (endDate) {
-      jobs = jobs.filter(j => new Date(j.completion_date) <= endDate);
-    }
-    return jobs
   }
 
 }

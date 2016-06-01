@@ -69738,27 +69738,55 @@
 	
 	var MetricsController = (function () {
 	  function MetricsController(highchartService, jobService) {
+	    var _this = this;
+	
 	    _classCallCheck(this, MetricsController);
 	
 	    this._jobService = jobService;
+	
 	    this.jobsByProduct = highchartService.getCategoryConfig({
 	      title: 'Jobs Completed By Product',
 	      xAxisLabel: 'Product',
 	      yAxisLabel: 'Job Count' });
-	    this.jobsByType = undefined;
-	    this.getChartData();
+	    this.jobsByType = highchartService.getCategoryConfig({
+	      title: 'Jobs Completed By Product',
+	      xAxisLabel: 'Product',
+	      yAxisLabel: 'Job Count' });
+	    this._allCharts = [this.jobsByProduct, this.jobsByType];
+	    this.getDefaultDates().then(function () {
+	      return _this.getChartData();
+	    });
 	  }
-	
-	  //applyDates(chartConfig) {
-	  //  chartConfig.series.data = chartConfig.dataCallBack();
-	  //}
 	
 	  _createClass(MetricsController, [{
 	    key: 'getChartData',
 	    value: function getChartData() {
-	      this.jobsByProduct.series = [{
-	        data: this._jobService.getJobsCompletedByProduct(this.jobsByProduct.startDate, this.jobsByProduct.endDate)
-	      }];
+	      this.getJobsByProductData();
+	    }
+	  }, {
+	    key: 'getDefaultDates',
+	    value: function getDefaultDates() {
+	      var _this2 = this;
+	
+	      return this._jobService.getOldestJobDate().then(function (oldestDate) {
+	        _this2._allCharts.forEach(function (config) {
+	          config.startDate = oldestDate;
+	          config.endDate = new Date();
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'getJobsByProductData',
+	    value: function getJobsByProductData() {
+	      var _this3 = this;
+	
+	      this._jobService.getJobsCompletedByProduct(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(function (jobsByProduct) {
+	        var data = [];
+	        Object.keys(jobsByProduct).forEach(function (p) {
+	          return data.push([p, jobsByProduct[p]]);
+	        });
+	        _this3.jobsByProduct.series[0].data = data;
+	      });
 	    }
 	  }]);
 	
@@ -70113,13 +70141,13 @@
 	
 	  /* @ngInject */
 	
-	  function jobService($http, $q, productService, taskService) {
+	  function jobService($http, $q, productService) {
 	    _classCallCheck(this, jobService);
 	
 	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q);
+	    this._$q = $q;
 	    this.resourceUrl = '/api/jobs/';
 	    this._productService = productService;
-	    this._taskService = taskService;
 	    this.taskCompleteStatus = 3;
 	    this.taskIncompleteStatus = 1;
 	  }
@@ -70144,8 +70172,20 @@
 	    key: 'getJobProduct',
 	    value: function getJobProduct(job) {
 	      return this._productService.get(job.product_id).then(function (product) {
+	        job.product = product;
 	        return product;
 	      });
+	    }
+	  }, {
+	    key: 'getAllJobProducts',
+	    value: function getAllJobProducts() {
+	      var _this2 = this;
+	
+	      var promises = [];
+	      this.itemList.forEach(function (job) {
+	        promises.push(_this2.getJobProduct(job));
+	      });
+	      return this._$q.all(promises);
 	    }
 	  }, {
 	    key: 'markTaskComplete',
@@ -70177,42 +70217,62 @@
 	  }, {
 	    key: 'getJobsCompletedByProduct',
 	    value: function getJobsCompletedByProduct(startDate, endDate) {
-	      var _this2 = this;
+	      var _this3 = this;
 	
 	      var jobByProduct = {};
 	      var productName = undefined;
-	      debugger;
-	      // generate object with product name and job count
-	      this.itemList.forEach(function (job) {
-	        if (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate) {
-	          productName = _this2._productService.itemList.filter(function (product) {
-	            return product.id === job.product_id;
-	          })[0].description;
-	          if (jobByProduct.hasOwnProperty(productName)) {
-	            jobByProduct[productName] += 1;
-	          } else {
-	            jobByProduct[productName] = 1;
+	
+	      return this.getAllJobProducts().then(function () {
+	        _this3.itemList.forEach(function (job) {
+	          if (job.completed_timestamp && job.completed_timestamp >= startDate && job.completed_timestamp <= endDate) {
+	            productName = job.product.description;
+	            if (jobByProduct.hasOwnProperty(productName)) {
+	              jobByProduct[productName] += 1;
+	            } else {
+	              jobByProduct[productName] = 1;
+	            }
 	          }
-	        }
+	        });
+	        return jobByProduct;
 	      });
-	      var returnArray = [];
-	      Object.keys(jobByProduct).forEach(function (p) {
-	        return returnArray.push([p, jobByProduct[p]]);
-	      });
-	      return returnArray;
 	    }
 	  }, {
 	    key: 'checkJobComplete',
 	    value: function checkJobComplete(job) {
-	      var _this3 = this;
+	      var _this4 = this;
 	
 	      var incompleteTasks = job.job_tasks.filter(function (t) {
-	        return t.status !== _this3.taskCompleteStatus;
+	        return t.status !== _this4.taskCompleteStatus;
 	      });
 	      if (!incompleteTasks.length && !job.completed_timestamp) {
 	        job.completed_timestamp = new Date();
 	        this.put(job);
 	      }
+	    }
+	  }, {
+	    key: 'getOldestJobDate',
+	    value: function getOldestJobDate() {
+	      var _this5 = this;
+	
+	      var oldestDate = new Date();
+	      return this.getList().then(function () {
+	        _this5.itemList.forEach(function (job) {
+	          if (job.created < oldestDate) {
+	            oldestDate = job.created;
+	          }
+	        });
+	        return oldestDate;
+	      });
+	    }
+	  }, {
+	    key: 'transformResponse',
+	    value: function transformResponse(response) {
+	      var jobs = response.data;
+	      jobs.forEach(function (j) {
+	        j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
+	        j.created = new Date(j.created);
+	      });
+	      return jobs;
 	    }
 	  }]);
 	
@@ -70470,71 +70530,17 @@
 	   */
 	
 	  _createClass(highchartService, [{
-	    key: '_getBaseChartConfig',
-	    value: function _getBaseChartConfig() {
-	      var chartConfig = {
-	        credits: {
-	          enabled: false
-	        },
-	        options: {
-	          chart: {
-	            type: 'column'
-	          },
-	
-	          tooltip: {
-	            style: {
-	              padding: 10,
-	              fontWeight: 'bold'
-	            }
-	          }
-	        },
-	        series: [],
-	        title: {
-	          text: ''
-	        },
-	        size: {
-	          height: 400
-	        },
-	        startDate: undefined,
-	        endDate: undefined,
-	        legend: {
-	          enabled: false
-	        },
-	        plotOptions: {
-	          series: {
-	            borderWidth: 0,
-	            dataLabels: {
-	              enabled: true,
-	              format: '{point.y:.1f}%'
-	            }
-	          }
-	        },
-	        loading: false,
-	        xAxis: {
-	          currentMin: undefined,
-	          currentMax: undefined,
-	          title: {
-	            text: ''
-	          }
-	        },
-	        yAxis: {
-	          currentMin: undefined,
-	          currentMax: undefined,
-	          title: {
-	            text: ''
-	          }
-	        }
-	      };
-	      return chartConfig;
-	    }
-	  }, {
 	    key: 'getCategoryConfig',
 	    value: function getCategoryConfig(configDetail) {
-	      var config = this._getBaseChartConfig();
+	      var config = highchartService._getBaseChartConfig();
 	      config.xAxis.type = 'category';
 	      config.title.text = configDetail.title;
 	      config.xAxis.title.text = configDetail.xAxisLabel;
 	      config.yAxis.title.text = configDetail.yAxisLabel;
+	      config.series = [{
+	        showInLegend: false,
+	        data: []
+	      }];
 	      return config;
 	    }
 	  }, {
@@ -70598,21 +70604,63 @@
 	        return returnArray;
 	      });
 	    }
-	  }, {
-	    key: '_filterJobsByDate',
-	    value: function _filterJobsByDate(startDate, endDate) {
-	      var jobs = this._jobService.itemList;
-	      if (startDate) {
-	        jobs = jobs.filter(function (j) {
-	          return new Date(j.completion_date) >= startDate;
-	        });
-	      }
-	      if (endDate) {
-	        jobs = jobs.filter(function (j) {
-	          return new Date(j.completion_date) <= endDate;
-	        });
-	      }
-	      return jobs;
+	  }], [{
+	    key: '_getBaseChartConfig',
+	    value: function _getBaseChartConfig() {
+	      var chartConfig = {
+	        credits: {
+	          enabled: false
+	        },
+	        options: {
+	          chart: {
+	            type: 'column'
+	          },
+	
+	          tooltip: {
+	            style: {
+	              padding: 10,
+	              fontWeight: 'bold'
+	            }
+	          }
+	        },
+	        series: [],
+	        title: {
+	          text: ''
+	        },
+	        size: {
+	          height: 400
+	        },
+	        startDate: undefined,
+	        endDate: undefined,
+	        legend: {
+	          enabled: false
+	        },
+	        plotOptions: {
+	          series: {
+	            borderWidth: 0,
+	            dataLabels: {
+	              enabled: true,
+	              format: '{point.y:.1f}%'
+	            }
+	          }
+	        },
+	        loading: false,
+	        xAxis: {
+	          currentMin: undefined,
+	          currentMax: undefined,
+	          title: {
+	            text: ''
+	          }
+	        },
+	        yAxis: {
+	          currentMin: undefined,
+	          currentMax: undefined,
+	          title: {
+	            text: ''
+	          }
+	        }
+	      };
+	      return chartConfig;
 	    }
 	  }]);
 	
@@ -71117,7 +71165,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart chart-config=\"vm.jobsByProduct\" start-date-model=\"vm.jobsByProduct.startDate\" end-date-model=\"vm.jobsByProduct.endDate\"> </date-chart> <date-chart chart-config=\"vm.jobsByType\" start-date-model=\"vm.jobsByType.startDate\" end-date-model=\"vm.jobsByType.endDate\"> </date-chart> </div>";
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart chart-config=\"vm.jobsByProduct\" refresh-data=\"vm.getJobsByProductData()\" start-date-model=\"vm.jobsByProduct.startDate\" end-date-model=\"vm.jobsByProduct.endDate\"> </date-chart> <date-chart chart-config=\"vm.jobsByType\" start-date-model=\"vm.jobsByType.startDate\" end-date-model=\"vm.jobsByType.endDate\"> </date-chart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
 
@@ -71143,7 +71191,8 @@
 	    scope: {
 	      startDateModel: '=',
 	      endDateModel: '=',
-	      chartConfig: '='
+	      chartConfig: '=',
+	      refreshData: '&'
 	    },
 	    template: _dateChartTemplateHtml2['default']
 	  };
@@ -71158,7 +71207,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div flex layout=\"row\"> <div flex=\"15\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"startDateModel\" md-placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"endDateModel\" md-placeholder=\"N/A\"></md-datepicker> <md-button ng-click=\"vm.applyDates(chartConfig)\">Apply Date Filter</md-button> </div> <highchart flex=\"85\" config=\"chartConfig\"></highchart> </div>";
+	var v1="<div flex layout=\"row\"> <div flex=\"15\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"startDateModel\" md-placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"endDateModel\" md-placeholder=\"N/A\"></md-datepicker> <md-button ng-click=\"refreshData()\">Apply Date Filter</md-button> </div> <highchart flex=\"85\" config=\"chartConfig\"></highchart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("date-chart.template.html",v1)}]);
 	module.exports=v1;
 

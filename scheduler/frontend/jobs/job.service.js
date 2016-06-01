@@ -2,11 +2,11 @@ import baseResourceClass from '../base-resource-class';
 
 export default class jobService extends baseResourceClass {
   /* @ngInject */
-  constructor($http, $q, productService, taskService) {
+  constructor($http, $q, productService) {
     super($http, $q);
+    this._$q = $q;
     this.resourceUrl = '/api/jobs/';
     this._productService = productService;
-    this._taskService = taskService;
     this.taskCompleteStatus = 3;
     this.taskIncompleteStatus = 1;
   }
@@ -25,7 +25,18 @@ export default class jobService extends baseResourceClass {
   }
 
   getJobProduct(job) {
-    return this._productService.get(job.product_id).then(product => product);
+    return this._productService.get(job.product_id).then(product => {
+      job.product = product;
+      return product;
+    });
+  }
+
+  getAllJobProducts() {
+    const promises = [];
+    this.itemList.forEach(job => {
+      promises.push(this.getJobProduct(job));
+    });
+    return this._$q.all(promises);
   }
 
   markTaskComplete(userId, task, job) {
@@ -51,21 +62,20 @@ export default class jobService extends baseResourceClass {
   getJobsCompletedByProduct(startDate, endDate) {
     const jobByProduct = {};
     let productName;
-    debugger;
-    // generate object with product name and job count
-    this.itemList.forEach(job => {
-      if (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate) {
-        productName = this._productService.itemList.filter(product => product.id === job.product_id)[0].description;
-        if (jobByProduct.hasOwnProperty(productName)) {
-          jobByProduct[productName] += 1;
-        } else {
-          jobByProduct[productName] = 1;
+
+    return this.getAllJobProducts().then(() => {
+      this.itemList.forEach(job => {
+        if (job.completed_timestamp && (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate)) {
+          productName = job.product.description;
+          if (jobByProduct.hasOwnProperty(productName)) {
+            jobByProduct[productName] += 1;
+          } else {
+            jobByProduct[productName] = 1;
+          }
         }
-      }
+      });
+      return jobByProduct;
     });
-    const returnArray = [];
-    Object.keys(jobByProduct).forEach(p => returnArray.push([p, jobByProduct[p]]));
-    return returnArray;
   }
 
   checkJobComplete(job) {
@@ -74,5 +84,26 @@ export default class jobService extends baseResourceClass {
       job.completed_timestamp = new Date();
       this.put(job);
     }
+  }
+
+  getOldestJobDate() {
+    let oldestDate = new Date();
+    return this.getList().then(() => {
+      this.itemList.forEach(job => {
+        if (job.created < oldestDate) {
+          oldestDate = job.created;
+        }
+      });
+      return oldestDate;
+    });
+  }
+
+  transformResponse(response) {
+    const jobs = response.data;
+    jobs.forEach(j => {
+      j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
+      j.created = new Date(j.created);
+    });
+    return jobs;
   }
 }

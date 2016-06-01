@@ -2,6 +2,7 @@
     <h3>Metrics Dashboard</h3>
     <date-chart
             chart-config="vm.jobsByProduct"
+            refresh-data="vm.getJobsByProductData()"
             start-date-model="vm.jobsByProduct.startDate"
             end-date-model="vm.jobsByProduct.endDate">
     </date-chart>

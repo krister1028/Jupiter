@@ -4,7 +4,7 @@
         <md-datepicker ng-model="startDateModel" md-placeholder="N/A"></md-datepicker>
         <label>End Date</label>
         <md-datepicker ng-model="endDateModel" md-placeholder="N/A"></md-datepicker>
-        <md-button ng-click="vm.applyDates(chartConfig)">Apply Date Filter</md-button>
+        <md-button ng-click="refreshData()">Apply Date Filter</md-button>
     </div>
     <highchart flex="85" config="chartConfig"></highchart>
 </div>

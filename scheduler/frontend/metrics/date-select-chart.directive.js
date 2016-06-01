@@ -6,7 +6,8 @@ export default () => {
     scope: {
       startDateModel: '=',
       endDateModel: '=',
-      chartConfig: '='
+      chartConfig: '=',
+      refreshData: '&'
     },
     template: dateChartTemplate
   };
