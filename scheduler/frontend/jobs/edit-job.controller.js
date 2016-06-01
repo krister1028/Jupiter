@@ -17,7 +17,7 @@ export default class EditJobController {
   }
 
   init() {
-    this._jobService.getItemById(this._$stateParams.jobId).then(job => {
+    this._jobService.get(this._$stateParams.jobId).then(job => {
       this.job = job;
       this._jobService.getJobProduct(job).then(product => this.jobProduct = product);
     });

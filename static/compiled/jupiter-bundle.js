@@ -69527,7 +69527,7 @@
 	    });
 	
 	    // set all task times to max to start with
-	    taskService.get().then(function (tasks) {
+	    taskService.getList().then(function (tasks) {
 	      _this._allTasks = tasks;
 	      _this._allTasks.forEach(function (t) {
 	        return t.completion_time = t.max_completion_time;
@@ -69620,7 +69620,7 @@
 	
 	      var deferred = this._$q.defer();
 	      if (this._$stateParams[this.paramIdName] !== undefined) {
-	        this.resourceService.getItemById(this._$stateParams[this.paramIdName]).then(function (item) {
+	        this.resourceService.get(this._$stateParams[this.paramIdName]).then(function (item) {
 	          _this.formItem = item;
 	          deferred.resolve(_this.formItem);
 	        });
@@ -69726,40 +69726,47 @@
 /* 23 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var MetricsController = (function () {
-	  function MetricsController(highchartService) {
-	    var _this = this;
-	
+	  function MetricsController(highchartService, jobService) {
 	    _classCallCheck(this, MetricsController);
 	
-	    this.jobsByProduct = highchartService.getJobsCompletedByProductChart();
-	    highchartService.getJobsCompletedByTypeChart().then(function (config) {
-	      _this.jobsByType = config;
-	    });
+	    this._jobService = jobService;
+	    this.jobsByProduct = highchartService.getCategoryConfig({
+	      title: 'Jobs Completed By Product',
+	      xAxisLabel: 'Product',
+	      yAxisLabel: 'Job Count' });
+	    this.jobsByType = undefined;
+	    this.getChartData();
 	  }
 	
+	  //applyDates(chartConfig) {
+	  //  chartConfig.series.data = chartConfig.dataCallBack();
+	  //}
+	
 	  _createClass(MetricsController, [{
-	    key: "applyDates",
-	    value: function applyDates(chartConfig) {
-	      chartConfig.series.data = chartConfig.dataCallBack();
+	    key: 'getChartData',
+	    value: function getChartData() {
+	      this.jobsByProduct.series = [{
+	        data: this._jobService.getJobsCompletedByProduct(this.jobsByProduct.startDate, this.jobsByProduct.endDate)
+	      }];
 	    }
 	  }]);
 	
 	  return MetricsController;
 	})();
 	
-	exports["default"] = MetricsController;
-	module.exports = exports["default"];
+	exports['default'] = MetricsController;
+	module.exports = exports['default'];
 
 /***/ },
 /* 24 */
@@ -69856,11 +69863,11 @@
 	
 	  /* @ngInject */
 	
-	  function productService($http, $q, $state) {
+	  function productService($http, $q) {
 	    _classCallCheck(this, productService);
 	
-	    _get(Object.getPrototypeOf(productService.prototype), 'constructor', this).call(this, $http, $q, $state);
-	    this._resourceUrl = '/api/products/';
+	    _get(Object.getPrototypeOf(productService.prototype), 'constructor', this).call(this, $http, $q);
+	    this.resourceUrl = '/api/products/';
 	    this.taskCompleteCode = 3;
 	  }
 	
@@ -69874,6 +69881,14 @@
 /* 26 */
 /***/ function(module, exports) {
 
+	/*
+	This is a base class that can be extended by a child service which represents a RESTful resource.  The primary value
+	here is that the items are cached in memory and managed by the http verb methods below.
+	
+	There are cases (for example when working with data that's paginated on the backend) where the in memory caching
+	provided here is undesirable, so use this class with caution.
+	*/
+	
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -69889,76 +69904,177 @@
 	var baseResourceClass = (function () {
 	  /* @ngInject */
 	
-	  function baseResourceClass($http, $q, $state) {
+	  function baseResourceClass($http, $q) {
 	    _classCallCheck(this, baseResourceClass);
 	
-	    this._$http = $http;
+	    this._initialRequest = $q.defer();
 	    this._$q = $q;
-	    this._$state = $state;
-	    this._deferred = $q.defer();
+	    this._$http = $http;
+	    this._pristineItemList = []; // private cache, not exposed outside of service
+	
 	    this.itemList = [];
-	    this._resourceUrl = null;
+	    this.resourceUrl = null; // must be overwritten in child class
+	    this.itemIdField = 'id'; // may be overwritten in child class as needed
 	  }
 	
+	  /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	  // HTTP verbs
+	  ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
 	  _createClass(baseResourceClass, [{
-	    key: 'getItemById',
-	    value: function getItemById(itemId) {
-	      return this.get().then(function (items) {
-	        return items.filter(function (i) {
-	          return i.id === parseInt(itemId, 10);
+	    key: 'getList',
+	    value: function getList() {
+	      var _this = this;
+	
+	      var deferred = this._$q.defer();
+	
+	      if (this._initialRequest.promise.$$state.status === 0) {
+	        // if successful get request has not yet resolved
+	        this._$http.get(this.resourceUrl).then(function (response) {
+	          _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
+	          _this._makeItemListPristine();
+	          deferred.resolve(_this.itemList);
+	        }, function (response) {
+	          deferred.reject(response.data);
+	        });
+	      } else {
+	        // if items are in memory already, resolve without making request
+	        this._makeItemListPristine();
+	        deferred.resolve(this.itemList);
+	      }
+	      return deferred.promise;
+	    }
+	  }, {
+	    key: 'get',
+	    value: function get(itemId, queryParams) {
+	      var _this2 = this;
+	
+	      var noCache = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+	
+	      if (noCache) {
+	        return this._$http.get(this._itemSpecificUrl(itemId), { params: queryParams }).then(function (response) {
+	          return _this2.transformResponse(response);
+	        });
+	      }
+	      return this.getList().then(function () {
+	        return _this2.itemList.filter(function (i) {
+	          return i[_this2.itemIdField] === itemId;
 	        })[0];
 	      });
 	    }
 	  }, {
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
+	    key: 'deleteList',
+	    value: function deleteList(itemList) {
+	      var _this3 = this;
 	
-	      if (this._deferred.promise.$$state.status === 0) {
-	        this._$http.get(this._resourceUrl).then(function (response) {
-	          var _itemList;
+	      var promiseList = [];
+	      itemList.forEach(function (item) {
+	        promiseList.push(_this3['delete'](item, item[_this3.itemIdField]));
+	      });
+	      return this._$q.all(promiseList);
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete(item) {
+	      var _this4 = this;
 	
-	          (_itemList = _this.itemList).push.apply(_itemList, _toConsumableArray(response.data));
-	          _this._deferred.resolve(_this.itemList);
-	        }, function (response) {
-	          if (response.status === 403) {
-	            return _this._$state.go('root.login');
-	          }
-	        });
-	      }
-	      return this._deferred.promise;
+	      return this._$http['delete'](this._itemSpecificUrl(item[this.itemIdField])).then(function () {
+	        var index = _this4.itemList.indexOf(item);
+	        _this4._deleteFromPristineList(item);
+	        _this4.itemList.splice(index, 1); // remove item from cached list
+	      });
 	    }
 	  }, {
 	    key: 'post',
-	    value: function post(data) {
-	      var _this2 = this;
+	    value: function post(item) {
+	      var _this5 = this;
 	
-	      return this._$http.post(this._resourceUrl, data).then(function (response) {
-	        return _this2.itemList.push(response.data);
-	      }, function () {
-	        return _this2.itemList.pop();
+	      this.itemList.push(item);
+	      return this._$http.post(this.resourceUrl, item).then(function (response) {
+	        _this5._postToPristineList(item);
+	        return response.data;
+	      }, function (response) {
+	        _this5.itemList.pop();
+	        return _this5._$q.reject(response.data);
 	      });
 	    }
 	  }, {
 	    key: 'put',
 	    value: function put(item) {
-	      return this._$http.put(this._itemResourceUrl(item.id), item);
+	      var _this6 = this;
+	
+	      return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(function (response) {
+	        _this6._putToPristineList(item);
+	        return response.data;
+	      }, function (response) {
+	        _this6._makeItemListPristine();
+	        return _this6._$q.reject(response.data);
+	      });
+	    }
+	
+	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // Base methods (to be overwritten as needed in child class)
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  }, {
+	    key: 'transformResponse',
+	    value: function transformResponse(response) {
+	      // can be overwritten in child class if special response processing is needed
+	      return response.data;
+	    }
+	
+	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // Public Utility Methods
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  }, {
+	    key: 'refreshCache',
+	    value: function refreshCache() {
+	      this._initialRequest = this._$q.defer();
+	      return this.getList();
+	    }
+	
+	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // Private utility methods
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  }, {
+	    key: '_itemSpecificUrl',
+	    value: function _itemSpecificUrl(itemId) {
+	      // just appends the item id to the base resource url if it exists
+	      if (itemId === undefined) {
+	        return this.resourceUrl;
+	      }
+	      return '' + this.resourceUrl + itemId + '/';
 	    }
 	  }, {
-	    key: 'delete',
-	    value: function _delete(item) {
-	      this.itemList.splice(this.itemList.indexOf(item), 1);
-	      return this._$http['delete'](this._itemResourceUrl(item.id));
+	    key: '_makeItemListPristine',
+	    value: function _makeItemListPristine() {
+	      var _itemList;
+	
+	      this.itemList.length = 0;
+	      (_itemList = this.itemList).push.apply(_itemList, _toConsumableArray(this._pristineItemList));
 	    }
 	  }, {
-	    key: 'patch',
-	    value: function patch(itemId, data) {
-	      return this._$http.patch(this._itemResourceUrl(itemId), data);
+	    key: '_putToPristineList',
+	    value: function _putToPristineList(item) {
+	      var index = this._pristineItemList.indexOf(item);
+	      if (index > -1) {
+	        this._pristineItemList[index] = item;
+	      }
 	    }
 	  }, {
-	    key: '_itemResourceUrl',
-	    value: function _itemResourceUrl(itemId) {
-	      return '' + this._resourceUrl + itemId + '/';
+	    key: '_postToPristineList',
+	    value: function _postToPristineList(item) {
+	      this._pristineItemList.push(item);
+	    }
+	  }, {
+	    key: '_deleteFromPristineList',
+	    value: function _deleteFromPristineList(item) {
+	      var index = this._pristineItemList.indexOf(item);
+	      if (index > -1) {
+	        this._pristineItemList.splice(index, 1);
+	      }
 	    }
 	  }]);
 	
@@ -69997,11 +70113,11 @@
 	
 	  /* @ngInject */
 	
-	  function jobService($http, $q, $state, productService, taskService) {
+	  function jobService($http, $q, productService, taskService) {
 	    _classCallCheck(this, jobService);
 	
-	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q, $state);
-	    this._resourceUrl = '/api/jobs/';
+	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q);
+	    this.resourceUrl = '/api/jobs/';
 	    this._productService = productService;
 	    this._taskService = taskService;
 	    this.taskCompleteStatus = 3;
@@ -70027,7 +70143,7 @@
 	  }, {
 	    key: 'getJobProduct',
 	    value: function getJobProduct(job) {
-	      return this._productService.getItemById(job.product_id).then(function (product) {
+	      return this._productService.get(job.product_id).then(function (product) {
 	        return product;
 	      });
 	    }
@@ -70060,14 +70176,15 @@
 	    }
 	  }, {
 	    key: 'getJobsCompletedByProduct',
-	    value: function getJobsCompletedByProduct() {
+	    value: function getJobsCompletedByProduct(startDate, endDate) {
 	      var _this2 = this;
 	
 	      var jobByProduct = {};
 	      var productName = undefined;
+	      debugger;
 	      // generate object with product name and job count
 	      this.itemList.forEach(function (job) {
-	        if (job.completed_timestamp) {
+	        if (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate) {
 	          productName = _this2._productService.itemList.filter(function (product) {
 	            return product.id === job.product_id;
 	          })[0].description;
@@ -70132,11 +70249,11 @@
 	
 	  /* @ngInject */
 	
-	  function taskService($http, $q, $state) {
+	  function taskService($http, $q) {
 	    _classCallCheck(this, taskService);
 	
-	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q, $state);
-	    this._resourceUrl = '/api/tasks/';
+	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q);
+	    this.resourceUrl = '/api/tasks/';
 	  }
 	
 	  return taskService;
@@ -70223,7 +70340,7 @@
 	    _classCallCheck(this, jobTypeService);
 	
 	    _get(Object.getPrototypeOf(jobTypeService.prototype), 'constructor', this).call(this, $http, $q, $state);
-	    this._resourceUrl = '/api/job-types/';
+	    this.resourceUrl = '/api/job-types/';
 	  }
 	
 	  return jobTypeService;
@@ -70361,7 +70478,7 @@
 	        },
 	        options: {
 	          chart: {
-	            type: 'line'
+	            type: 'column'
 	          },
 	
 	          tooltip: {
@@ -70411,15 +70528,19 @@
 	      return chartConfig;
 	    }
 	  }, {
-	    key: 'updateData',
-	    value: function updateData(config) {
-	      config.series.data = config.dataCallback(config.startDate, config.endDate);
+	    key: 'getCategoryConfig',
+	    value: function getCategoryConfig(configDetail) {
+	      var config = this._getBaseChartConfig();
+	      config.xAxis.type = 'category';
+	      config.title.text = configDetail.title;
+	      config.xAxis.title.text = configDetail.xAxisLabel;
+	      config.yAxis.title.text = configDetail.yAxisLabel;
+	      return config;
 	    }
 	  }, {
 	    key: 'getJobsCompletedByProductChart',
 	    value: function getJobsCompletedByProductChart() {
 	      var config = this._getBaseChartConfig();
-	      config.dataCallback = this._jobService.getJobsCompletedByProduct;
 	      config.options.chart.type = 'column';
 	      config.title.text = 'Jobs Completed By Product';
 	      config.xAxis.title.text = 'Product';
@@ -70435,7 +70556,6 @@
 	    key: 'getJobsCompletedByTypeChart',
 	    value: function getJobsCompletedByTypeChart() {
 	      var config = this._getBaseChartConfig();
-	      config.dataCallback = highchartService.getJobsCompletedByJobType;
 	      return this.getJobsCompletedByJobType(config.startDate, config.endDate).then(function (seriesData) {
 	        config.options.chart.type = 'column';
 	        config.title.text = 'Jobs Completed By Type';
@@ -70579,17 +70699,17 @@
 	
 	    // initialize services
 	    this.products = [];
-	    productService.get().then(function (products) {
+	    productService.getList().then(function (products) {
 	      var _products;
 	
 	      return (_products = _this.products).push.apply(_products, _toConsumableArray(products));
 	    });
 	    this.jobs = [];
-	    jobService.get().then(function (jobs) {
+	    jobService.getList().then(function (jobs) {
 	      return _this.jobs = jobs;
 	    });
 	    this.tasks = [];
-	    taskService.get().then(function (tasks) {
+	    taskService.getList().then(function (tasks) {
 	      return _this.tasks = tasks;
 	    });
 	
@@ -70677,10 +70797,10 @@
 	
 	    this._$mdDialog = $mdDialog;
 	    this._jobService = jobService;
-	    productService.get().then(function (products) {
+	    productService.getList().then(function (products) {
 	      return _this.products = products;
 	    });
-	    jobTypeService.get().then(function (types) {
+	    jobTypeService.getList().then(function (types) {
 	      return _this.jobTypes = types;
 	    });
 	    this.jobStatuses = jobStatusService.jobStatuses;
@@ -70768,7 +70888,7 @@
 	    value: function init() {
 	      var _this = this;
 	
-	      this._jobService.getItemById(this._$stateParams.jobId).then(function (job) {
+	      this._jobService.get(this._$stateParams.jobId).then(function (job) {
 	        _this.job = job;
 	        _this._jobService.getJobProduct(job).then(function (product) {
 	          return _this.jobProduct = product;
@@ -71025,17 +71145,10 @@
 	      endDateModel: '=',
 	      chartConfig: '='
 	    },
-	    template: _dateChartTemplateHtml2['default'],
-	    controller: controller,
-	    controllerAs: 'vm'
+	    template: _dateChartTemplateHtml2['default']
 	  };
 	};
 	
-	function controller(highchartService) {
-	  this.applyDates = function (config) {
-	    highchartService.updateData(config);
-	  };
-	}
 	module.exports = exports['default'];
 
 /***/ },

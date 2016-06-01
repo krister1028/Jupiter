@@ -7,11 +7,11 @@ export default class HomeController {
   constructor(userService, productService, jobService, $mdDialog, taskService) {
     // initialize services
     this.products = [];
-    productService.get().then(products => this.products.push(...products));
+    productService.getList().then(products => this.products.push(...products));
     this.jobs = [];
-    jobService.get().then(jobs => this.jobs = jobs);
+    jobService.getList().then(jobs => this.jobs = jobs);
     this.tasks = [];
-    taskService.get().then(tasks => this.tasks = tasks);
+    taskService.getList().then(tasks => this.tasks = tasks);
 
     this.jobService = jobService;
     this._$mdDialog = $mdDialog;

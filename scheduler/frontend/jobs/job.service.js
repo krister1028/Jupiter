@@ -2,9 +2,9 @@ import baseResourceClass from '../base-resource-class';
 
 export default class jobService extends baseResourceClass {
   /* @ngInject */
-  constructor($http, $q, $state, productService, taskService) {
-    super($http, $q, $state);
-    this._resourceUrl = '/api/jobs/';
+  constructor($http, $q, productService, taskService) {
+    super($http, $q);
+    this.resourceUrl = '/api/jobs/';
     this._productService = productService;
     this._taskService = taskService;
     this.taskCompleteStatus = 3;
@@ -25,7 +25,7 @@ export default class jobService extends baseResourceClass {
   }
 
   getJobProduct(job) {
-    return this._productService.getItemById(job.product_id).then(product => product);
+    return this._productService.get(job.product_id).then(product => product);
   }
 
   markTaskComplete(userId, task, job) {
@@ -48,12 +48,13 @@ export default class jobService extends baseResourceClass {
     return this.patch(jobId, {description: newDescription}).then(null, () => job.description = oldDescription);
   }
 
-  getJobsCompletedByProduct() {
+  getJobsCompletedByProduct(startDate, endDate) {
     const jobByProduct = {};
     let productName;
+    debugger;
     // generate object with product name and job count
     this.itemList.forEach(job => {
-      if (job.completed_timestamp) {
+      if (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate) {
         productName = this._productService.itemList.filter(product => product.id === job.product_id)[0].description;
         if (jobByProduct.hasOwnProperty(productName)) {
           jobByProduct[productName] += 1;

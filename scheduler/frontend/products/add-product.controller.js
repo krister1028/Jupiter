@@ -18,7 +18,7 @@ export default class AddProductController extends baseFormClass {
     });
 
     // set all task times to max to start with
-    taskService.get().then(tasks => {
+    taskService.getList().then(tasks => {
       this._allTasks = tasks;
       this._allTasks.forEach(t => t.completion_time = t.max_completion_time);
       this.refreshUnselectedTasks();

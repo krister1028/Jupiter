@@ -10,7 +10,7 @@ export default class baseFormClass {
   _getFormItem() {
     const deferred = this._$q.defer();
     if (this._$stateParams[this.paramIdName] !== undefined) {
-      this.resourceService.getItemById(this._$stateParams[this.paramIdName]).then(item => {
+      this.resourceService.get(this._$stateParams[this.paramIdName]).then(item => {
         this.formItem = item;
         deferred.resolve(this.formItem);
       });

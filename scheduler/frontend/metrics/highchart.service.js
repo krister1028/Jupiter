@@ -11,7 +11,7 @@ export default class highchartService {
       },
       options: {
         chart: {
-          type: 'line'
+          type: 'column'
         }
         ,
         tooltip: {
@@ -59,6 +59,15 @@ export default class highchartService {
       }
     };
     return chartConfig;
+  }
+
+  getCategoryConfig(configDetail) {
+    const config = this._getBaseChartConfig();
+    config.xAxis.type = 'category';
+    config.title.text = configDetail.title;
+    config.xAxis.title.text = configDetail.xAxisLabel;
+    config.yAxis.title.text = configDetail.yAxisLabel;
+    return config;
   }
 
   getJobsCompletedByProductChart() {
