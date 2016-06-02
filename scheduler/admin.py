@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from scheduler.models import UserProfile, Product, Task, Job, ProductTask, JobStatus, JobType, JobLog
+from scheduler.models import UserProfile, Product, Task, Job, ProductTask, JobStatus, JobType, JobLog, JobTask
 
 admin.site.site_header = 'Jupiter Admin'
 
@@ -35,3 +35,4 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(JobStatus)
 admin.site.register(JobType)
 admin.site.register(JobLog)
+admin.site.register(JobTask)

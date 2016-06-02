@@ -47,6 +47,7 @@ class Product(models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255, default=None)
     code = models.CharField(max_length=8)
+    tasks = models.ManyToManyField(Task, through='ProductTask')
 
     def __unicode__(self):
         return self.description
@@ -68,27 +69,10 @@ class JobType(models.Model):
         return self.description
 
 
-class Job(models.Model):
-
-    group = models.ForeignKey(Group)
-    product = models.ForeignKey(Product)
-    status = models.ForeignKey(JobStatus, null=True)
-    type = models.ForeignKey(JobType, null=True)
-    rework = models.BooleanField(default=False)
-    created = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=255)
-    started_timestamp = models.DateTimeField(null=True)
-    completed_timestamp = models.DateTimeField(null=True)
-    history = HistoricalRecords()
-
-    def __unicode__(self):
-        return self.description
-
-
 class ProductTask(models.Model):
-    product = models.ForeignKey(Product, related_name='tasks')
-    task = models.ForeignKey(Task, related_name='product_tasks')
-    completion_time = models.IntegerField()  # in minutes
+    product = models.ForeignKey(Product)
+    task = models.ForeignKey(Task)
+    completion_time = models.IntegerField(null=True, blank=True)  # in minutes
 
     @property
     def description(self):
@@ -106,6 +90,32 @@ class ProductTask(models.Model):
         return self.task.description
 
 
+class Job(models.Model):
+
+    group = models.ForeignKey(Group)
+    product = models.ForeignKey(Product)
+    status = models.ForeignKey(JobStatus, null=True, blank=True)
+    type = models.ForeignKey(JobType, null=True, blank=True)
+    rework = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255)
+    started_timestamp = models.DateTimeField(null=True, blank=True)
+    completed_timestamp = models.DateTimeField(null=True, blank=True)
+    tasks = models.ManyToManyField(Task, through='JobTask')
+    history = HistoricalRecords()
+
+    def __unicode__(self):
+        return self.description
+
+    def save(self, *args, **kwargs):
+        if not self.tasks.all():
+            job_tasks = []
+            for task in self.product.tasks.all():
+                job_tasks.append(JobTask(job=self, task=task))
+                JobTask.objects.bulk_create(job_tasks)
+        super(Job, self).save(*args, **kwargs)
+
+
 class JobTask(models.Model):
     PENDING = 1
     IN_PROGRESS = 2
@@ -116,17 +126,21 @@ class JobTask(models.Model):
         (COMPLETE, 'Complete')
     )
 
-    job = models.ForeignKey(Job, related_name='job_tasks')
-    product_task = models.ForeignKey(ProductTask, related_name='job_tasks')
+    job = models.ForeignKey(Job)
+    task = models.ForeignKey(Task)
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
-    completed_by = models.ForeignKey(User, null=True)
-    completed_time = models.DateTimeField(null=True)
+    completed_by = models.ForeignKey(User, null=True, blank=True)
+    completed_time = models.DateTimeField(null=True, blank=True)
     history = HistoricalRecords()
+
+    @property
+    def completion_time(self):
+        return ProductTask.objects.get(task__id=self.task, pk=self.job.product.id).completion_time
 
     def save(self, *args, **kwargs):
         if self.completed_by and not self.completed_time:
             self.completed_time = timezone.now()
-        elif not self.completed_by:
+        elif not self.completed_by:  # allow regression
             self.completed_time = None
 
         super(JobTask, self).save(*args, **kwargs)
@@ -162,5 +176,5 @@ class JobLog(models.Model):
         (DAILY_METRICS, 'Daily Metric Job'),
     )
     job = models.IntegerField(choices=JOB_CHOICES)
-    error = models.CharField(max_length=255, null=True)
+    error = models.CharField(max_length=255, null=True, blank=True)
     successful = models.BooleanField(default=False)
