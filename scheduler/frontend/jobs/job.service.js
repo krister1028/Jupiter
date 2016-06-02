@@ -8,7 +8,7 @@ export default class jobService extends baseResourceClass {
     this.resourceUrl = '/api/jobs/';
     this._productService = productService;
     this._jobTypeService = jobTypeService;
-    this._jobTaskService = jobTaskService;
+    this._jobProductTaskService = jobTaskService;
     this._utilityService = utilityService;
     this.taskCompleteStatus = 3;
     this.taskIncompleteStatus = 1;
@@ -19,9 +19,9 @@ export default class jobService extends baseResourceClass {
     let totalTime = 0;
     let remainingTime = 0;
 
-    job.job_tasks.forEach(t => {
+    job.productTasks.forEach(t => {
       totalTime += t.completion_time;
-      if (t.status === this._productService.taskCompleteCode) {
+      if (t.status === this.taskCompleteStatus) {
         remainingTime += t.completion_time;
       }
     });
@@ -130,10 +130,16 @@ export default class jobService extends baseResourceClass {
   transformResponse(response) {
     const jobs = response.data;
     jobs.forEach(j => {
-      j.jobTasks = this._jobTaskService.itemList.filter(jobTask => j.tasks.indexOf(jobTask.task) > -1);
+      j.productTasks = this._getProductTasks(j);
       j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
       j.created = new Date(j.created);
     });
     return jobs;
+  }
+
+  _getProductTasks(job) {
+    return this._jobProductTaskService.itemList.filter(jobProductTask => {
+      return (job.product_tasks.indexOf(jobProductTask.product_task) > -1 && job.id === jobProductTask.job);
+    });
   }
 }

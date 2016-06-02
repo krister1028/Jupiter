@@ -23,6 +23,7 @@ import groupUserService from './jobs/group-user.service';
 import utilityService from './utility.service';
 import jobTypeService from './jobs/job-type.service';
 import jobStatusService from './jobs/job-status.service';
+import productTaskService from './products/product-task.service';
 import highchartService from './metrics/highchart.service.js';
 import metricsService from './metrics/metrics.service';
 import HomeController from './home.controller';
@@ -50,6 +51,7 @@ const jupiter = angular
   .service('jobTypeService', jobTypeService)
   .service('jobStatusService', jobStatusService)
   .service('jobTaskService', jobTaskService)
+  .service('productTaskService', productTaskService)
   .service('metricsService', metricsService)
   .service('highchartService', highchartService)
   .service('utilityService', utilityService)

@@ -146,53 +146,57 @@
 	
 	var _jobsJobStatusService2 = _interopRequireDefault(_jobsJobStatusService);
 	
-	var _metricsHighchartServiceJs = __webpack_require__(34);
+	var _productsProductTaskService = __webpack_require__(34);
+	
+	var _productsProductTaskService2 = _interopRequireDefault(_productsProductTaskService);
+	
+	var _metricsHighchartServiceJs = __webpack_require__(35);
 	
 	var _metricsHighchartServiceJs2 = _interopRequireDefault(_metricsHighchartServiceJs);
 	
-	var _metricsMetricsService = __webpack_require__(35);
+	var _metricsMetricsService = __webpack_require__(36);
 	
 	var _metricsMetricsService2 = _interopRequireDefault(_metricsMetricsService);
 	
-	var _homeController = __webpack_require__(36);
+	var _homeController = __webpack_require__(37);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _jobsEditJobController = __webpack_require__(39);
+	var _jobsEditJobController = __webpack_require__(40);
 	
 	var _jobsEditJobController2 = _interopRequireDefault(_jobsEditJobController);
 	
-	var _headerController = __webpack_require__(42);
+	var _headerController = __webpack_require__(43);
 	
 	var _headerController2 = _interopRequireDefault(_headerController);
 	
-	var _homeTemplateHtml = __webpack_require__(43);
+	var _homeTemplateHtml = __webpack_require__(44);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _productsAddProductTemplateHtml = __webpack_require__(44);
+	var _productsAddProductTemplateHtml = __webpack_require__(45);
 	
 	var _productsAddProductTemplateHtml2 = _interopRequireDefault(_productsAddProductTemplateHtml);
 	
-	var _tasksAddTaskTemplateHtml = __webpack_require__(45);
+	var _tasksAddTaskTemplateHtml = __webpack_require__(46);
 	
 	var _tasksAddTaskTemplateHtml2 = _interopRequireDefault(_tasksAddTaskTemplateHtml);
 	
-	var _jobsEditJobTemplateHtml = __webpack_require__(46);
+	var _jobsEditJobTemplateHtml = __webpack_require__(47);
 	
 	var _jobsEditJobTemplateHtml2 = _interopRequireDefault(_jobsEditJobTemplateHtml);
 	
-	var _metricsMetricsTemplateHtml = __webpack_require__(47);
+	var _metricsMetricsTemplateHtml = __webpack_require__(48);
 	
 	var _metricsMetricsTemplateHtml2 = _interopRequireDefault(_metricsMetricsTemplateHtml);
 	
-	var _metricsDateSelectChartDirective = __webpack_require__(48);
+	var _metricsDateSelectChartDirective = __webpack_require__(49);
 	
 	var _metricsDateSelectChartDirective2 = _interopRequireDefault(_metricsDateSelectChartDirective);
 	
 	window.Highcharts = _highcharts2['default'];
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).service('utilityService', _utilityService2['default']).directive('dateChart', _metricsDateSelectChartDirective2['default']).config(configuration).run(run);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('productTaskService', _productsProductTaskService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).service('utilityService', _utilityService2['default']).directive('dateChart', _metricsDateSelectChartDirective2['default']).config(configuration).run(run);
 	
 	/* @ngInject */
 	function run($rootScope, $state, $stateParams) {
@@ -70195,7 +70199,7 @@
 	    this.resourceUrl = '/api/jobs/';
 	    this._productService = productService;
 	    this._jobTypeService = jobTypeService;
-	    this._jobTaskService = jobTaskService;
+	    this._jobProductTaskService = jobTaskService;
 	    this._utilityService = utilityService;
 	    this.taskCompleteStatus = 3;
 	    this.taskIncompleteStatus = 1;
@@ -70210,9 +70214,9 @@
 	      var totalTime = 0;
 	      var remainingTime = 0;
 	
-	      job.job_tasks.forEach(function (t) {
+	      job.productTasks.forEach(function (t) {
 	        totalTime += t.completion_time;
-	        if (t.status === _this._productService.taskCompleteCode) {
+	        if (t.status === _this.taskCompleteStatus) {
 	          remainingTime += t.completion_time;
 	        }
 	      });
@@ -70356,13 +70360,18 @@
 	
 	      var jobs = response.data;
 	      jobs.forEach(function (j) {
-	        j.jobTasks = _this9._jobTaskService.itemList.filter(function (jobTask) {
-	          return j.tasks.indexOf(jobTask.task) > -1;
-	        });
+	        j.productTasks = _this9._getProductTasks(j);
 	        j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
 	        j.created = new Date(j.created);
 	      });
 	      return jobs;
+	    }
+	  }, {
+	    key: '_getProductTasks',
+	    value: function _getProductTasks(job) {
+	      return this._jobProductTaskService.itemList.filter(function (jobProductTask) {
+	        return job.product_tasks.indexOf(jobProductTask.product_task) > -1 && job.id === jobProductTask.job;
+	      });
 	    }
 	  }]);
 	
@@ -70622,6 +70631,46 @@
 
 /***/ },
 /* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(26);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var productTaskService = (function (_baseResourceClass) {
+	  _inherits(productTaskService, _baseResourceClass);
+	
+	  /* @ngInject */
+	
+	  function productTaskService($http, $q) {
+	    _classCallCheck(this, productTaskService);
+	
+	    _get(Object.getPrototypeOf(productTaskService.prototype), 'constructor', this).call(this, $http, $q);
+	    this.resourceUrl = '/api/product-tasks/';
+	  }
+	
+	  return productTaskService;
+	})(_baseResourceClass3['default']);
+	
+	exports['default'] = productTaskService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 35 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -70835,7 +70884,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -70872,7 +70921,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70889,11 +70938,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _jobsAddJobModalTemplateHtml = __webpack_require__(37);
+	var _jobsAddJobModalTemplateHtml = __webpack_require__(38);
 	
 	var _jobsAddJobModalTemplateHtml2 = _interopRequireDefault(_jobsAddJobModalTemplateHtml);
 	
-	var _jobsAddJobModalController = __webpack_require__(38);
+	var _jobsAddJobModalController = __webpack_require__(39);
 	
 	var _jobsAddJobModalController2 = _interopRequireDefault(_jobsAddJobModalController);
 	
@@ -70977,7 +71026,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -70988,7 +71037,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -71053,7 +71102,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71072,11 +71121,11 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _selectUserTemplateHtml = __webpack_require__(40);
+	var _selectUserTemplateHtml = __webpack_require__(41);
 	
 	var _selectUserTemplateHtml2 = _interopRequireDefault(_selectUserTemplateHtml);
 	
-	var _selectUserController = __webpack_require__(41);
+	var _selectUserController = __webpack_require__(42);
 	
 	var _selectUserController2 = _interopRequireDefault(_selectUserController);
 	
@@ -71177,7 +71226,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71188,7 +71237,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -71231,7 +71280,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -71281,7 +71330,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71292,7 +71341,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71303,7 +71352,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71314,7 +71363,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71325,7 +71374,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71336,7 +71385,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71347,7 +71396,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _dateChartTemplateHtml = __webpack_require__(49);
+	var _dateChartTemplateHtml = __webpack_require__(50);
 	
 	var _dateChartTemplateHtml2 = _interopRequireDefault(_dateChartTemplateHtml);
 	
@@ -71367,7 +71416,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
