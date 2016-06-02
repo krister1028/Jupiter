@@ -7,6 +7,12 @@ from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 
+class SoftDeleteModelMixin(object):
+    def delete(self):
+        self.deleted = 1
+        self.save()
+
+
 class UserProfile(models.Model):
     TECHNICIAN = 1
     ADMINISTRATOR = 2
@@ -19,7 +25,7 @@ class UserProfile(models.Model):
     user_type = models.IntegerField(choices=USER_TYPE_CHOICES, default=TECHNICIAN)
 
 
-class Task(models.Model):
+class Task(SoftDeleteModelMixin, models.Model):
     LOW = 1
     MEDIUM = 2
     HIGH = 3
@@ -38,41 +44,46 @@ class Task(models.Model):
     min_completion_time = models.IntegerField()
     max_completion_time = models.IntegerField()
     cost = models.IntegerField()
+    deleted = models.IntegerField(default=False)
 
     def __unicode__(self):
         return self.description
 
 
-class Product(models.Model):
+class Product(SoftDeleteModelMixin, models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255, default=None)
     code = models.CharField(max_length=8)
     tasks = models.ManyToManyField(Task, through='ProductTask')
+    deleted = models.IntegerField(default=False)
 
     def __unicode__(self):
         return self.description
 
 
-class JobStatus(models.Model):
+class JobStatus(SoftDeleteModelMixin, models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255)
+    deleted = models.IntegerField(default=False)
 
     def __unicode__(self):
         return self.description
 
 
-class JobType(models.Model):
+class JobType(SoftDeleteModelMixin, models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255)
+    deleted = models.IntegerField(default=False)
 
     def __unicode__(self):
         return self.description
 
 
-class ProductTask(models.Model):
+class ProductTask(SoftDeleteModelMixin, models.Model):
     product = models.ForeignKey(Product)
     task = models.ForeignKey(Task)
     completion_time = models.IntegerField(null=True, blank=True)  # in minutes
+    deleted = models.IntegerField(default=False)
 
     @property
     def description(self):
@@ -90,7 +101,7 @@ class ProductTask(models.Model):
         return self.task.description
 
 
-class Job(models.Model):
+class Job(SoftDeleteModelMixin, models.Model):
 
     group = models.ForeignKey(Group)
     product = models.ForeignKey(Product)
@@ -102,6 +113,7 @@ class Job(models.Model):
     started_timestamp = models.DateTimeField(null=True, blank=True)
     completed_timestamp = models.DateTimeField(null=True, blank=True)
     tasks = models.ManyToManyField(Task, through='JobTask')
+    deleted = models.IntegerField(default=False)
     history = HistoricalRecords()
 
     def __unicode__(self):
@@ -116,7 +128,7 @@ class Job(models.Model):
         super(Job, self).save(*args, **kwargs)
 
 
-class JobTask(models.Model):
+class JobTask(SoftDeleteModelMixin, models.Model):
     PENDING = 1
     IN_PROGRESS = 2
     COMPLETE = 3
@@ -131,6 +143,7 @@ class JobTask(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     completed_by = models.ForeignKey(User, null=True, blank=True)
     completed_time = models.DateTimeField(null=True, blank=True)
+    deleted = models.IntegerField(default=False)
     history = HistoricalRecords()
 
     @property
