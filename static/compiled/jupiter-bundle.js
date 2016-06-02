@@ -70199,10 +70199,8 @@
 	    this.resourceUrl = '/api/jobs/';
 	    this._productService = productService;
 	    this._jobTypeService = jobTypeService;
-	    this._jobProductTaskService = jobTaskService;
+	    this._jobTaskService = jobTaskService;
 	    this._utilityService = utilityService;
-	    this.taskCompleteStatus = 3;
-	    this.taskIncompleteStatus = 1;
 	    this.relatedServices = [jobTaskService];
 	  }
 	
@@ -70212,15 +70210,15 @@
 	      var _this = this;
 	
 	      var totalTime = 0;
-	      var remainingTime = 0;
+	      var completedTime = 0;
 	
-	      job.productTasks.forEach(function (t) {
+	      job.jobTasks.forEach(function (t) {
 	        totalTime += t.completion_time;
-	        if (t.status === _this.taskCompleteStatus) {
-	          remainingTime += t.completion_time;
+	        if (t.status === _this._jobTaskService.taskCompleteStatus) {
+	          completedTime += t.completion_time;
 	        }
 	      });
-	      return remainingTime / totalTime;
+	      return completedTime / totalTime;
 	    }
 	  }, {
 	    key: 'getJobProduct',
@@ -70259,21 +70257,6 @@
 	        promises.push(_this3.getJobType(job));
 	      });
 	      return this._$q.all(promises);
-	    }
-	  }, {
-	    key: 'markTaskComplete',
-	    value: function markTaskComplete(userId, task, job) {
-	      task.status = this.taskCompleteStatus;
-	      task.completed_by = userId;
-	      this.checkJobComplete(job);
-	      this.put(job);
-	    }
-	  }, {
-	    key: 'markTaskIncomplete',
-	    value: function markTaskIncomplete(task, job) {
-	      task.status = this.taskIncompleteStatus;
-	      task.completed_by = null;
-	      this.patch(job.id, { job_tasks: job.job_tasks });
 	    }
 	  }, {
 	    key: 'setJobDescription',
@@ -70360,18 +70343,26 @@
 	
 	      var jobs = response.data;
 	      jobs.forEach(function (j) {
-	        j.productTasks = _this9._getProductTasks(j);
+	        j.jobTasks = _this9._getJobTasks(j);
+	        j.productItem = _this9._getProduct(j);
 	        j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
 	        j.created = new Date(j.created);
 	      });
 	      return jobs;
 	    }
 	  }, {
-	    key: '_getProductTasks',
-	    value: function _getProductTasks(job) {
-	      return this._jobProductTaskService.itemList.filter(function (jobProductTask) {
-	        return job.product_tasks.indexOf(jobProductTask.product_task) > -1 && job.id === jobProductTask.job;
+	    key: '_getJobTasks',
+	    value: function _getJobTasks(job) {
+	      return this._jobTaskService.itemList.filter(function (jobTask) {
+	        return job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job;
 	      });
+	    }
+	  }, {
+	    key: '_getProduct',
+	    value: function _getProduct(job) {
+	      return this._productService.itemList.filter(function (product) {
+	        return product.id === job.product;
+	      })[0];
 	    }
 	  }]);
 	
@@ -70453,6 +70444,8 @@
 	
 	    _get(Object.getPrototypeOf(jobTaskService.prototype), 'constructor', this).call(this, $http, $q);
 	    this.resourceUrl = '/api/job-tasks/';
+	    this.taskCompleteStatus = 3;
+	    this.taskIncompleteStatus = 1;
 	  }
 	
 	  return jobTaskService;
@@ -70463,7 +70456,7 @@
 
 /***/ },
 /* 30 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -70471,39 +70464,32 @@
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var groupUserService = (function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(26);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var groupUserService = (function (_baseResourceClass) {
+	  _inherits(groupUserService, _baseResourceClass);
+	
 	  /* @ngInject */
 	
-	  function groupUserService($http) {
+	  function groupUserService($http, $q) {
 	    _classCallCheck(this, groupUserService);
 	
-	    this._$http = $http;
-	    this._groupUserUrl = '/api/users/';
-	    this.groupUsers = [];
-	    this.loading = this.get();
+	    _get(Object.getPrototypeOf(groupUserService.prototype), 'constructor', this).call(this, $http, $q);
+	    this.resourceUrl = '/api/users/';
 	  }
 	
-	  _createClass(groupUserService, [{
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
-	
-	      return this._$http.get(this._groupUserUrl).then(function (response) {
-	        var _groupUsers;
-	
-	        return (_groupUsers = _this.groupUsers).push.apply(_groupUsers, _toConsumableArray(response.data));
-	      });
-	    }
-	  }]);
-	
 	  return groupUserService;
-	})();
+	})(_baseResourceClass3['default']);
 	
 	exports['default'] = groupUserService;
 	module.exports = exports['default'];
@@ -71132,33 +71118,25 @@
 	var EditJobController = (function () {
 	  /* @ngInject */
 	
-	  function EditJobController($state, $stateParams, jobService, taskService, groupUserService, $mdDialog, jobTypeService, jobStatusService) {
+	  function EditJobController($state, $stateParams, jobService, groupUserService, $mdDialog, jobTypeService, jobStatusService, jobTaskService) {
+	    var _this = this;
+	
 	    _classCallCheck(this, EditJobController);
 	
 	    this._$state = $state;
 	    this._$stateParams = $stateParams;
 	    this._jobService = jobService;
-	    this._taskService = taskService;
+	    this._jobTaskService = jobTaskService;
 	    this._$mdDialog = $mdDialog;
 	    this.groupUsers = groupUserService.groupUsers;
 	    this.jobTypes = jobTypeService.jobTypes;
 	    this.jobStatuses = jobStatusService.jobStatuses;
-	    this.init();
+	    this._jobService.get(this._$stateParams.jobId).then(function (job) {
+	      _this.job = job;
+	    });
 	  }
 	
 	  _createClass(EditJobController, [{
-	    key: 'init',
-	    value: function init() {
-	      var _this = this;
-	
-	      this._jobService.get(this._$stateParams.jobId).then(function (job) {
-	        _this.job = job;
-	        _this._jobService.getJobProduct(job).then(function (product) {
-	          return _this.jobProduct = product;
-	        });
-	      });
-	    }
-	  }, {
 	    key: 'getTaskStyle',
 	    value: function getTaskStyle(task) {
 	      if (EditJobController._taskComplete(task)) {
@@ -71192,9 +71170,12 @@
 	    key: 'toggleTask',
 	    value: function toggleTask(task) {
 	      if (EditJobController._taskComplete(task)) {
-	        return this._jobService.markTaskIncomplete(task, this.job);
+	        task.completed_by = null;
+	        task.status = this._jobTaskService.taskIncompleteStatus;
+	        this._jobTaskService.put(task);
+	      } else {
+	        this.openMarkCompleteDialog(task);
 	      }
-	      return this.openMarkCompleteDialog(task);
 	    }
 	  }, {
 	    key: 'openMarkCompleteDialog',
@@ -71209,7 +71190,9 @@
 	        clickOutsideToClose: true,
 	        locals: { job: this.job, task: task }
 	      }).then(function (userId) {
-	        return _this3._jobService.markTaskComplete(userId, task, _this3.job);
+	        task.completed_by = userId;
+	        task.status = _this3._jobTaskService.taskCompleteStatus;
+	        _this3._jobTaskService.put(task);
 	      });
 	    }
 	  }], [{
@@ -71232,7 +71215,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Mark Complete\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Mark {{ vm.task }} as complete</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container> <label>Select User</label> <md-select ng-model=\"vm.selectedUser\"> <md-option ng-repeat=\"user in vm.groupUsers track by $index\" value=\"{{user.id}}\"> {{user.first_name}} </md-option> </md-select> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.markComplete()\" style=\"margin-right:20px\"> Mark Complete </md-button> </md-dialog-actions> </md-dialog>";
+	var v1="<md-dialog aria-label=\"Mark Complete\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Mark {{ vm.task }} as complete</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <md-input-container> <label>Select User</label> <md-select ng-model=\"vm.selectedUser\" md-on-open=\"vm.getGroupUsers()\"> <md-option ng-repeat=\"user in vm.groupUsers track by $index\" value=\"{{user.id}}\"> {{user.first_name}} </md-option> </md-select> </md-input-container> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.markComplete()\" style=\"margin-right:20px\"> Mark Complete </md-button> </md-dialog-actions> </md-dialog>";
 	ngModule.run(["$templateCache",function(c){c.put("select-user.template.html",v1)}]);
 	module.exports=v1;
 
@@ -71256,12 +71239,18 @@
 	  function SelectUserController(groupUserService, $mdDialog) {
 	    _classCallCheck(this, SelectUserController);
 	
-	    this.groupUsers = groupUserService.groupUsers;
+	    this._groupUserService = groupUserService;
+	    this.groupUsers = groupUserService.itemList;
 	    this._$mdDialog = $mdDialog;
 	    this.selectedUser = null;
 	  }
 	
 	  _createClass(SelectUserController, [{
+	    key: "getGroupUsers",
+	    value: function getGroupUsers() {
+	      return this._groupUserService.getList();
+	    }
+	  }, {
 	    key: "cancel",
 	    value: function cancel() {
 	      this._$mdDialog.cancel();
@@ -71369,7 +71358,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.jobProduct.description }}</div> <div><b>Product Code:</b> {{ vm.jobProduct.code }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.job_tasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
+	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.job.product_description }}</div> <div><b>Product Code:</b> {{ vm.job.product_code }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.jobTasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 

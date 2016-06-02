@@ -8,24 +8,22 @@ export default class jobService extends baseResourceClass {
     this.resourceUrl = '/api/jobs/';
     this._productService = productService;
     this._jobTypeService = jobTypeService;
-    this._jobProductTaskService = jobTaskService;
+    this._jobTaskService = jobTaskService;
     this._utilityService = utilityService;
-    this.taskCompleteStatus = 3;
-    this.taskIncompleteStatus = 1;
     this.relatedServices = [jobTaskService];
   }
 
   getProgress(job) {
     let totalTime = 0;
-    let remainingTime = 0;
+    let completedTime = 0;
 
-    job.productTasks.forEach(t => {
+    job.jobTasks.forEach(t => {
       totalTime += t.completion_time;
-      if (t.status === this.taskCompleteStatus) {
-        remainingTime += t.completion_time;
+      if (t.status === this._jobTaskService.taskCompleteStatus) {
+        completedTime += t.completion_time;
       }
     });
-    return remainingTime / totalTime;
+    return completedTime / totalTime;
   }
 
   getJobProduct(job) {
@@ -56,19 +54,6 @@ export default class jobService extends baseResourceClass {
       promises.push(this.getJobType(job));
     });
     return this._$q.all(promises);
-  }
-
-  markTaskComplete(userId, task, job) {
-    task.status = this.taskCompleteStatus;
-    task.completed_by = userId;
-    this.checkJobComplete(job);
-    this.put(job);
-  }
-
-  markTaskIncomplete(task, job) {
-    task.status = this.taskIncompleteStatus;
-    task.completed_by = null;
-    this.patch(job.id, {job_tasks: job.job_tasks});
   }
 
   setJobDescription(newDescription, jobId) {
@@ -130,16 +115,21 @@ export default class jobService extends baseResourceClass {
   transformResponse(response) {
     const jobs = response.data;
     jobs.forEach(j => {
-      j.productTasks = this._getProductTasks(j);
+      j.jobTasks = this._getJobTasks(j);
+      j.productItem = this._getProduct(j);
       j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
       j.created = new Date(j.created);
     });
     return jobs;
   }
 
-  _getProductTasks(job) {
-    return this._jobProductTaskService.itemList.filter(jobProductTask => {
-      return (job.product_tasks.indexOf(jobProductTask.product_task) > -1 && job.id === jobProductTask.job);
+  _getJobTasks(job) {
+    return this._jobTaskService.itemList.filter(jobTask => {
+      return (job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job);
     });
+  }
+
+  _getProduct(job) {
+    return this._productService.itemList.filter(product => product.id === job.product)[0];
   }
 }

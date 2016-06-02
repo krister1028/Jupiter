@@ -1,9 +1,14 @@
 export default class SelectUserController {
   /* @ngInject */
   constructor(groupUserService, $mdDialog) {
-    this.groupUsers = groupUserService.groupUsers;
+    this._groupUserService = groupUserService;
+    this.groupUsers = groupUserService.itemList;
     this._$mdDialog = $mdDialog;
     this.selectedUser = null;
+  }
+
+  getGroupUsers() {
+    return this._groupUserService.getList();
   }
 
   cancel() {

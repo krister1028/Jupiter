@@ -71,6 +71,8 @@ class JobStatusSerializer(JupiterDefaultSerializer):
 
 
 class JobSerializer(JupiterDefaultSerializer):
+    product_description = serializers.CharField(read_only=True)
+    product_code = serializers.CharField(read_only=True)
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:

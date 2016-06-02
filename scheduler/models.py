@@ -113,6 +113,14 @@ class Job(models.Model):
     def __unicode__(self):
         return self.description
 
+    @property
+    def product_description(self):
+        return self.product.description
+
+    @property
+    def product_code(self):
+        return self.product.code
+
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
         if not self.product_tasks.all():

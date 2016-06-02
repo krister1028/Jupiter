@@ -12,7 +12,7 @@
       <div class="md-dialog-content">
           <md-input-container>
             <label>Select User</label>
-            <md-select ng-model="vm.selectedUser">
+            <md-select ng-model="vm.selectedUser" md-on-open="vm.getGroupUsers()">
               <md-option ng-repeat="user in vm.groupUsers track by $index" value="{{user.id}}">
                 {{user.first_name}}
               </md-option>
