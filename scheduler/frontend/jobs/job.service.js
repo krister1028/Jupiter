@@ -2,15 +2,17 @@ import baseResourceClass from '../base-resource-class';
 
 export default class jobService extends baseResourceClass {
   /* @ngInject */
-  constructor($http, $q, productService, jobTypeService, utilityService) {
+  constructor($http, $q, productService, jobTypeService, jobTaskService, utilityService) {
     super($http, $q);
     this._$q = $q;
     this.resourceUrl = '/api/jobs/';
     this._productService = productService;
     this._jobTypeService = jobTypeService;
+    this._jobTaskService = jobTaskService;
     this._utilityService = utilityService;
     this.taskCompleteStatus = 3;
     this.taskIncompleteStatus = 1;
+    this.relatedServices = [jobTaskService];
   }
 
   getProgress(job) {
@@ -128,6 +130,7 @@ export default class jobService extends baseResourceClass {
   transformResponse(response) {
     const jobs = response.data;
     jobs.forEach(j => {
+      j.jobTasks = this._jobTaskService.itemList.filter(jobTask => j.tasks.indexOf(jobTask.task) > -1);
       j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
       j.created = new Date(j.created);
     });

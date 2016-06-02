@@ -25,7 +25,7 @@ class UserProfile(models.Model):
     user_type = models.IntegerField(choices=USER_TYPE_CHOICES, default=TECHNICIAN)
 
 
-class Task(SoftDeleteModelMixin, models.Model):
+class Task(models.Model):
     LOW = 1
     MEDIUM = 2
     HIGH = 3
@@ -44,46 +44,41 @@ class Task(SoftDeleteModelMixin, models.Model):
     min_completion_time = models.IntegerField()
     max_completion_time = models.IntegerField()
     cost = models.IntegerField()
-    deleted = models.IntegerField(default=False)
 
     def __unicode__(self):
         return self.description
 
 
-class Product(SoftDeleteModelMixin, models.Model):
+class Product(models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255, default=None)
     code = models.CharField(max_length=8)
     tasks = models.ManyToManyField(Task, through='ProductTask')
-    deleted = models.IntegerField(default=False)
 
     def __unicode__(self):
         return self.description
 
 
-class JobStatus(SoftDeleteModelMixin, models.Model):
+class JobStatus(models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255)
-    deleted = models.IntegerField(default=False)
 
     def __unicode__(self):
         return self.description
 
 
-class JobType(SoftDeleteModelMixin, models.Model):
+class JobType(models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255)
-    deleted = models.IntegerField(default=False)
 
     def __unicode__(self):
         return self.description
 
 
-class ProductTask(SoftDeleteModelMixin, models.Model):
+class ProductTask(models.Model):
     product = models.ForeignKey(Product)
     task = models.ForeignKey(Task)
     completion_time = models.IntegerField(null=True, blank=True)  # in minutes
-    deleted = models.IntegerField(default=False)
 
     @property
     def description(self):
@@ -101,7 +96,7 @@ class ProductTask(SoftDeleteModelMixin, models.Model):
         return self.task.description
 
 
-class Job(SoftDeleteModelMixin, models.Model):
+class Job(models.Model):
 
     group = models.ForeignKey(Group)
     product = models.ForeignKey(Product)
@@ -112,23 +107,22 @@ class Job(SoftDeleteModelMixin, models.Model):
     description = models.CharField(max_length=255)
     started_timestamp = models.DateTimeField(null=True, blank=True)
     completed_timestamp = models.DateTimeField(null=True, blank=True)
-    tasks = models.ManyToManyField(Task, through='JobTask')
-    deleted = models.IntegerField(default=False)
+    product_tasks = models.ManyToManyField(ProductTask, through='JobTask')
     history = HistoricalRecords()
 
     def __unicode__(self):
         return self.description
 
     def save(self, *args, **kwargs):
-        if not self.tasks.all():
-            job_tasks = []
-            for task in self.product.tasks.all():
-                job_tasks.append(JobTask(job=self, task=task))
-                JobTask.objects.bulk_create(job_tasks)
         super(Job, self).save(*args, **kwargs)
+        if not self.product_tasks.all():
+            job_tasks = []
+            for product_task in ProductTask.objects.filter(product=self.product):
+                job_tasks.append(JobTask(job=self, product_task=product_task))
+            JobTask.objects.bulk_create(job_tasks)
 
 
-class JobTask(SoftDeleteModelMixin, models.Model):
+class JobTask(models.Model):
     PENDING = 1
     IN_PROGRESS = 2
     COMPLETE = 3
@@ -139,16 +133,19 @@ class JobTask(SoftDeleteModelMixin, models.Model):
     )
 
     job = models.ForeignKey(Job)
-    task = models.ForeignKey(Task)
+    product_task = models.ForeignKey(ProductTask)
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     completed_by = models.ForeignKey(User, null=True, blank=True)
     completed_time = models.DateTimeField(null=True, blank=True)
-    deleted = models.IntegerField(default=False)
     history = HistoricalRecords()
 
     @property
     def completion_time(self):
-        return ProductTask.objects.get(task__id=self.task, pk=self.job.product.id).completion_time
+        return self.product_task.completion_time
+
+    @property
+    def description(self):
+        return self.product_task.task.description
 
     def save(self, *args, **kwargs):
         if self.completed_by and not self.completed_time:
@@ -157,19 +154,6 @@ class JobTask(SoftDeleteModelMixin, models.Model):
             self.completed_time = None
 
         super(JobTask, self).save(*args, **kwargs)
-
-    @property
-    def description(self):
-        return self.product_task.task.description
-
-    @property
-    def completion_time(self):
-        return self.product_task.completion_time
-
-    @classmethod
-    def create_for_job(cls, job):
-        for product_task in job.product.tasks.all():
-            cls.objects.create(job=job, product_task=product_task, status=cls.PENDING)
 
 
 class DailyMetric(models.Model):

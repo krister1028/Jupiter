@@ -12,7 +12,7 @@
     <md-list ng-show="vm.jobs.length">
         <md-list-item ng-repeat="job in vm.jobs track by $index" layout="row">
             <a flex="15" ui-sref="root.editJob({jobId:job.id})" layout-margin>{{ job.description }}</a>
-            <md-progress-linear flex="85" md-mode="determinate" value="{{ vm.jobService.getProgress(job) * 100 }}"></md-progress-linear>
+            <md-progress-linear flex="85" md-mode="determinate" value="{{ vm.getJobProgress(job) * 100 }}"></md-progress-linear>
         </md-list-item>
     </md-list>
     <div ng-show="vm.jobs.length == 0" layout-margin>

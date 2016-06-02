@@ -13,7 +13,7 @@ export default class HomeController {
     this.tasks = [];
     taskService.getList().then(tasks => this.tasks = tasks);
 
-    this.jobService = jobService;
+    this._jobService = jobService;
     this._$mdDialog = $mdDialog;
 
     this.showFullNames = true;
@@ -32,6 +32,10 @@ export default class HomeController {
       targetEvent: ev,
       clickOutsideToClose: true
     });
+  }
+
+  getJobProgress(job) {
+    return this._jobService.getProgress(job);
   }
 
   getProductText(product) {

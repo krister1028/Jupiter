@@ -126,69 +126,73 @@
 	
 	var _tasksTaskService2 = _interopRequireDefault(_tasksTaskService);
 	
-	var _jobsGroupUserService = __webpack_require__(29);
+	var _jobsJobTaskService = __webpack_require__(29);
+	
+	var _jobsJobTaskService2 = _interopRequireDefault(_jobsJobTaskService);
+	
+	var _jobsGroupUserService = __webpack_require__(30);
 	
 	var _jobsGroupUserService2 = _interopRequireDefault(_jobsGroupUserService);
 	
-	var _utilityService = __webpack_require__(48);
+	var _utilityService = __webpack_require__(31);
 	
 	var _utilityService2 = _interopRequireDefault(_utilityService);
 	
-	var _jobsJobTypeService = __webpack_require__(30);
+	var _jobsJobTypeService = __webpack_require__(32);
 	
 	var _jobsJobTypeService2 = _interopRequireDefault(_jobsJobTypeService);
 	
-	var _jobsJobStatusService = __webpack_require__(31);
+	var _jobsJobStatusService = __webpack_require__(33);
 	
 	var _jobsJobStatusService2 = _interopRequireDefault(_jobsJobStatusService);
 	
-	var _metricsHighchartServiceJs = __webpack_require__(32);
+	var _metricsHighchartServiceJs = __webpack_require__(34);
 	
 	var _metricsHighchartServiceJs2 = _interopRequireDefault(_metricsHighchartServiceJs);
 	
-	var _metricsMetricsService = __webpack_require__(33);
+	var _metricsMetricsService = __webpack_require__(35);
 	
 	var _metricsMetricsService2 = _interopRequireDefault(_metricsMetricsService);
 	
-	var _homeController = __webpack_require__(34);
+	var _homeController = __webpack_require__(36);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _jobsEditJobController = __webpack_require__(37);
+	var _jobsEditJobController = __webpack_require__(39);
 	
 	var _jobsEditJobController2 = _interopRequireDefault(_jobsEditJobController);
 	
-	var _headerController = __webpack_require__(40);
+	var _headerController = __webpack_require__(42);
 	
 	var _headerController2 = _interopRequireDefault(_headerController);
 	
-	var _homeTemplateHtml = __webpack_require__(41);
+	var _homeTemplateHtml = __webpack_require__(43);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _productsAddProductTemplateHtml = __webpack_require__(42);
+	var _productsAddProductTemplateHtml = __webpack_require__(44);
 	
 	var _productsAddProductTemplateHtml2 = _interopRequireDefault(_productsAddProductTemplateHtml);
 	
-	var _tasksAddTaskTemplateHtml = __webpack_require__(43);
+	var _tasksAddTaskTemplateHtml = __webpack_require__(45);
 	
 	var _tasksAddTaskTemplateHtml2 = _interopRequireDefault(_tasksAddTaskTemplateHtml);
 	
-	var _jobsEditJobTemplateHtml = __webpack_require__(44);
+	var _jobsEditJobTemplateHtml = __webpack_require__(46);
 	
 	var _jobsEditJobTemplateHtml2 = _interopRequireDefault(_jobsEditJobTemplateHtml);
 	
-	var _metricsMetricsTemplateHtml = __webpack_require__(45);
+	var _metricsMetricsTemplateHtml = __webpack_require__(47);
 	
 	var _metricsMetricsTemplateHtml2 = _interopRequireDefault(_metricsMetricsTemplateHtml);
 	
-	var _metricsDateSelectChartDirective = __webpack_require__(46);
+	var _metricsDateSelectChartDirective = __webpack_require__(48);
 	
 	var _metricsDateSelectChartDirective2 = _interopRequireDefault(_metricsDateSelectChartDirective);
 	
 	window.Highcharts = _highcharts2['default'];
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).service('utilityService', _utilityService2['default']).directive('dateChart', _metricsDateSelectChartDirective2['default']).config(configuration).run(run);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).service('utilityService', _utilityService2['default']).directive('dateChart', _metricsDateSelectChartDirective2['default']).config(configuration).run(run);
 	
 	/* @ngInject */
 	function run($rootScope, $state, $stateParams) {
@@ -69968,8 +69972,13 @@
 	    this._pristineItemList = []; // private cache, not exposed outside of service
 	
 	    this.itemList = [];
-	    this.resourceUrl = null; // must be overwritten in child class
-	    this.itemIdField = 'id'; // may be overwritten in child class as needed
+	
+	    // if populated in child class, included services getList methods will be appended to main service's getList
+	    this.relatedServices = [];
+	    // must be overwritten in child class
+	    this.resourceUrl = null;
+	    // may be overwritten in child class as needed
+	    this.itemIdField = 'id';
 	  }
 	
 	  /* /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69986,12 +69995,12 @@
 	      if (this._initialRequest.promise.$$state.status === 0) {
 	        // if successful get request has not yet resolved
 	        this._$http.get(this.resourceUrl).then(function (response) {
-	          _this._initialRequest.resolve();
-	          _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
-	          _this._makeItemListPristine();
-	          deferred.resolve(_this.itemList);
-	        }, function (response) {
-	          deferred.reject(response.data);
+	          return _this._$q.all(_this._getRelatedLists()).then(function () {
+	            _this._initialRequest.resolve(response);
+	            _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
+	            _this._makeItemListPristine();
+	            deferred.resolve(_this.itemList);
+	          });
 	        });
 	      } else {
 	        // if items are in memory already, resolve without making request
@@ -70132,6 +70141,15 @@
 	        this._pristineItemList.splice(index, 1);
 	      }
 	    }
+	  }, {
+	    key: '_getRelatedLists',
+	    value: function _getRelatedLists() {
+	      var deferredList = [];
+	      this.relatedServices.forEach(function (service) {
+	        return deferredList.push(service.getList());
+	      });
+	      return deferredList;
+	    }
 	  }]);
 	
 	  return baseResourceClass;
@@ -70169,7 +70187,7 @@
 	
 	  /* @ngInject */
 	
-	  function jobService($http, $q, productService, jobTypeService, utilityService) {
+	  function jobService($http, $q, productService, jobTypeService, jobTaskService, utilityService) {
 	    _classCallCheck(this, jobService);
 	
 	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q);
@@ -70177,9 +70195,11 @@
 	    this.resourceUrl = '/api/jobs/';
 	    this._productService = productService;
 	    this._jobTypeService = jobTypeService;
+	    this._jobTaskService = jobTaskService;
 	    this._utilityService = utilityService;
 	    this.taskCompleteStatus = 3;
 	    this.taskIncompleteStatus = 1;
+	    this.relatedServices = [jobTaskService];
 	  }
 	
 	  _createClass(jobService, [{
@@ -70332,8 +70352,13 @@
 	  }, {
 	    key: 'transformResponse',
 	    value: function transformResponse(response) {
+	      var _this9 = this;
+	
 	      var jobs = response.data;
 	      jobs.forEach(function (j) {
+	        j.jobTasks = _this9._jobTaskService.itemList.filter(function (jobTask) {
+	          return j.tasks.indexOf(jobTask.task) > -1;
+	        });
 	        j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
 	        j.created = new Date(j.created);
 	      });
@@ -70389,6 +70414,46 @@
 
 /***/ },
 /* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(26);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var jobTaskService = (function (_baseResourceClass) {
+	  _inherits(jobTaskService, _baseResourceClass);
+	
+	  /* @ngInject */
+	
+	  function jobTaskService($http, $q) {
+	    _classCallCheck(this, jobTaskService);
+	
+	    _get(Object.getPrototypeOf(jobTaskService.prototype), 'constructor', this).call(this, $http, $q);
+	    this.resourceUrl = '/api/job-tasks/';
+	  }
+	
+	  return jobTaskService;
+	})(_baseResourceClass3['default']);
+	
+	exports['default'] = jobTaskService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 30 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -70435,7 +70500,48 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 30 */
+/* 31 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var utilityService = (function () {
+	  function utilityService() {
+	    _classCallCheck(this, utilityService);
+	  }
+	
+	  _createClass(utilityService, [{
+	    key: 'getDotAttribute',
+	    value: function getDotAttribute(dotString, object) {
+	      var subVal = object;
+	      var attributes = dotString.split('.');
+	      attributes.forEach(function (attr) {
+	        try {
+	          subVal = subVal[attr];
+	        } catch (TypeError) {
+	          return undefined;
+	        }
+	      });
+	      return subVal;
+	    }
+	  }]);
+	
+	  return utilityService;
+	})();
+	
+	exports['default'] = utilityService;
+	module.exports = exports['default'];
+
+/***/ },
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70475,8 +70581,8 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 31 */
-/***/ function(module, exports) {
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -70484,45 +70590,38 @@
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var jobStatusService = (function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseResourceClass2 = __webpack_require__(26);
+	
+	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	
+	var jobStatusService = (function (_baseResourceClass) {
+	  _inherits(jobStatusService, _baseResourceClass);
+	
 	  /* @ngInject */
 	
-	  function jobStatusService($http) {
+	  function jobStatusService($http, $q) {
 	    _classCallCheck(this, jobStatusService);
 	
-	    this._$http = $http;
-	    this.jobStatuses = [];
-	    this._resourceUrl = '/api/job-statuses/';
-	    this.get();
+	    _get(Object.getPrototypeOf(jobStatusService.prototype), 'constructor', this).call(this, $http, $q);
+	    this.resourceUrl = '/api/job-statuses/';
 	  }
 	
-	  _createClass(jobStatusService, [{
-	    key: 'get',
-	    value: function get() {
-	      var _this = this;
-	
-	      return this._$http.get(this._resourceUrl).then(function (response) {
-	        var _jobStatuses;
-	
-	        return (_jobStatuses = _this.jobStatuses).push.apply(_jobStatuses, _toConsumableArray(response.data));
-	      });
-	    }
-	  }]);
-	
 	  return jobStatusService;
-	})();
+	})(_baseResourceClass3['default']);
 	
 	exports['default'] = jobStatusService;
 	module.exports = exports['default'];
 
 /***/ },
-/* 32 */
+/* 34 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -70736,7 +70835,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 33 */
+/* 35 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -70773,7 +70872,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 34 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70790,11 +70889,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _jobsAddJobModalTemplateHtml = __webpack_require__(35);
+	var _jobsAddJobModalTemplateHtml = __webpack_require__(37);
 	
 	var _jobsAddJobModalTemplateHtml2 = _interopRequireDefault(_jobsAddJobModalTemplateHtml);
 	
-	var _jobsAddJobModalController = __webpack_require__(36);
+	var _jobsAddJobModalController = __webpack_require__(38);
 	
 	var _jobsAddJobModalController2 = _interopRequireDefault(_jobsAddJobModalController);
 	
@@ -70826,7 +70925,7 @@
 	      return _this.tasks = tasks;
 	    });
 	
-	    this.jobService = jobService;
+	    this._jobService = jobService;
 	    this._$mdDialog = $mdDialog;
 	
 	    this.showFullNames = true;
@@ -70847,6 +70946,11 @@
 	        targetEvent: ev,
 	        clickOutsideToClose: true
 	      });
+	    }
+	  }, {
+	    key: 'getJobProgress',
+	    value: function getJobProgress(job) {
+	      return this._jobService.getProgress(job);
 	    }
 	  }, {
 	    key: 'getProductText',
@@ -70873,7 +70977,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 35 */
+/* 37 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -70884,7 +70988,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 36 */
+/* 38 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -70949,7 +71053,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 37 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70968,11 +71072,11 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _selectUserTemplateHtml = __webpack_require__(38);
+	var _selectUserTemplateHtml = __webpack_require__(40);
 	
 	var _selectUserTemplateHtml2 = _interopRequireDefault(_selectUserTemplateHtml);
 	
-	var _selectUserController = __webpack_require__(39);
+	var _selectUserController = __webpack_require__(41);
 	
 	var _selectUserController2 = _interopRequireDefault(_selectUserController);
 	
@@ -71073,7 +71177,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 38 */
+/* 40 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71084,7 +71188,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 39 */
+/* 41 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -71127,7 +71231,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 40 */
+/* 42 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -71177,18 +71281,18 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 41 */
+/* 43 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\" layout=\"row\"> <a flex=\"15\" ui-sref=\"root.editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear flex=\"85\" md-mode=\"determinate\" value=\"{{ vm.jobService.getProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> <md-divider></md-divider> </div> <md-button class=\"md-primary\" ng-click=\"vm.showMetrics = !vm.showMetrics\">Toggle Metrics</md-button> <div ng-if=\"vm.showMetrics\" ui-view=\"metrics\"></div> <div layout=\"row\" layout-margin> <div flex=\"50\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"root.addProduct({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <div layout=\"row\"> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-divider></md-divider> <div flex=\"50\"> <h2> Tasks </h2> <md-list ng-show=\"vm.tasks.length\"> <md-list-item ui-sref=\"root.addTask({taskId: task.id})\" ng-repeat=\"task in vm.tasks track by $index\"> {{ task.description }} </md-list-item> </md-list> <div ng-show=\"vm.tasks.length == 0\" layout-margin> You don't currently have any tasks </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addTask\">Add Task</md-button> </div> </div>";
+	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\" layout=\"row\"> <a flex=\"15\" ui-sref=\"root.editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear flex=\"85\" md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> <md-divider></md-divider> </div> <md-button class=\"md-primary\" ng-click=\"vm.showMetrics = !vm.showMetrics\">Toggle Metrics</md-button> <div ng-if=\"vm.showMetrics\" ui-view=\"metrics\"></div> <div layout=\"row\" layout-margin> <div flex=\"50\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"root.addProduct({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <div layout=\"row\"> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-divider></md-divider> <div flex=\"50\"> <h2> Tasks </h2> <md-list ng-show=\"vm.tasks.length\"> <md-list-item ui-sref=\"root.addTask({taskId: task.id})\" ng-repeat=\"task in vm.tasks track by $index\"> {{ task.description }} </md-list-item> </md-list> <div ng-show=\"vm.tasks.length == 0\" layout-margin> You don't currently have any tasks </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addTask\">Add Task</md-button> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 42 */
+/* 44 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71199,7 +71303,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 43 */
+/* 45 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71210,7 +71314,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 44 */
+/* 46 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71221,7 +71325,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 45 */
+/* 47 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71232,7 +71336,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 46 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71243,7 +71347,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _dateChartTemplateHtml = __webpack_require__(47);
+	var _dateChartTemplateHtml = __webpack_require__(49);
 	
 	var _dateChartTemplateHtml2 = _interopRequireDefault(_dateChartTemplateHtml);
 	
@@ -71263,7 +71367,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 47 */
+/* 49 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -71272,47 +71376,6 @@
 	var v1="<div flex layout=\"row\"> <div flex=\"15\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"startDateModel\" md-placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"endDateModel\" md-placeholder=\"N/A\"></md-datepicker> <md-button ng-click=\"refreshData()\">Apply Date Filter</md-button> </div> <highchart flex=\"85\" config=\"chartConfig\"></highchart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("date-chart.template.html",v1)}]);
 	module.exports=v1;
-
-/***/ },
-/* 48 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var utilityService = (function () {
-	  function utilityService() {
-	    _classCallCheck(this, utilityService);
-	  }
-	
-	  _createClass(utilityService, [{
-	    key: 'getDotAttribute',
-	    value: function getDotAttribute(dotString, object) {
-	      var subVal = object;
-	      var attributes = dotString.split('.');
-	      attributes.forEach(function (attr) {
-	        try {
-	          subVal = subVal[attr];
-	        } catch (TypeError) {
-	          return undefined;
-	        }
-	      });
-	      return subVal;
-	    }
-	  }]);
-	
-	  return utilityService;
-	})();
-	
-	exports['default'] = utilityService;
-	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

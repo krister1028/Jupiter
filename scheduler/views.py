@@ -3,9 +3,9 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 
-from scheduler.models import Product, Task, Job, JobStatus, JobType, DailyMetric, ProductTask
+from scheduler.models import Product, Task, Job, JobStatus, JobType, DailyMetric, ProductTask, JobTask
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
-    JobTypeSerializer, DailyMetricSerializer, ProductTaskSerializer
+    JobTypeSerializer, DailyMetricSerializer, ProductTaskSerializer, JobTaskSerializer
 
 
 def index(request):
@@ -35,7 +35,7 @@ class ProductViewSet(viewsets.ModelViewSet, IsolateGroupMixin):
 
 
 class ProductTaskViewSet(viewsets.ModelViewSet):
-    queryset = ProductTask.objects.filter(deleted=False)
+    queryset = ProductTask.objects.all()
     serializer_class = ProductTaskSerializer
 
 
@@ -57,6 +57,11 @@ class JobStatusViewSet(viewsets.ModelViewSet, IsolateGroupMixin):
 class JobTypeViewSet(viewsets.ModelViewSet, IsolateGroupMixin):
     queryset = JobType.objects.all()
     serializer_class = JobTypeSerializer
+
+
+class JobTaskViewSet(viewsets.ModelViewSet):
+    queryset = JobTask.objects.all()
+    serializer_class = JobTaskSerializer
 
 
 class CustomLoginView(LoginView):
