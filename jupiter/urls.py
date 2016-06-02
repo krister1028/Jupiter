@@ -23,6 +23,7 @@ from scheduler import views
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'products', views.ProductViewSet)
+router.register(r'product-tasks', views.ProductTaskViewSet)
 router.register(r'tasks', views.TaskViewSet)
 router.register(r'jobs', views.JobViewSet)
 router.register(r'job-statuses', views.JobStatusViewSet)

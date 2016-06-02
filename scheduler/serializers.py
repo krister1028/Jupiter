@@ -12,7 +12,7 @@ class CurrentGroupDefault(serializers.CurrentUserDefault):
         return self.get_primary_group()
 
 
-class IDIncludeSerializer(serializers.ModelSerializer):
+class JupiterDefaultSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
 
 
@@ -25,14 +25,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'username', 'is_superuser', 'first_name', 'last_name', 'profile')
 
 
-class TaskSerializer(IDIncludeSerializer):
+class TaskSerializer(JupiterDefaultSerializer):
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
         model = Task
 
 
-class ProductTaskSerializer(IDIncludeSerializer):
+class ProductTaskSerializer(JupiterDefaultSerializer):
     description = serializers.CharField(read_only=True)
     min_completion_time = serializers.IntegerField(read_only=True)
     max_completion_time = serializers.IntegerField(read_only=True)
@@ -41,14 +41,14 @@ class ProductTaskSerializer(IDIncludeSerializer):
         model = ProductTask
 
 
-class ProductSerializer(IDIncludeSerializer):
+class ProductSerializer(JupiterDefaultSerializer):
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
         model = Product
 
 
-class JobTaskSerializer(IDIncludeSerializer):
+class JobTaskSerializer(JupiterDefaultSerializer):
     description = serializers.CharField(read_only=True)
     completion_time = serializers.IntegerField(read_only=True)
 
@@ -56,28 +56,28 @@ class JobTaskSerializer(IDIncludeSerializer):
         model = JobTask
 
 
-class JobTypeSerializer(IDIncludeSerializer):
+class JobTypeSerializer(JupiterDefaultSerializer):
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
         model = JobType
 
 
-class JobStatusSerializer(IDIncludeSerializer):
+class JobStatusSerializer(JupiterDefaultSerializer):
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
         model = JobStatus
 
 
-class JobSerializer(IDIncludeSerializer):
+class JobSerializer(JupiterDefaultSerializer):
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
         model = Job
 
 
-class DailyMetricSerializer(IDIncludeSerializer):
+class DailyMetricSerializer(JupiterDefaultSerializer):
     group = serializers.HiddenField(default=CurrentGroupDefault())
 
     class Meta:
