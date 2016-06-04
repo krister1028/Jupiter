@@ -70422,6 +70422,8 @@
 	  value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -70447,6 +70449,24 @@
 	    this.taskCompleteStatus = 3;
 	    this.taskIncompleteStatus = 1;
 	  }
+	
+	  _createClass(jobTaskService, [{
+	    key: 'markIncomplete',
+	    value: function markIncomplete(task) {
+	      task.status = this.taskIncompleteStatus;
+	      task.completed_by = null;
+	      task.completed_time = null;
+	      return this.put(task);
+	    }
+	  }, {
+	    key: 'markComplete',
+	    value: function markComplete(task, userId) {
+	      task.status = this.taskCompleteStatus;
+	      task.completed_by = userId;
+	      task.completed_time = new Date();
+	      return this.put(task);
+	    }
+	  }]);
 	
 	  return jobTaskService;
 	})(_baseResourceClass3['default']);
@@ -71118,18 +71138,16 @@
 	var EditJobController = (function () {
 	  /* @ngInject */
 	
-	  function EditJobController($state, $stateParams, jobService, groupUserService, $mdDialog, jobTypeService, jobStatusService, jobTaskService) {
+	  function EditJobController($state, jobService, $mdDialog, jobTypeService, jobStatusService, jobTaskService) {
 	    var _this = this;
 	
 	    _classCallCheck(this, EditJobController);
 	
 	    this._$state = $state;
-	    this._$stateParams = $stateParams;
 	    this._jobService = jobService;
 	    this._jobTaskService = jobTaskService;
 	    this._$mdDialog = $mdDialog;
-	    this.groupUsers = groupUserService.groupUsers;
-	    this.jobTypes = jobTypeService.jobTypes;
+	    this.jobTypes = jobTypeService.itemList;
 	    this.jobStatuses = jobStatusService.jobStatuses;
 	    this._jobService.get(this._$stateParams.jobId).then(function (job) {
 	      _this.job = job;
@@ -71170,9 +71188,7 @@
 	    key: 'toggleTask',
 	    value: function toggleTask(task) {
 	      if (EditJobController._taskComplete(task)) {
-	        task.completed_by = null;
-	        task.status = this._jobTaskService.taskIncompleteStatus;
-	        this._jobTaskService.put(task);
+	        this._jobTaskService.markIncomplete(task);
 	      } else {
 	        this.openMarkCompleteDialog(task);
 	      }
@@ -71190,9 +71206,7 @@
 	        clickOutsideToClose: true,
 	        locals: { job: this.job, task: task }
 	      }).then(function (userId) {
-	        task.completed_by = userId;
-	        task.status = _this3._jobTaskService.taskCompleteStatus;
-	        _this3._jobTaskService.put(task);
+	        return _this3._jobTaskService.markComplete(task, userId);
 	      });
 	    }
 	  }], [{
