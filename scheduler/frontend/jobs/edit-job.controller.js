@@ -4,13 +4,27 @@ import SelectUserController from './select-user.controller';
 
 export default class EditJobController {
   /* @ngInject */
-  constructor($state, jobService, $mdDialog, jobTypeService, jobStatusService, jobTaskService) {
+  constructor($state, jobService, $mdDialog, jobTypeService, jobStatusService, jobTaskService, $stateParams) {
+    // third party services
     this._$state = $state;
-    this._jobService = jobService;
-    this._jobTaskService = jobTaskService;
+    this._$stateParams = $stateParams;
     this._$mdDialog = $mdDialog;
+    // internal services
+    this._jobService = jobService;
+    this._jobTypeService = jobTypeService;
+    this._jobTaskService = jobTaskService;
+    this._jobStatusService = jobStatusService;
+    // items
     this.jobTypes = jobTypeService.itemList;
-    this.jobStatuses = jobStatusService.jobStatuses;
+    this.jobStatuses = jobStatusService.itemList;
+    this.job = {};
+    // init
+    this.initializeServices();
+  }
+
+  initializeServices() {
+    this._jobTypeService.getList();
+    this._jobStatusService.getList();
     this._jobService.get(this._$stateParams.jobId).then(job => {
       this.job = job;
     });
@@ -58,6 +72,11 @@ export default class EditJobController {
       parent: angular.element(document.body),
       clickOutsideToClose: true,
       locals: {job: this.job, task}
-    }).then(userId => this._jobTaskService.markComplete(task, userId));
+    }).then(userId => this._markTaskComplete(task, userId));
+  }
+
+  _markTaskComplete(task, userId) {
+    this._jobTaskService.markComplete(task, userId);
+    this._jobService.checkJobComplete(this.job);
   }
 }

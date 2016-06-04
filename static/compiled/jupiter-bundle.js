@@ -246,7 +246,7 @@
 	      }
 	    }
 	  }).state('root.addProduct', {
-	    url: '/add-product/?productId',
+	    url: '/product/?productId',
 	    data: { pageTitle: 'Add Product' },
 	    views: {
 	      'body@': {
@@ -255,7 +255,7 @@
 	      }
 	    }
 	  }).state('root.editJob', {
-	    url: '/edit-job/{jobId:int}',
+	    url: '/job/{jobId:int}',
 	    data: { pageTitle: 'Edit Job' },
 	    views: {
 	      'body@': {
@@ -265,7 +265,7 @@
 	    }
 	
 	  }).state('root.addTask', {
-	    url: '/add-task/?taskId',
+	    url: '/task/?taskId',
 	    data: { pageTitle: 'Add Task' },
 	    views: {
 	      'body@': {
@@ -71138,23 +71138,38 @@
 	var EditJobController = (function () {
 	  /* @ngInject */
 	
-	  function EditJobController($state, jobService, $mdDialog, jobTypeService, jobStatusService, jobTaskService) {
-	    var _this = this;
-	
+	  function EditJobController($state, jobService, $mdDialog, jobTypeService, jobStatusService, jobTaskService, $stateParams) {
 	    _classCallCheck(this, EditJobController);
 	
+	    // third party services
 	    this._$state = $state;
-	    this._jobService = jobService;
-	    this._jobTaskService = jobTaskService;
+	    this._$stateParams = $stateParams;
 	    this._$mdDialog = $mdDialog;
+	    // internal services
+	    this._jobService = jobService;
+	    this._jobTypeService = jobTypeService;
+	    this._jobTaskService = jobTaskService;
+	    this._jobStatusService = jobStatusService;
+	    // items
 	    this.jobTypes = jobTypeService.itemList;
-	    this.jobStatuses = jobStatusService.jobStatuses;
-	    this._jobService.get(this._$stateParams.jobId).then(function (job) {
-	      _this.job = job;
-	    });
+	    this.jobStatuses = jobStatusService.itemList;
+	    this.job = {};
+	    // init
+	    this.initializeServices();
 	  }
 	
 	  _createClass(EditJobController, [{
+	    key: 'initializeServices',
+	    value: function initializeServices() {
+	      var _this = this;
+	
+	      this._jobTypeService.getList();
+	      this._jobStatusService.getList();
+	      this._jobService.get(this._$stateParams.jobId).then(function (job) {
+	        _this.job = job;
+	      });
+	    }
+	  }, {
 	    key: 'getTaskStyle',
 	    value: function getTaskStyle(task) {
 	      if (EditJobController._taskComplete(task)) {
@@ -71206,8 +71221,14 @@
 	        clickOutsideToClose: true,
 	        locals: { job: this.job, task: task }
 	      }).then(function (userId) {
-	        return _this3._jobTaskService.markComplete(task, userId);
+	        return _this3._markTaskComplete(task, userId);
 	      });
+	    }
+	  }, {
+	    key: '_markTaskComplete',
+	    value: function _markTaskComplete(task, userId) {
+	      this._jobTaskService.markComplete(task, userId);
+	      this._jobService.checkJobComplete(this.job);
 	    }
 	  }], [{
 	    key: '_taskComplete',
@@ -71372,7 +71393,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.job.product_description }}</div> <div><b>Product Code:</b> {{ vm.job.product_code }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.jobTasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type_id\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status_id\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
+	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.job.product_description }}</div> <div><b>Product Code:</b> {{ vm.job.product_code }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.jobTasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 

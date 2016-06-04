@@ -108,7 +108,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
       }
     })
     .state('root.addProduct', {
-      url: '/add-product/?productId',
+      url: '/product/?productId',
       data: {pageTitle: 'Add Product'},
       views: {
         'body@': {
@@ -118,7 +118,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
       }
     })
     .state('root.editJob', {
-      url: '/edit-job/{jobId:int}',
+      url: '/job/{jobId:int}',
       data: {pageTitle: 'Edit Job'},
       views: {
         'body@': {
@@ -129,7 +129,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
 
     })
     .state('root.addTask', {
-      url: '/add-task/?taskId',
+      url: '/task/?taskId',
       data: {pageTitle: 'Add Task'},
       views: {
         'body@': {
