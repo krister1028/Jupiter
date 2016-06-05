@@ -242,7 +242,7 @@
 	      }
 	    }
 	  }).state('login', {
-	    url: '/login/',
+	    url: '/login',
 	    data: { pageTitle: 'Login' },
 	    views: {
 	      'body@': {
@@ -251,14 +251,29 @@
 	      }
 	    }
 	  }).state('root.addProduct', {
-	    url: '/product/?productId',
+	    url: '/product',
 	    data: { pageTitle: 'Add Product' },
 	    views: {
 	      'body@': {
 	        template: _productsAddProductTemplateHtml2['default'],
 	        controller: 'AddProductController as vm'
 	      }
-	    }
+	    },
+	    resolve: { product: function product() {
+	        return { tasks: [] };
+	      } }
+	  }).state('root.productDetail', {
+	    url: '/product/{productId:int}',
+	    data: { pageTitle: 'Add Product', detailView: true },
+	    views: {
+	      'body@': {
+	        template: _productsAddProductTemplateHtml2['default'],
+	        controller: 'AddProductController as vm'
+	      }
+	    },
+	    resolve: { product: function product(productService, $stateParams) {
+	        return productService.get($stateParams.productId);
+	      } }
 	  }).state('root.editJob', {
 	    url: '/job/{jobId:int}',
 	    data: { pageTitle: 'Edit Job' },
@@ -72320,113 +72335,80 @@
 
 /***/ },
 /* 21 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _baseFormClass2 = __webpack_require__(22);
-	
-	var _baseFormClass3 = _interopRequireDefault(_baseFormClass2);
-	
-	var AddProductController = (function (_baseFormClass) {
-	  _inherits(AddProductController, _baseFormClass);
-	
+	var ProductController = (function () {
 	  /* @ngInject */
 	
-	  function AddProductController(taskService, productService, $state, $stateParams, $q) {
-	    var _this = this;
+	  function ProductController(product, productService, productTaskService, $state, taskService) {
+	    _classCallCheck(this, ProductController);
 	
-	    _classCallCheck(this, AddProductController);
-	
-	    _get(Object.getPrototypeOf(AddProductController.prototype), 'constructor', this).call(this, $stateParams, $q);
-	    this.paramIdName = 'productId';
-	    this.resourceService = productService;
-	
-	    this._allTasks = [];
+	    this.product = product;
+	    this._taskService = taskService;
 	    this.unselectedTasks = [];
 	    this._productService = productService;
 	    this._$state = $state;
-	
-	    this._getFormItem().then(function (formItem) {
-	      _this.formItem = formItem;
-	      _this.refreshUnselectedTasks();
-	    });
-	
-	    // set all task times to max to start with
-	    taskService.getList().then(function (tasks) {
-	      _this._allTasks = tasks;
-	      _this._allTasks.forEach(function (t) {
-	        return t.completion_time = t.max_completion_time;
-	      });
-	      _this.refreshUnselectedTasks();
-	    });
 	  }
 	
-	  _createClass(AddProductController, [{
-	    key: 'getDefaultFormItem',
-	    value: function getDefaultFormItem() {
-	      return { tasks: [] };
-	    }
-	  }, {
-	    key: 'publishItem',
-	    value: function publishItem() {
-	      var _this2 = this;
+	  _createClass(ProductController, [{
+	    key: "$onInit",
+	    value: function $onInit() {
+	      var _this = this;
 	
-	      _get(Object.getPrototypeOf(AddProductController.prototype), 'publishItem', this).call(this).then(function () {
-	        return _this2._$state.go('root.home');
+	      this._taskService.getList().then(function () {
+	        return _this.refreshUnselectedTasks();
 	      });
 	    }
 	  }, {
-	    key: 'refreshUnselectedTasks',
-	    value: function refreshUnselectedTasks() {
-	      var _this3 = this;
-	
-	      if (this.formItem && this._allTasks) {
-	        (function () {
-	          var selectedTasks = _this3.formItem.tasks.map(function (t) {
-	            return t.task;
-	          });
-	          _this3.unselectedTasks = _this3._allTasks.filter(function (t) {
-	            return selectedTasks.indexOf(t.id) === -1;
-	          });
-	        })();
+	    key: "submit",
+	    value: function submit() {
+	      if (this._$state.$current.data.detailView) {
+	        this._productService.put(this.product);
+	      } else {
+	        this._productService.post(this.product);
 	      }
 	    }
 	  }, {
-	    key: 'searchTasks',
+	    key: "refreshUnselectedTasks",
+	    value: function refreshUnselectedTasks() {
+	      var selectedTaskIds = this.product.tasks.map(function (t) {
+	        return t.id;
+	      });
+	      this.unselectedTasks = this._taskService.itemList.filter(function (t) {
+	        return selectedTaskIds.indexOf(t.id) === -1;
+	      });
+	    }
+	  }, {
+	    key: "searchTasks",
 	    value: function searchTasks(query) {
-	      return this._allTasks.filter(function (f) {
+	      return this.unselectedTasks.filter(function (f) {
 	        return f.description.toLowerCase().indexOf(query.toLowerCase()) > -1;
 	      });
 	    }
 	  }, {
-	    key: 'addTask',
+	    key: "addTask",
 	    value: function addTask(task) {
-	      task.task = task.id;
-	      this.formItem.tasks.push(task);
+	      task.completion_time = task.max_completion_time;
+	      this.product.tasks.push(task);
 	      this.refreshUnselectedTasks();
 	    }
 	  }]);
 	
-	  return AddProductController;
-	})(_baseFormClass3['default']);
+	  return ProductController;
+	})();
 	
-	exports['default'] = AddProductController;
-	module.exports = exports['default'];
+	exports["default"] = ProductController;
+	module.exports = exports["default"];
 
 /***/ },
 /* 22 */
@@ -74217,7 +74199,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\" layout=\"row\"> <a flex=\"15\" ui-sref=\"root.editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear flex=\"85\" md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> <md-divider></md-divider> </div> <md-button class=\"md-primary\" ng-click=\"vm.showMetrics = !vm.showMetrics\">Toggle Metrics</md-button> <div ng-if=\"vm.showMetrics\" ui-view=\"metrics\"></div> <div layout=\"row\" layout-margin> <div flex=\"50\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"root.addProduct({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <div layout=\"row\"> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-divider></md-divider> <div flex=\"50\"> <h2> Tasks </h2> <md-list ng-show=\"vm.tasks.length\"> <md-list-item ui-sref=\"root.addTask({taskId: task.id})\" ng-repeat=\"task in vm.tasks track by $index\"> {{ task.description }} </md-list-item> </md-list> <div ng-show=\"vm.tasks.length == 0\" layout-margin> You don't currently have any tasks </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addTask\">Add Task</md-button> </div> </div>";
+	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\" layout=\"row\"> <a flex=\"15\" ui-sref=\"root.editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear flex=\"85\" md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> <md-divider></md-divider> </div> <md-button class=\"md-primary\" ng-click=\"vm.showMetrics = !vm.showMetrics\">Toggle Metrics</md-button> <div ng-if=\"vm.showMetrics\" ui-view=\"metrics\"></div> <div layout=\"row\" layout-margin> <div flex=\"50\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"root.productDetail({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <div layout=\"row\"> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-divider></md-divider> <div flex=\"50\"> <h2> Tasks </h2> <md-list ng-show=\"vm.tasks.length\"> <md-list-item ui-sref=\"root.addTask({taskId: task.id})\" ng-repeat=\"task in vm.tasks track by $index\"> {{ task.description }} </md-list-item> </md-list> <div ng-show=\"vm.tasks.length == 0\" layout-margin> You don't currently have any tasks </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addTask\">Add Task</md-button> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
@@ -74228,7 +74210,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"description\" ng-model=\"vm.formItem.description\" required> <div ng-messages=\"addProduct.description.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-input-container> <label>Product Code</label> <input md-maxlength=\"8\" name=\"productCode\" ng-model=\"vm.formItem.code\" required> <div ng-messages=\"addProduct.productCode.$error\"> <div ng-message=\"required\">This field is required.</div> <div ng-message=\"md-maxlength\">Maximum allowable product code is 8 characters</div> </div> </md-input-container> <md-chips ng-model=\"vm.formItem.tasks\" md-autocomplete-snap md-on-add=\"vm.refreshUnselectedTasks()\" md-on-remove=\"vm.refreshUnselectedTasks()\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> <div layout-align=\"start start\"> <md-button class=\"md-raised md-primary\" ng-click=\"vm.publishItem()\">{{ vm.getSubmitText() }} Product</md-button> </div> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.formItem.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"start start\" flex=\"33\"> <h2>Assign Tasks</h2> <div ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> <md-button ui-sref=\"root.addTask\">Add New Task</md-button> </div> </div>";
+	var v1="<div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"description\" ng-model=\"vm.product.description\" required> <div ng-messages=\"addProduct.description.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.product.code\" required> <div ng-messages=\"addProduct.productCode.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-chips ng-model=\"vm.product.tasks\" md-autocomplete-snap md-on-add=\"vm.refreshUnselectedTasks()\" md-on-remove=\"vm.refreshUnselectedTasks()\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> <div layout-align=\"start start\"> <md-button class=\"md-raised md-primary\" ng-click=\"vm.submit()\">Submit Product</md-button> </div> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.product.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"start start\" flex=\"33\"> <h2>Assign Tasks</h2> <div ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> <md-button ui-sref=\"root.addTask\">Add New Task</md-button> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
 	module.exports=v1;
 

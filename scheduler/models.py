@@ -38,7 +38,7 @@ class Task(models.Model):
 
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255)
-    abbreviation = models.CharField(max_length=20)
+    abbreviation = models.CharField(max_length=255)
     expertise_level = models.IntegerField(choices=EXPERTISE_CHOICES)
     min_completion_time = models.IntegerField()
     max_completion_time = models.IntegerField()
@@ -51,7 +51,7 @@ class Task(models.Model):
 class Product(models.Model):
     group = models.ForeignKey(Group)
     description = models.CharField(max_length=255, default=None)
-    code = models.CharField(max_length=8)
+    code = models.CharField(max_length=255)
     tasks = models.ManyToManyField(Task, through='ProductTask')
 
     def __unicode__(self):

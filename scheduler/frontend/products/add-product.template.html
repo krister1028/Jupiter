@@ -2,21 +2,20 @@
     <form name="addProduct" layout="column" flex="66">
       <md-input-container>
         <label>Product Description</label>
-        <input name="description" ng-model="vm.formItem.description" required>
+        <input name="description" ng-model="vm.product.description" required>
         <div ng-messages="addProduct.description.$error">
           <div ng-message="required">This field is required.</div>
         </div>
       </md-input-container>
       <md-input-container>
         <label>Product Code</label>
-        <input md-maxlength="8" name="productCode" ng-model="vm.formItem.code" required>
+        <input name="productCode" ng-model="vm.product.code" required>
         <div ng-messages="addProduct.productCode.$error">
           <div ng-message="required">This field is required.</div>
-          <div ng-message="md-maxlength">Maximum allowable product code is 8 characters</div>
         </div>
       </md-input-container>
         <md-chips
-                  ng-model="vm.formItem.tasks" md-autocomplete-snap
+                  ng-model="vm.product.tasks" md-autocomplete-snap
                   md-on-add="vm.refreshUnselectedTasks()"
                   md-on-remove="vm.refreshUnselectedTasks()"
                   md-require-match="true">
@@ -33,13 +32,13 @@
           </md-chip-template>
         </md-chips>
         <div layout-align="start start">
-            <md-button class="md-raised md-primary" ng-click="vm.publishItem()">{{ vm.getSubmitText() }} Product</md-button>
+            <md-button class="md-raised md-primary" ng-click="vm.submit()">Submit Product</md-button>
         </div>
     </form>
 
     <div layout="column" flex="33">
         <h4>Product Tasks</h4>
-        <div ng-repeat="task in vm.formItem.tasks track by $index" layout-margin>
+        <div ng-repeat="task in vm.product.tasks track by $index" layout-margin>
             {{ task.description }}
             <md-slider
                     aria-label="Select Time"

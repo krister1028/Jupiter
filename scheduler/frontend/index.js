@@ -98,7 +98,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
       }
     })
     .state('login', {
-      url: '/login/',
+      url: '/login',
       data: {pageTitle: 'Login'},
       views: {
         'body@': {
@@ -108,14 +108,26 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
       }
     })
     .state('root.addProduct', {
-      url: '/product/?productId',
+      url: '/product',
       data: {pageTitle: 'Add Product'},
       views: {
         'body@': {
           template: addProductTemplate,
           controller: 'AddProductController as vm'
         }
-      }
+      },
+      resolve: {product: () => {return {tasks: []};}}
+    })
+    .state('root.productDetail', {
+      url: '/product/{productId:int}',
+      data: {pageTitle: 'Add Product', detailView: true},
+      views: {
+        'body@': {
+          template: addProductTemplate,
+          controller: 'AddProductController as vm'
+        }
+      },
+      resolve: {product: (productService, $stateParams) => productService.get($stateParams.productId)}
     })
     .state('root.editJob', {
       url: '/job/{jobId:int}',

@@ -1,53 +1,37 @@
-import baseFormClass from '../base-form-class';
-
-export default class AddProductController extends baseFormClass {
+export default class ProductController {
   /* @ngInject */
-  constructor(taskService, productService, $state, $stateParams, $q) {
-    super($stateParams, $q);
-    this.paramIdName = 'productId';
-    this.resourceService = productService;
-
-    this._allTasks = [];
+  constructor(product, productService, productTaskService, $state, taskService) {
+    this.product = product;
+    this._taskService = taskService;
     this.unselectedTasks = [];
     this._productService = productService;
     this._$state = $state;
-
-    this._getFormItem().then(formItem => {
-      this.formItem = formItem;
-      this.refreshUnselectedTasks();
-    });
-
-    // set all task times to max to start with
-    taskService.getList().then(tasks => {
-      this._allTasks = tasks;
-      this._allTasks.forEach(t => t.completion_time = t.max_completion_time);
-      this.refreshUnselectedTasks();
-    });
-
   }
 
-  getDefaultFormItem() {
-    return {tasks: []};
+  $onInit() {
+    this._taskService.getList().then(() => this.refreshUnselectedTasks());
   }
 
-  publishItem() {
-    super.publishItem().then(() => this._$state.go('root.home'));
-  }
-
-  refreshUnselectedTasks() {
-    if (this.formItem && this._allTasks) {
-      const selectedTasks = this.formItem.tasks.map(t => t.task);
-      this.unselectedTasks = this._allTasks.filter(t => selectedTasks.indexOf(t.id) === -1);
+  submit() {
+    if (this._$state.$current.data.detailView) {
+      this._productService.put(this.product);
+    } else {
+      this._productService.post(this.product);
     }
   }
 
+  refreshUnselectedTasks() {
+    const selectedTaskIds = this.product.tasks.map(t => t.id);
+    this.unselectedTasks = this._taskService.itemList.filter(t => selectedTaskIds.indexOf(t.id) === -1);
+  }
+
   searchTasks(query) {
-    return this._allTasks.filter(f => f.description.toLowerCase().indexOf(query.toLowerCase()) > -1);
+    return this.unselectedTasks.filter(f => f.description.toLowerCase().indexOf(query.toLowerCase()) > -1);
   }
 
   addTask(task) {
-    task.task = task.id;
-    this.formItem.tasks.push(task);
+    task.completion_time = task.max_completion_time;
+    this.product.tasks.push(task);
     this.refreshUnselectedTasks();
   }
 }
