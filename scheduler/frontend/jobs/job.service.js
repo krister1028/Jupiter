@@ -64,38 +64,15 @@ export default class jobService extends baseResourceClass {
     return this.patch(jobId, {description: newDescription}).then(null, () => job.description = oldDescription);
   }
 
-  getJobsCompletedByProduct(startDate, endDate) {
-    return this.getAllJobProducts().then(() => {
-      return this._aggregateJobsByAttribute('productItem.description', startDate, endDate);
-    });
-  }
-
-  getJobsCompletedByType(startDate, endDate) {
-    return this.getAllJobTypes().then(() => {
-      return this._aggregateJobsByAttribute('jobType.description', startDate, endDate);
-    });
-  }
-
-  _aggregateJobsByAttribute(attr, startDate, endDate) {
-    const aggregate = {};
-    let attrValue;
-
-    this.itemList.forEach(job => {
-      if (job.completed_timestamp && (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate)) {
-        attrValue = this._utilityService.getDotAttribute(attr, job);
-        if (aggregate.hasOwnProperty(attrValue)) {
-          aggregate[attrValue] += 1;
-        } else {
-          aggregate[attrValue] = 1;
-        }
-      }
-    });
-    return aggregate;
-  }
-
   getJobsCompletedByDateRange(startDate, endDate) {
     return this.getList().then(() => {
       return this.itemList.filter(job => (job.completed_timestamp && (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate)))
+    });
+  }
+
+  getJobsCreatedByDateRange(startDate, endDate) {
+    return this.getList().then(() => {
+      return this.itemList.filter(job => (job.created && (job.created >= startDate && job.created <= endDate)));
     });
   }
 
