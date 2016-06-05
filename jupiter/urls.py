@@ -29,7 +29,6 @@ router.register(r'jobs', views.JobViewSet)
 router.register(r'job-statuses', views.JobStatusViewSet)
 router.register(r'job-types', views.JobTypeViewSet)
 router.register(r'job-tasks', views.JobTaskViewSet)
-router.register(r'daily-metrics', views.DailyMetricViewSet)
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),

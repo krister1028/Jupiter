@@ -171,24 +171,3 @@ class JobTask(models.Model):
             self.completed_time = None
 
         super(JobTask, self).save(*args, **kwargs)
-
-
-class DailyMetric(models.Model):
-    group = models.ForeignKey(Group)
-    # all text fields store json strings, as tasks and types are dynamic
-    active_task_hours = models.TextField()
-    pending_task_hours = models.TextField()
-    active_type_hours = models.TextField()
-    pending_type_hours = models.TextField()
-    job_count_by_type = models.TextField()
-    time_stamp = models.DateField(auto_now_add=True)
-
-
-class JobLog(models.Model):
-    DAILY_METRICS = 1
-    JOB_CHOICES = (
-        (DAILY_METRICS, 'Daily Metric Job'),
-    )
-    job = models.IntegerField(choices=JOB_CHOICES)
-    error = models.CharField(max_length=255, null=True, blank=True)
-    successful = models.BooleanField(default=False)

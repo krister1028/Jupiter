@@ -10,9 +10,9 @@ from rest_auth.views import LoginView, Response
 from datetime import datetime
 import utils
 
-from scheduler.models import Product, Task, Job, JobStatus, JobType, DailyMetric, ProductTask, JobTask
+from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
-    JobTypeSerializer, DailyMetricSerializer, ProductTaskSerializer, JobTaskSerializer
+    JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
 
 
 def index(request):
@@ -78,11 +78,6 @@ class CustomLoginView(LoginView):
         return Response(self.response_serializer(self.request.user).data)
 
 
-class DailyMetricViewSet(viewsets.ModelViewSet, IsolateGroupMixin):
-    queryset = DailyMetric.objects.all()
-    serializer_class = DailyMetricSerializer
-
-
 def backlog_hours(request):
     date_list = []
     primary_group = request.user.groups.all()[0]
@@ -93,7 +88,10 @@ def backlog_hours(request):
     if start_date_string:
         start_date = utils.parse_date_string(start_date_string)
     else:
-        start_date = Job.objects.filter(group=primary_group).aggregate(Min('created'))['created__min'].date()
+        try:
+            start_date = Job.objects.filter(group=primary_group).aggregate(Min('created'))['created__min'].date()
+        except AttributeError:
+            return HttpResponse(json.dumps([]))  # happens if we have no jobs
     if end_date_string:
         end_date = utils.parse_date_string(end_date_string).date()
     else:
