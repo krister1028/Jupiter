@@ -1,52 +1,70 @@
 <md-dialog aria-label="Add Job Modal" ng-cloak>
     <md-toolbar>
-      <div class="md-toolbar-tools">
-        <h2>Add Job</h2>
-        <span flex></span>
-        <md-button class="md-icon-button" ng-click="vm.cancel()">
-          <md-icon class="material-icons" aria-label="Close dialog">close_black_18x18</md-icon>
-        </md-button>
-      </div>
+        <div class="md-toolbar-tools">
+            <h2>Add Job</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="vm.cancel()">
+                <md-icon class="material-icons" aria-label="Close dialog">close_black_18x18</md-icon>
+            </md-button>
+        </div>
     </md-toolbar>
     <md-dialog-content>
-      <div class="md-dialog-content">
-        <md-input-container class="md-block">
-          <label>Description</label>
-          <input type="text" required ng-model="vm.newJob.description" />
-        </md-input-container>
-          <md-autocomplete required
-              md-search-text="vm.searchText"
-              md-selected-item-change="vm.addProduct(item)"
-              md-items="item in vm.searchProducts(vm.searchText)"
-              md-item-text="item.description"
-              placeholder="Add Product">
-              <span md-highlight-text="vm.searchText">{{item.description}}</span>
-          </md-autocomplete>
-          <md-input-container>
-              <label>Job Type</label>
-              <md-select ng-model="vm.newJob.type">
-                  <md-option ng-repeat="type in vm.jobTypes" value="{{ type.id }}">
-                      {{ type.description }}
-                  </md-option>
-              </md-select>
-          </md-input-container>
-          <md-input-container>
-              <label>Job Status</label>
-              <md-select ng-model="vm.newJob.status">
-                  <md-option ng-repeat="status in vm.jobStatuses" value="{{ status.id }}">
-                      {{ status.description }}
-                  </md-option>
-              </md-select>
-          </md-input-container>
-          <md-checkbox layout="row" ng-model="vm.newJob.rework">Is Rework</md-checkbox>
-      </div>
+        <div class="md-dialog-content">
+            <form name="addJob">
+                <md-input-container class="md-block">
+                    <label>Description</label>
+                    <input type="text" required ng-model="vm.newJob.description" name="jobDescription"/>
+                    <div ng-messages="addJob.jobDescription.$error">
+                        <div ng-message="required">This field is required.</div>
+                    </div>
+                </md-input-container>
+
+                <md-autocomplete
+                    required
+                    md-no-cache="true"
+                    md-input-name="product"
+                    md-selected-item="vm.selectedItem"
+                    md-search-text="vm.searchText"
+                    md-selected-item-change="vm.addProduct(item)"
+                    md-items="item in vm.searchProducts(vm.searchText)"
+                    md-item-text="item.description"
+                    md-min-length="0"
+                    md-floating-label="Add Product">
+                    <md-item-template>
+                        <span md-highlight-text="vm.searchText">{{ item.description }}</span>
+                    </md-item-template>
+                    <div ng-messages="addJob.product.$error" ng-if="addJob.product.$touched">
+                        <div ng-message="required">This field is required.</div>
+                    </div>
+                </md-autocomplete>
+
+                <md-input-container>
+                    <label>Job Type</label>
+                    <md-select ng-model="vm.newJob.type" ng-required name="jobType">
+                        <md-option ng-repeat="type in vm.jobTypes" value="{{ type.id }}" >
+                            {{ type.description }}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label>Job Status</label>
+                    <md-select ng-model="vm.newJob.status">
+                        <md-option ng-repeat="status in vm.jobStatuses" value="{{ status.id }}">
+                            {{ status.description }}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-checkbox layout="row" ng-model="vm.newJob.rework">Is Rework</md-checkbox>
+            </form>
+        </div>
+
     </md-dialog-content>
     <md-dialog-actions layout="row">
-      <md-button ng-click="vm.cancel()">
-       Cancel
-      </md-button>
-      <md-button ng-click="vm.addJob()" style="margin-right:20px;">
-        Create Job
-      </md-button>
+        <md-button ng-click="vm.cancel()">
+            Cancel
+        </md-button>
+        <md-button ng-click="vm.addJob()" style="margin-right:20px;">
+            Create Job
+        </md-button>
     </md-dialog-actions>
 </md-dialog>

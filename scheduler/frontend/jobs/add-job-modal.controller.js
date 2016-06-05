@@ -23,6 +23,9 @@ export default class AddJobModalController {
   }
 
   searchProducts(query) {
+    if (query === '') {
+      return this.products;
+    }
     return this.products.filter(f => f.description.toLowerCase().indexOf(query.toLowerCase()) > -1);
   }
 }
