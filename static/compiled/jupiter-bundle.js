@@ -73883,7 +73883,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <form name=\"addJob\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.newJob.description\" name=\"jobDescription\"/> <div ng-messages=\"addJob.jobDescription.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-autocomplete required md-no-cache=\"true\" md-input-name=\"product\" md-selected-item=\"vm.selectedItem\" md-search-text=\"vm.searchText\" md-selected-item-change=\"vm.addProduct(item)\" md-items=\"item in vm.searchProducts(vm.searchText)\" md-item-text=\"item.description\" md-min-length=\"0\" md-floating-label=\"Add Product\"> <md-item-template> <span md-highlight-text=\"vm.searchText\">{{ item.description }}</span> </md-item-template> <div ng-messages=\"addJob.product.$error\" ng-if=\"addJob.product.$touched\"> <div ng-message=\"required\">This field is required.</div> </div> </md-autocomplete> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.newJob.type\" ng-required name=\"jobType\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.newJob.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox layout=\"row\" ng-model=\"vm.newJob.rework\">Is Rework</md-checkbox> </form> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.addJob()\" style=\"margin-right:20px\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
+	var v1="<md-dialog aria-label=\"Add Job Modal\" ng-cloak> <md-toolbar> <div class=\"md-toolbar-tools\"> <h2>Add Job</h2> <span flex></span> <md-button class=\"md-icon-button\" ng-click=\"vm.cancel()\"> <md-icon class=\"material-icons\" aria-label=\"Close dialog\">close_black_18x18</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content> <div class=\"md-dialog-content\"> <form name=\"addJob\"> <md-input-container class=\"md-block\"> <label>Description</label> <input type=\"text\" required ng-model=\"vm.newJob.description\" name=\"jobDescription\"/> <div ng-messages=\"addJob.jobDescription.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-autocomplete required md-no-cache=\"true\" md-input-name=\"product\" md-selected-item=\"vm.selectedItem\" md-search-text=\"vm.searchText\" md-selected-item-change=\"vm.addProduct(item)\" md-items=\"item in vm.searchProducts(vm.searchText)\" md-item-text=\"item.description\" md-min-length=\"0\" md-floating-label=\"Add Product\"> <md-item-template> <span md-highlight-text=\"vm.searchText\">{{ item.description }}</span> </md-item-template> <div ng-messages=\"addJob.product.$error\" ng-if=\"addJob.product.$touched\"> <div ng-message=\"required\">This field is required.</div> </div> </md-autocomplete> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.newJob.type\" ng-required name=\"jobType\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.newJob.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox layout=\"row\" ng-model=\"vm.newJob.rework\">Is Rework</md-checkbox> </form> </div> </md-dialog-content> <md-dialog-actions layout=\"row\"> <md-button ng-click=\"vm.cancel()\"> Cancel </md-button> <md-button ng-click=\"vm.addJob()\" ng-disabled=\"vm.submitDisabled()\"> Create Job </md-button> </md-dialog-actions> </md-dialog>";
 	ngModule.run(["$templateCache",function(c){c.put("add-job-modal.template.html",v1)}]);
 	module.exports=v1;
 
@@ -73911,17 +73911,26 @@
 	
 	    this._$mdDialog = $mdDialog;
 	    this._jobService = jobService;
+	    this.newJob = {};
 	    productService.getList().then(function (products) {
-	      return _this.products = products;
+	      _this.products = products;
 	    });
 	    jobTypeService.getList().then(function (types) {
-	      return _this.jobTypes = types;
+	      _this.jobTypes = types;
+	      _this.newJob.type = types[0].id;
 	    });
-	    this.jobStatuses = jobStatusService.jobStatuses;
-	    this.newJob = {};
+	    jobStatusService.getList().then(function (statuses) {
+	      _this.jobStatuses = statuses;
+	      _this.newJob.status = statuses[0].id;
+	    });
 	  }
 	
 	  _createClass(AddJobModalController, [{
+	    key: 'submitDisabled',
+	    value: function submitDisabled() {
+	      return !this.newJob.status || !this.newJob.type || !this.newJob.description || !this.newJob.product;
+	    }
+	  }, {
 	    key: 'cancel',
 	    value: function cancel() {
 	      this._$mdDialog.cancel();
@@ -73935,7 +73944,7 @@
 	  }, {
 	    key: 'addProduct',
 	    value: function addProduct(product) {
-	      this.newJob.product_id = product.id;
+	      this.newJob.product = product.id;
 	    }
 	  }, {
 	    key: 'searchProducts',

@@ -63,7 +63,7 @@
         <md-button ng-click="vm.cancel()">
             Cancel
         </md-button>
-        <md-button ng-click="vm.addJob()" style="margin-right:20px;">
+        <md-button ng-click="vm.addJob()" ng-disabled="vm.submitDisabled()">
             Create Job
         </md-button>
     </md-dialog-actions>
