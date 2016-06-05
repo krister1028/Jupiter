@@ -5,4 +5,8 @@ export default class jobTypeService extends baseResourceClass {
     super($http, $q, $state);
     this.resourceUrl = '/api/job-types/';
   }
+
+  getDescriptionList() {
+    return this.itemList.map(type => type.description);
+  }
 }

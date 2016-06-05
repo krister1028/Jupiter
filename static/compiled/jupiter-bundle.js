@@ -69761,7 +69761,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var MetricsController = (function () {
-	  function MetricsController(highchartService, jobService, productService, jobStatusService) {
+	  function MetricsController(highchartService, jobService, productService, jobStatusService, jobTypeService) {
 	    _classCallCheck(this, MetricsController);
 	
 	    this._jobService = jobService;
@@ -69774,6 +69774,7 @@
 	      xAxisLabel: 'Product',
 	      yAxisLabel: 'Job Count' });
 	    this.jobsByType = highchartService.getColumnConfig({
+	      categories: jobTypeService.getDescriptionList(),
 	      title: 'Jobs By Type',
 	      xAxisLabel: 'Type',
 	      yAxisLabel: 'Job Count' });
@@ -69784,7 +69785,7 @@
 	    value: function getJobsByProductData() {
 	      var _this = this;
 	
-	      this._jobService.getJobsCompletedByDateRange(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(function (jobs) {
+	      this._jobService.getJobsCreatedByDateRange(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(function (jobs) {
 	        _this.jobsByProduct.series = _this._highchartService.getCategoryCount(jobs, _this.jobsByProduct.xAxis.categories, _this._jobStatusService.getDescriptionList(), 'productItem.description', 'jobStatus.description');
 	      });
 	    }
@@ -69793,12 +69794,8 @@
 	    value: function getJobsByTypeData() {
 	      var _this2 = this;
 	
-	      this._jobService.getJobsCompletedByType(this.jobsByType.startDate, this.jobsByType.endDate).then(function (jobsByType) {
-	        var data = [];
-	        Object.keys(jobsByType).forEach(function (p) {
-	          return data.push([p, jobsByType[p]]);
-	        });
-	        _this2.jobsByType.series[0].data = data;
+	      this._jobService.getJobsCreatedByDateRange(this.jobsByType.startDate, this.jobsByType.endDate).then(function (jobs) {
+	        _this2.jobsByType.series = _this2._highchartService.getCategoryCount(jobs, _this2.jobsByType.xAxis.categories, _this2._jobStatusService.getDescriptionList(), 'jobType.description', 'jobStatus.description');
 	      });
 	    }
 	  }]);
@@ -70263,61 +70260,34 @@
 	      });
 	    }
 	  }, {
-	    key: 'getJobsCompletedByProduct',
-	    value: function getJobsCompletedByProduct(startDate, endDate) {
-	      var _this4 = this;
-	
-	      return this.getAllJobProducts().then(function () {
-	        return _this4._aggregateJobsByAttribute('productItem.description', startDate, endDate);
-	      });
-	    }
-	  }, {
-	    key: 'getJobsCompletedByType',
-	    value: function getJobsCompletedByType(startDate, endDate) {
-	      var _this5 = this;
-	
-	      return this.getAllJobTypes().then(function () {
-	        return _this5._aggregateJobsByAttribute('jobType.description', startDate, endDate);
-	      });
-	    }
-	  }, {
-	    key: '_aggregateJobsByAttribute',
-	    value: function _aggregateJobsByAttribute(attr, startDate, endDate) {
-	      var _this6 = this;
-	
-	      var aggregate = {};
-	      var attrValue = undefined;
-	
-	      this.itemList.forEach(function (job) {
-	        if (job.completed_timestamp && job.completed_timestamp >= startDate && job.completed_timestamp <= endDate) {
-	          attrValue = _this6._utilityService.getDotAttribute(attr, job);
-	          if (aggregate.hasOwnProperty(attrValue)) {
-	            aggregate[attrValue] += 1;
-	          } else {
-	            aggregate[attrValue] = 1;
-	          }
-	        }
-	      });
-	      return aggregate;
-	    }
-	  }, {
 	    key: 'getJobsCompletedByDateRange',
 	    value: function getJobsCompletedByDateRange(startDate, endDate) {
-	      var _this7 = this;
+	      var _this4 = this;
 	
 	      return this.getList().then(function () {
-	        return _this7.itemList.filter(function (job) {
+	        return _this4.itemList.filter(function (job) {
 	          return job.completed_timestamp && job.completed_timestamp >= startDate && job.completed_timestamp <= endDate;
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'getJobsCreatedByDateRange',
+	    value: function getJobsCreatedByDateRange(startDate, endDate) {
+	      var _this5 = this;
+	
+	      return this.getList().then(function () {
+	        return _this5.itemList.filter(function (job) {
+	          return job.created && job.created >= startDate && job.created <= endDate;
 	        });
 	      });
 	    }
 	  }, {
 	    key: 'checkJobComplete',
 	    value: function checkJobComplete(job) {
-	      var _this8 = this;
+	      var _this6 = this;
 	
 	      var incompleteTasks = job.job_tasks.filter(function (t) {
-	        return t.status !== _this8.taskCompleteStatus;
+	        return t.status !== _this6.taskCompleteStatus;
 	      });
 	      if (!incompleteTasks.length && !job.completed_timestamp) {
 	        job.completed_timestamp = new Date();
@@ -70327,11 +70297,11 @@
 	  }, {
 	    key: 'getOldestJobDate',
 	    value: function getOldestJobDate() {
-	      var _this9 = this;
+	      var _this7 = this;
 	
 	      var oldestDate = new Date();
 	      return this.getList().then(function () {
-	        _this9.itemList.forEach(function (job) {
+	        _this7.itemList.forEach(function (job) {
 	          if (job.created < oldestDate) {
 	            oldestDate = job.created;
 	          }
@@ -70342,16 +70312,19 @@
 	  }, {
 	    key: 'transformResponse',
 	    value: function transformResponse(response) {
-	      var _this10 = this;
+	      var _this8 = this;
 	
 	      var jobs = response.data;
 	      jobs.forEach(function (j) {
-	        j.jobTasks = _this10._getJobTasks(j);
-	        j.productItem = _this10._productService.itemList.filter(function (product) {
+	        j.jobTasks = _this8._getJobTasks(j);
+	        j.productItem = _this8._productService.itemList.filter(function (product) {
 	          return product.id === j.product;
 	        })[0];
-	        j.jobStatus = _this10._jobStatusService.itemList.filter(function (status) {
+	        j.jobStatus = _this8._jobStatusService.itemList.filter(function (status) {
 	          return status.id === j.status;
+	        })[0];
+	        j.jobType = _this8._jobTypeService.itemList.filter(function (type) {
+	          return type.id === j.type;
 	        })[0];
 	        j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
 	        j.created = new Date(j.created);
@@ -70566,6 +70539,8 @@
 	  value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -70589,6 +70564,15 @@
 	    _get(Object.getPrototypeOf(jobTypeService.prototype), 'constructor', this).call(this, $http, $q, $state);
 	    this.resourceUrl = '/api/job-types/';
 	  }
+	
+	  _createClass(jobTypeService, [{
+	    key: 'getDescriptionList',
+	    value: function getDescriptionList() {
+	      return this.itemList.map(function (type) {
+	        return type.description;
+	      });
+	    }
+	  }]);
 	
 	  return jobTypeService;
 	})(_baseResourceClass3['default']);
@@ -70782,12 +70766,12 @@
 	          groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
 	          categoryAttr = 'productDescription'
 	          groupAttr = 'status'
-	           objectList = [ // jobs
+	          objectList = [ // jobs
 	            {productDescription: Product 1, status: 'Active'},
 	            {productDescription: Product 1, status: 'Active'},
 	            {productDescription: Product 2, status: 'Inactive'},
 	          ]
-	          expected output = [
+	           expected output = [
 	            {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
 	            {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
 	          ]
@@ -70797,7 +70781,7 @@
 	      var objectGroupValue = undefined;
 	
 	      // initialize series list w/o data.  For the example above, series = [{name: 'Active' data: [0, 0, 0]},
-	      //                                                                 {name: 'Inactive' data: [0, 0, 0]}]
+	      //                                                                    {name: 'Inactive' data: [0, 0, 0]}]
 	      var series = groups.map(function (groupName) {
 	        return { name: groupName, data: categories.map(function () {
 	            return 0;
@@ -70815,7 +70799,6 @@
 	          });
 	        });
 	      });
-	
 	      return series;
 	    }
 	  }], [{

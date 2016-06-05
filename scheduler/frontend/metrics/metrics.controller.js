@@ -1,5 +1,5 @@
 export default class MetricsController {
-  constructor(highchartService, jobService, productService, jobStatusService) {
+  constructor(highchartService, jobService, productService, jobStatusService, jobTypeService) {
     this._jobService = jobService;
     this._jobStatusService = jobStatusService;
     this._highchartService = highchartService;
@@ -10,13 +10,14 @@ export default class MetricsController {
       xAxisLabel: 'Product',
       yAxisLabel: 'Job Count'});
     this.jobsByType = highchartService.getColumnConfig({
+      categories: jobTypeService.getDescriptionList(),
       title: 'Jobs By Type',
       xAxisLabel: 'Type',
       yAxisLabel: 'Job Count'});
   }
 
   getJobsByProductData() {
-    this._jobService.getJobsCompletedByDateRange(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(jobs => {
+    this._jobService.getJobsCreatedByDateRange(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(jobs => {
       this.jobsByProduct.series = this._highchartService.getCategoryCount(
         jobs,
         this.jobsByProduct.xAxis.categories,
@@ -28,10 +29,14 @@ export default class MetricsController {
   }
 
   getJobsByTypeData() {
-    this._jobService.getJobsCompletedByType(this.jobsByType.startDate, this.jobsByType.endDate).then(jobsByType => {
-      const data = [];
-      Object.keys(jobsByType).forEach(p => data.push([p, jobsByType[p]]));
-      this.jobsByType.series[0].data = data;
+    this._jobService.getJobsCreatedByDateRange(this.jobsByType.startDate, this.jobsByType.endDate).then(jobs => {
+      this.jobsByType.series = this._highchartService.getCategoryCount(
+        jobs,
+        this.jobsByType.xAxis.categories,
+        this._jobStatusService.getDescriptionList(),
+        'jobType.description',
+        'jobStatus.description'
+      );
     });
   }
 }

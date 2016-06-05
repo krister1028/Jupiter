@@ -78,12 +78,12 @@ export default class highchartService {
       groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
       categoryAttr = 'productDescription'
       groupAttr = 'status'
-
       objectList = [ // jobs
         {productDescription: Product 1, status: 'Active'},
         {productDescription: Product 1, status: 'Active'},
         {productDescription: Product 2, status: 'Inactive'},
       ]
+
       expected output = [
         {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
         {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
@@ -94,7 +94,7 @@ export default class highchartService {
     let objectGroupValue;
 
     // initialize series list w/o data.  For the example above, series = [{name: 'Active' data: [0, 0, 0]},
-    //                                                                 {name: 'Inactive' data: [0, 0, 0]}]
+    //                                                                    {name: 'Inactive' data: [0, 0, 0]}]
     const series = groups.map(groupName => {
       return {name: groupName, data: categories.map(() => 0)};
     });
@@ -110,7 +110,6 @@ export default class highchartService {
         });
       });
     });
-
     return series;
   }
 
