@@ -84,8 +84,9 @@ class DailyMetricViewSet(viewsets.ModelViewSet, IsolateGroupMixin):
 
 
 def backlog_hours(request):
-    context = {}
+    date_list = []
     primary_group = request.user.groups.all()[0]
+
     start_date_string = request.GET.get('start_date')
     end_date_string = request.GET.get('end_date')
     # get start/end dates
@@ -97,21 +98,18 @@ def backlog_hours(request):
         end_date = utils.parse_date_string(end_date_string).date()
     else:
         end_date = datetime.today().date()
+
     all_jobs = Job.objects.filter(group=primary_group).exclude(completed_timestamp__lt=start_date, created__gt=end_date)
     records = Job.history.filter(id__in=[j.id for j in all_jobs]).order_by('-history_date')
 
     for date in utils.daterange(start_date, end_date):
         time_string = datetime.strftime(date, '%Y-%m-%d')
-        context[time_string] = defaultdict(lambda: 0)
+        date_dict = {'date': time_string, 'tasks': defaultdict(lambda: 0)}
         for job in all_jobs:
-            try:
-                status_on_date = filter(lambda x: x.id == job.id and x.history_date.date() <= date, records)[0]
-            except IndexError:
-                continue
-            if status_on_date.completed_timestamp is None:
+            # get most recent record for date in question
+            record = filter(lambda x: x.id == job.id and x.history_date.date() <= date, records)[0]
+            if record.completed_timestamp is None:  # if job was still had pending tasks at that point
                 for level in Task.EXPERTISE_CHOICES:
-                    context[time_string][level[1]] += status_on_date.instance.get_task_minutes_by_expertise_level(level[0])
-    return HttpResponse(json.dumps(context))
-
-
-# want to know on a given date: list of jobs with null timestamps
+                    date_dict['tasks'][level[1]] += record.instance.get_remaining_task_minutes_by_expertise_level(level[0])
+        date_list.append(date_dict)
+    return HttpResponse(json.dumps(date_list))

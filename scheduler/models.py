@@ -120,11 +120,14 @@ class Job(models.Model):
     def product_code(self):
         return self.product.code
 
-    def get_task_minutes_by_expertise_level(self, expertise_level):
+    def get_remaining_task_minutes_by_expertise_level(self, expertise_level):
         minutes = 0
-        for product_task in self.product_tasks.all():
-            if product_task.task.expertise_level == expertise_level:
-                minutes += product_task.completion_time
+        for job_task in self.jobtask_set.all():
+            try:
+                if job_task.task.expertise_level == expertise_level and job_task.status != JobTask.COMPLETE:
+                    minutes += job_task.product_task.completion_time
+            except JobTask.DoesNotExist:
+                continue
         return minutes
 
     def save(self, *args, **kwargs):
