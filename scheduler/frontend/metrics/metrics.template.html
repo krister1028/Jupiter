@@ -1,15 +1,11 @@
 <div layout-margin>
     <h3>Metrics Dashboard</h3>
     <date-chart
-            chart-config="vm.jobsByProduct"
-            refresh-data="vm.getJobsByProductData()"
-            start-date-model="vm.jobsByProduct.startDate"
-            end-date-model="vm.jobsByProduct.endDate">
+            config="vm.jobsByProduct"
+            refresh-data="vm.getJobsByProductData()">
     </date-chart>
     <date-chart
-            chart-config="vm.jobsByType"
-            refresh-data="vm.getJobsByTypeData()"
-            start-date-model="vm.jobsByType.startDate"
-            end-date-model="vm.jobsByType.endDate">
+            config="vm.jobsByType"
+            refresh-data="vm.getJobsByTypeData()">
     </date-chart>
 </div>

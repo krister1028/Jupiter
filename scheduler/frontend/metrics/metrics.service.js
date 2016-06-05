@@ -1,7 +1,9 @@
 export default class metricsService {
-  constructor($http, highchartService) {
+  constructor($http, highchartService, jobService) {
     this._resourceUrl = '/api/daily-metrics/';
     this._$http = $http;
+    this._highChartService = highchartService;
+    this._jobService = jobService;
   }
 
   get() {

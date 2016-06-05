@@ -1,7 +1,7 @@
+/* eslint no-trailing-spaces: 0 */
 export default class highchartService {
-  constructor(jobService, jobTypeService) {
-    this._jobService = jobService;
-    this._jobTypeService = jobTypeService;
+  constructor(utilityService) {
+    this._utilityService = utilityService;
   }
 
   static _getBaseChartConfig() {
@@ -61,73 +61,57 @@ export default class highchartService {
     return chartConfig;
   }
 
-  getCategoryConfig(configDetail) {
+  getColumnConfig(configDetail) {
     const config = highchartService._getBaseChartConfig();
-    config.xAxis.type = 'category';
     config.title.text = configDetail.title;
     config.xAxis.title.text = configDetail.xAxisLabel;
+    config.xAxis.categories = configDetail.categories;
     config.yAxis.title.text = configDetail.yAxisLabel;
-    config.series = [{
-      showInLegend: false,
-      data: []
-    }];
+    config.series = [{data: []}];
     return config;
   }
 
-  getJobsCompletedByProductChart() {
-    const config = this._getBaseChartConfig();
-    config.options.chart.type = 'column';
-    config.title.text = 'Jobs Completed By Product';
-    config.xAxis.title.text = 'Product';
-    config.xAxis.type = 'category';
-    config.yAxis.title.text = 'Job Count';
-    config.series = [
-      {
-        showInLegend: false,
-        data: this._jobService.getJobsCompletedByProduct(config.startDate, config.endDate)
-      }
-    ];
-    return config;
-  }
+  getCategoryCount(objectList, categories, groups, categoryAttr, groupAttr) {
+  /*
+    example: (for jobs by product, grouped by job status)
+      categories = [Product 1, Product 2, Product 3] // list of product names
+      groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
+      categoryAttr = 'productDescription'
+      groupAttr = 'status'
 
-  getJobsCompletedByTypeChart() {
-    const config = this._getBaseChartConfig();
-    return this.getJobsCompletedByJobType(config.startDate, config.endDate).then(seriesData => {
-      config.options.chart.type = 'column';
-      config.title.text = 'Jobs Completed By Type';
-      config.xAxis.title.text = 'Job Type';
-      config.xAxis.type = 'category';
-      config.yAxis.title.text = 'Job Count';
-      config.series = [
-        {
-          showInLegend: false,
-          data: seriesData
-        }
-      ];
-      return config;
+      objectList = [ // jobs
+        {productDescription: Product 1, status: 'Active'},
+        {productDescription: Product 1, status: 'Active'},
+        {productDescription: Product 2, status: 'Inactive'},
+      ]
+      expected output = [
+        {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
+        {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
+      ]
+   */
+
+    let objectCategoryValue;
+    let objectGroupValue;
+
+    // initialize series list w/o data.  For the example above, series = [{name: 'Active' data: [0, 0, 0]},
+    //                                                                 {name: 'Inactive' data: [0, 0, 0]}]
+    const series = groups.map(groupName => {
+      return {name: groupName, data: categories.map(() => 0)};
     });
-  }
 
-  getJobsCompletedByJobType() {
-    const config = this._getBaseChartConfig();
-    return this._jobTypeService.get().then(() => {
-      const jobByType = {};
-      let typeName;
-      // generate object with product name and job count
-      this._filterJobsByDate(config.startDate, config.endDate).forEach(job => {
-        if (job.completed_timestamp) {
-          typeName = this._jobTypeService.itemList.filter(jt => jt.id === job.type)[0].description;
-          if (jobByType.hasOwnProperty(typeName)) {
-            jobByType[typeName] += 1;
-          } else {
-            jobByType[typeName] = 1;
+    series.forEach(group => {
+      categories.forEach((catName, index) => {
+        objectList.forEach(obj => {
+          objectCategoryValue = this._utilityService.getDotAttribute(categoryAttr, obj);
+          objectGroupValue = this._utilityService.getDotAttribute(groupAttr, obj);
+          if (objectCategoryValue === catName && objectGroupValue === group.name) {
+            group.data[index] += 1;
           }
-        }
+        });
       });
-      const returnArray = [];
-      Object.keys(jobByType).forEach(p => returnArray.push([p, jobByType[p]]));
-      return returnArray;
     });
+
+    return series;
   }
 
 }

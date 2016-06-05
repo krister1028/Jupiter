@@ -6,4 +6,8 @@ export default class jobStatusService extends baseResourceClass {
     super($http, $q);
     this.resourceUrl = '/api/job-statuses/';
   }
+
+  getDescriptionList() {
+    return this.itemList.map(status => status.description);
+  }
 }

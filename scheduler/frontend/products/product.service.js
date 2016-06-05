@@ -7,4 +7,8 @@ export default class productService extends baseResourceClass {
     this.resourceUrl = '/api/products/';
     this.taskCompleteCode = 3;
   }
+
+  getDescriptionList() {
+    return this.itemList.map(product => product.description);
+  }
 }

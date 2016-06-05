@@ -1,38 +1,29 @@
 export default class MetricsController {
-  constructor(highchartService, jobService) {
+  constructor(highchartService, jobService, productService, jobStatusService) {
     this._jobService = jobService;
+    this._jobStatusService = jobStatusService;
+    this._highchartService = highchartService;
 
-    this.jobsByProduct = highchartService.getCategoryConfig({
-      title: 'Jobs Completed By Product',
+    this.jobsByProduct = highchartService.getColumnConfig({
+      categories: productService.getDescriptionList(),
+      title: 'Jobs By Product',
       xAxisLabel: 'Product',
       yAxisLabel: 'Job Count'});
-    this.jobsByType = highchartService.getCategoryConfig({
-      title: 'Jobs Completed By Type',
+    this.jobsByType = highchartService.getColumnConfig({
+      title: 'Jobs By Type',
       xAxisLabel: 'Type',
       yAxisLabel: 'Job Count'});
-    this._allCharts = [this.jobsByProduct, this.jobsByType];
-    this.getDefaultDates().then(() => this.getChartData());
-  }
-
-  getChartData() {
-    this.getJobsByProductData();
-    this.getJobsByTypeData();
-  }
-
-  getDefaultDates() {
-    return this._jobService.getOldestJobDate().then(oldestDate => {
-      this._allCharts.forEach(config => {
-        config.startDate = oldestDate;
-        config.endDate = new Date();
-      });
-    });
   }
 
   getJobsByProductData() {
-    this._jobService.getJobsCompletedByProduct(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(jobsByProduct => {
-      const data = [];
-      Object.keys(jobsByProduct).forEach(p => data.push([p, jobsByProduct[p]]));
-      this.jobsByProduct.series[0].data = data;
+    this._jobService.getJobsCompletedByDateRange(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(jobs => {
+      this.jobsByProduct.series = this._highchartService.getCategoryCount(
+        jobs,
+        this.jobsByProduct.xAxis.categories,
+        this._jobStatusService.getDescriptionList(),
+        'productItem.description',
+        'jobStatus.description'
+      );
     });
   }
 

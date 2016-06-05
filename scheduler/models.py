@@ -100,7 +100,7 @@ class Job(models.Model):
 
     group = models.ForeignKey(Group)
     product = models.ForeignKey(Product)
-    status = models.ForeignKey(JobStatus, null=True, blank=True)
+    status = models.ForeignKey(JobStatus)
     type = models.ForeignKey(JobType, null=True, blank=True)
     rework = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)

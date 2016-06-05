@@ -1,4 +1,5 @@
 export default class utilityService {
+
   getDotAttribute(dotString, object) {
     let subVal = object;
     const attributes = dotString.split('.');

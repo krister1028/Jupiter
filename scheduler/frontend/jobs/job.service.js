@@ -2,15 +2,16 @@ import baseResourceClass from '../base-resource-class';
 
 export default class jobService extends baseResourceClass {
   /* @ngInject */
-  constructor($http, $q, productService, jobTypeService, jobTaskService, utilityService) {
+  constructor($http, $q, productService, jobTypeService, jobTaskService, utilityService, jobStatusService) {
     super($http, $q);
     this._$q = $q;
     this.resourceUrl = '/api/jobs/';
     this._productService = productService;
     this._jobTypeService = jobTypeService;
+    this._jobStatusService = jobStatusService;
     this._jobTaskService = jobTaskService;
     this._utilityService = utilityService;
-    this.relatedServices = [jobTaskService];
+    this.relatedServices = [jobTaskService, jobTypeService, jobStatusService];
   }
 
   getProgress(job) {
@@ -65,7 +66,7 @@ export default class jobService extends baseResourceClass {
 
   getJobsCompletedByProduct(startDate, endDate) {
     return this.getAllJobProducts().then(() => {
-      return this._aggregateJobsByAttribute('product.description', startDate, endDate);
+      return this._aggregateJobsByAttribute('productItem.description', startDate, endDate);
     });
   }
 
@@ -92,6 +93,12 @@ export default class jobService extends baseResourceClass {
     return aggregate;
   }
 
+  getJobsCompletedByDateRange(startDate, endDate) {
+    return this.getList().then(() => {
+      return this.itemList.filter(job => (job.completed_timestamp && (job.completed_timestamp >= startDate && job.completed_timestamp <= endDate)))
+    });
+  }
+
   checkJobComplete(job) {
     const incompleteTasks = job.job_tasks.filter(t => t.status !== this.taskCompleteStatus);
     if (!incompleteTasks.length && !job.completed_timestamp) {
@@ -116,7 +123,8 @@ export default class jobService extends baseResourceClass {
     const jobs = response.data;
     jobs.forEach(j => {
       j.jobTasks = this._getJobTasks(j);
-      j.productItem = this._getProduct(j);
+      j.productItem = this._productService.itemList.filter(product => product.id === j.product)[0];
+      j.jobStatus = this._jobStatusService.itemList.filter(status => status.id === j.status)[0];
       j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
       j.created = new Date(j.created);
     });
@@ -127,9 +135,5 @@ export default class jobService extends baseResourceClass {
     return this._jobTaskService.itemList.filter(jobTask => {
       return (job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job);
     });
-  }
-
-  _getProduct(job) {
-    return this._productService.itemList.filter(product => product.id === job.product)[0];
   }
 }

@@ -10,10 +10,12 @@ import uiRouter from 'angular-ui-router';
 import highChartsNg from 'highcharts-ng';
 import loginTemplate from './login/login.html';
 import headerTemplate from './header.template.html';
+import dateChartTemplate from './metrics/date-chart.template.html';
 import LoginController from './login/login.controller';
 import AddProductController from './products/add-product.controller';
 import AddTaskController from './tasks/add-task.controller';
 import MetricsController from './metrics/metrics.controller';
+import ChartController from './metrics/chart.controller';
 import userService from './login/user.service';
 import productService from './products/product.service';
 import jobService from './jobs/job.service';
@@ -35,8 +37,6 @@ import addTaskTemplate from './tasks/add-task.template.html';
 import editJobTemplate from './jobs/edit-job.template.html';
 import metricsTemplate from './metrics/metrics.template.html';
 
-import dateChart from './metrics/date-select-chart.directive';
-
 const jupiter = angular
   .module('jupiter', [angularMaterial, uiRouter, angularMessages, highChartsNg])
   .controller('LoginController', LoginController)
@@ -55,16 +55,16 @@ const jupiter = angular
   .service('metricsService', metricsService)
   .service('highchartService', highchartService)
   .service('utilityService', utilityService)
-  .directive('dateChart', dateChart)
+  .component('dateChart', {
+    bindings: {
+      config: '=',
+      refreshData: '&'
+    },
+    template: dateChartTemplate,
+    controller: ChartController
+  })
   .config(configuration)
-  .run(run)
 ;
-
-/* @ngInject */
-function run($rootScope, $state, $stateParams) {
-  $rootScope.$state = $state;
-  $rootScope.$stateParams = $stateParams;
-}
 
 /* @ngInject */
 function configuration($stateProvider, $urlRouterProvider, $httpProvider) {

@@ -94,6 +94,10 @@
 	
 	var _headerTemplateHtml2 = _interopRequireDefault(_headerTemplateHtml);
 	
+	var _metricsDateChartTemplateHtml = __webpack_require__(50);
+	
+	var _metricsDateChartTemplateHtml2 = _interopRequireDefault(_metricsDateChartTemplateHtml);
+	
 	var _loginLoginController = __webpack_require__(17);
 	
 	var _loginLoginController2 = _interopRequireDefault(_loginLoginController);
@@ -109,6 +113,10 @@
 	var _metricsMetricsController = __webpack_require__(23);
 	
 	var _metricsMetricsController2 = _interopRequireDefault(_metricsMetricsController);
+	
+	var _metricsChartController = __webpack_require__(52);
+	
+	var _metricsChartController2 = _interopRequireDefault(_metricsChartController);
 	
 	var _loginUserService = __webpack_require__(24);
 	
@@ -190,19 +198,16 @@
 	
 	var _metricsMetricsTemplateHtml2 = _interopRequireDefault(_metricsMetricsTemplateHtml);
 	
-	var _metricsDateSelectChartDirective = __webpack_require__(49);
-	
-	var _metricsDateSelectChartDirective2 = _interopRequireDefault(_metricsDateSelectChartDirective);
-	
 	window.Highcharts = _highcharts2['default'];
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('productTaskService', _productsProductTaskService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).service('utilityService', _utilityService2['default']).directive('dateChart', _metricsDateSelectChartDirective2['default']).config(configuration).run(run);
-	
-	/* @ngInject */
-	function run($rootScope, $state, $stateParams) {
-	  $rootScope.$state = $state;
-	  $rootScope.$stateParams = $stateParams;
-	}
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('productTaskService', _productsProductTaskService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).service('utilityService', _utilityService2['default']).component('dateChart', {
+	  bindings: {
+	    config: '=',
+	    refreshData: '&'
+	  },
+	  template: _metricsDateChartTemplateHtml2['default'],
+	  controller: _metricsChartController2['default']
+	}).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -69756,69 +69761,44 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var MetricsController = (function () {
-	  function MetricsController(highchartService, jobService) {
-	    var _this = this;
-	
+	  function MetricsController(highchartService, jobService, productService, jobStatusService) {
 	    _classCallCheck(this, MetricsController);
 	
 	    this._jobService = jobService;
+	    this._jobStatusService = jobStatusService;
+	    this._highchartService = highchartService;
 	
-	    this.jobsByProduct = highchartService.getCategoryConfig({
-	      title: 'Jobs Completed By Product',
+	    this.jobsByProduct = highchartService.getColumnConfig({
+	      categories: productService.getDescriptionList(),
+	      title: 'Jobs By Product',
 	      xAxisLabel: 'Product',
 	      yAxisLabel: 'Job Count' });
-	    this.jobsByType = highchartService.getCategoryConfig({
-	      title: 'Jobs Completed By Type',
+	    this.jobsByType = highchartService.getColumnConfig({
+	      title: 'Jobs By Type',
 	      xAxisLabel: 'Type',
 	      yAxisLabel: 'Job Count' });
-	    this._allCharts = [this.jobsByProduct, this.jobsByType];
-	    this.getDefaultDates().then(function () {
-	      return _this.getChartData();
-	    });
 	  }
 	
 	  _createClass(MetricsController, [{
-	    key: 'getChartData',
-	    value: function getChartData() {
-	      this.getJobsByProductData();
-	      this.getJobsByTypeData();
-	    }
-	  }, {
-	    key: 'getDefaultDates',
-	    value: function getDefaultDates() {
-	      var _this2 = this;
-	
-	      return this._jobService.getOldestJobDate().then(function (oldestDate) {
-	        _this2._allCharts.forEach(function (config) {
-	          config.startDate = oldestDate;
-	          config.endDate = new Date();
-	        });
-	      });
-	    }
-	  }, {
 	    key: 'getJobsByProductData',
 	    value: function getJobsByProductData() {
-	      var _this3 = this;
+	      var _this = this;
 	
-	      this._jobService.getJobsCompletedByProduct(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(function (jobsByProduct) {
-	        var data = [];
-	        Object.keys(jobsByProduct).forEach(function (p) {
-	          return data.push([p, jobsByProduct[p]]);
-	        });
-	        _this3.jobsByProduct.series[0].data = data;
+	      this._jobService.getJobsCompletedByDateRange(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(function (jobs) {
+	        _this.jobsByProduct.series = _this._highchartService.getCategoryCount(jobs, _this.jobsByProduct.xAxis.categories, _this._jobStatusService.getDescriptionList(), 'productItem.description', 'jobStatus.description');
 	      });
 	    }
 	  }, {
 	    key: 'getJobsByTypeData',
 	    value: function getJobsByTypeData() {
-	      var _this4 = this;
+	      var _this2 = this;
 	
 	      this._jobService.getJobsCompletedByType(this.jobsByType.startDate, this.jobsByType.endDate).then(function (jobsByType) {
 	        var data = [];
 	        Object.keys(jobsByType).forEach(function (p) {
 	          return data.push([p, jobsByType[p]]);
 	        });
-	        _this4.jobsByType.series[0].data = data;
+	        _this2.jobsByType.series[0].data = data;
 	      });
 	    }
 	  }]);
@@ -69909,6 +69889,8 @@
 	  value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -69933,6 +69915,15 @@
 	    this.resourceUrl = '/api/products/';
 	    this.taskCompleteCode = 3;
 	  }
+	
+	  _createClass(productService, [{
+	    key: 'getDescriptionList',
+	    value: function getDescriptionList() {
+	      return this.itemList.map(function (product) {
+	        return product.description;
+	      });
+	    }
+	  }]);
 	
 	  return productService;
 	})(_baseResourceClass3['default']);
@@ -70191,7 +70182,7 @@
 	
 	  /* @ngInject */
 	
-	  function jobService($http, $q, productService, jobTypeService, jobTaskService, utilityService) {
+	  function jobService($http, $q, productService, jobTypeService, jobTaskService, utilityService, jobStatusService) {
 	    _classCallCheck(this, jobService);
 	
 	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q);
@@ -70199,9 +70190,10 @@
 	    this.resourceUrl = '/api/jobs/';
 	    this._productService = productService;
 	    this._jobTypeService = jobTypeService;
+	    this._jobStatusService = jobStatusService;
 	    this._jobTaskService = jobTaskService;
 	    this._utilityService = utilityService;
-	    this.relatedServices = [jobTaskService];
+	    this.relatedServices = [jobTaskService, jobTypeService, jobStatusService];
 	  }
 	
 	  _createClass(jobService, [{
@@ -70276,7 +70268,7 @@
 	      var _this4 = this;
 	
 	      return this.getAllJobProducts().then(function () {
-	        return _this4._aggregateJobsByAttribute('product.description', startDate, endDate);
+	        return _this4._aggregateJobsByAttribute('productItem.description', startDate, endDate);
 	      });
 	    }
 	  }, {
@@ -70309,12 +70301,23 @@
 	      return aggregate;
 	    }
 	  }, {
-	    key: 'checkJobComplete',
-	    value: function checkJobComplete(job) {
+	    key: 'getJobsCompletedByDateRange',
+	    value: function getJobsCompletedByDateRange(startDate, endDate) {
 	      var _this7 = this;
 	
+	      return this.getList().then(function () {
+	        return _this7.itemList.filter(function (job) {
+	          return job.completed_timestamp && job.completed_timestamp >= startDate && job.completed_timestamp <= endDate;
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'checkJobComplete',
+	    value: function checkJobComplete(job) {
+	      var _this8 = this;
+	
 	      var incompleteTasks = job.job_tasks.filter(function (t) {
-	        return t.status !== _this7.taskCompleteStatus;
+	        return t.status !== _this8.taskCompleteStatus;
 	      });
 	      if (!incompleteTasks.length && !job.completed_timestamp) {
 	        job.completed_timestamp = new Date();
@@ -70324,11 +70327,11 @@
 	  }, {
 	    key: 'getOldestJobDate',
 	    value: function getOldestJobDate() {
-	      var _this8 = this;
+	      var _this9 = this;
 	
 	      var oldestDate = new Date();
 	      return this.getList().then(function () {
-	        _this8.itemList.forEach(function (job) {
+	        _this9.itemList.forEach(function (job) {
 	          if (job.created < oldestDate) {
 	            oldestDate = job.created;
 	          }
@@ -70339,12 +70342,17 @@
 	  }, {
 	    key: 'transformResponse',
 	    value: function transformResponse(response) {
-	      var _this9 = this;
+	      var _this10 = this;
 	
 	      var jobs = response.data;
 	      jobs.forEach(function (j) {
-	        j.jobTasks = _this9._getJobTasks(j);
-	        j.productItem = _this9._getProduct(j);
+	        j.jobTasks = _this10._getJobTasks(j);
+	        j.productItem = _this10._productService.itemList.filter(function (product) {
+	          return product.id === j.product;
+	        })[0];
+	        j.jobStatus = _this10._jobStatusService.itemList.filter(function (status) {
+	          return status.id === j.status;
+	        })[0];
 	        j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
 	        j.created = new Date(j.created);
 	      });
@@ -70356,13 +70364,6 @@
 	      return this._jobTaskService.itemList.filter(function (jobTask) {
 	        return job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job;
 	      });
-	    }
-	  }, {
-	    key: '_getProduct',
-	    value: function _getProduct(job) {
-	      return this._productService.itemList.filter(function (product) {
-	        return product.id === job.product;
-	      })[0];
 	    }
 	  }]);
 	
@@ -70605,6 +70606,8 @@
 	  value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -70628,6 +70631,15 @@
 	    _get(Object.getPrototypeOf(jobStatusService.prototype), 'constructor', this).call(this, $http, $q);
 	    this.resourceUrl = '/api/job-statuses/';
 	  }
+	
+	  _createClass(jobStatusService, [{
+	    key: 'getDescriptionList',
+	    value: function getDescriptionList() {
+	      return this.itemList.map(function (status) {
+	        return status.description;
+	      });
+	    }
+	  }]);
 	
 	  return jobStatusService;
 	})(_baseResourceClass3['default']);
@@ -70679,6 +70691,7 @@
 /* 35 */
 /***/ function(module, exports) {
 
+	/* eslint no-trailing-spaces: 0 */
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -70690,11 +70703,10 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var highchartService = (function () {
-	  function highchartService(jobService, jobTypeService) {
+	  function highchartService(utilityService) {
 	    _classCallCheck(this, highchartService);
 	
-	    this._jobService = jobService;
-	    this._jobTypeService = jobTypeService;
+	    this._utilityService = utilityService;
 	  }
 	
 	  /*
@@ -70749,79 +70761,62 @@
 	   */
 	
 	  _createClass(highchartService, [{
-	    key: 'getCategoryConfig',
-	    value: function getCategoryConfig(configDetail) {
+	    key: 'getColumnConfig',
+	    value: function getColumnConfig(configDetail) {
 	      var config = highchartService._getBaseChartConfig();
-	      config.xAxis.type = 'category';
 	      config.title.text = configDetail.title;
 	      config.xAxis.title.text = configDetail.xAxisLabel;
+	      config.xAxis.categories = configDetail.categories;
 	      config.yAxis.title.text = configDetail.yAxisLabel;
-	      config.series = [{
-	        showInLegend: false,
-	        data: []
-	      }];
+	      config.series = [{ data: [] }];
 	      return config;
 	    }
 	  }, {
-	    key: 'getJobsCompletedByProductChart',
-	    value: function getJobsCompletedByProductChart() {
-	      var config = this._getBaseChartConfig();
-	      config.options.chart.type = 'column';
-	      config.title.text = 'Jobs Completed By Product';
-	      config.xAxis.title.text = 'Product';
-	      config.xAxis.type = 'category';
-	      config.yAxis.title.text = 'Job Count';
-	      config.series = [{
-	        showInLegend: false,
-	        data: this._jobService.getJobsCompletedByProduct(config.startDate, config.endDate)
-	      }];
-	      return config;
-	    }
-	  }, {
-	    key: 'getJobsCompletedByTypeChart',
-	    value: function getJobsCompletedByTypeChart() {
-	      var config = this._getBaseChartConfig();
-	      return this.getJobsCompletedByJobType(config.startDate, config.endDate).then(function (seriesData) {
-	        config.options.chart.type = 'column';
-	        config.title.text = 'Jobs Completed By Type';
-	        config.xAxis.title.text = 'Job Type';
-	        config.xAxis.type = 'category';
-	        config.yAxis.title.text = 'Job Count';
-	        config.series = [{
-	          showInLegend: false,
-	          data: seriesData
-	        }];
-	        return config;
-	      });
-	    }
-	  }, {
-	    key: 'getJobsCompletedByJobType',
-	    value: function getJobsCompletedByJobType() {
+	    key: 'getCategoryCount',
+	    value: function getCategoryCount(objectList, categories, groups, categoryAttr, groupAttr) {
 	      var _this = this;
 	
-	      var config = this._getBaseChartConfig();
-	      return this._jobTypeService.get().then(function () {
-	        var jobByType = {};
-	        var typeName = undefined;
-	        // generate object with product name and job count
-	        _this._filterJobsByDate(config.startDate, config.endDate).forEach(function (job) {
-	          if (job.completed_timestamp) {
-	            typeName = _this._jobTypeService.itemList.filter(function (jt) {
-	              return jt.id === job.type;
-	            })[0].description;
-	            if (jobByType.hasOwnProperty(typeName)) {
-	              jobByType[typeName] += 1;
-	            } else {
-	              jobByType[typeName] = 1;
-	            }
-	          }
-	        });
-	        var returnArray = [];
-	        Object.keys(jobByType).forEach(function (p) {
-	          return returnArray.push([p, jobByType[p]]);
-	        });
-	        return returnArray;
+	      /*
+	        example: (for jobs by product, grouped by job status)
+	          categories = [Product 1, Product 2, Product 3] // list of product names
+	          groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
+	          categoryAttr = 'productDescription'
+	          groupAttr = 'status'
+	           objectList = [ // jobs
+	            {productDescription: Product 1, status: 'Active'},
+	            {productDescription: Product 1, status: 'Active'},
+	            {productDescription: Product 2, status: 'Inactive'},
+	          ]
+	          expected output = [
+	            {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
+	            {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
+	          ]
+	       */
+	
+	      var objectCategoryValue = undefined;
+	      var objectGroupValue = undefined;
+	
+	      // initialize series list w/o data.  For the example above, series = [{name: 'Active' data: [0, 0, 0]},
+	      //                                                                 {name: 'Inactive' data: [0, 0, 0]}]
+	      var series = groups.map(function (groupName) {
+	        return { name: groupName, data: categories.map(function () {
+	            return 0;
+	          }) };
 	      });
+	
+	      series.forEach(function (group) {
+	        categories.forEach(function (catName, index) {
+	          objectList.forEach(function (obj) {
+	            objectCategoryValue = _this._utilityService.getDotAttribute(categoryAttr, obj);
+	            objectGroupValue = _this._utilityService.getDotAttribute(groupAttr, obj);
+	            if (objectCategoryValue === catName && objectGroupValue === group.name) {
+	              group.data[index] += 1;
+	            }
+	          });
+	        });
+	      });
+	
+	      return series;
 	    }
 	  }], [{
 	    key: '_getBaseChartConfig',
@@ -70904,11 +70899,13 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var metricsService = (function () {
-	  function metricsService($http, highchartService) {
+	  function metricsService($http, highchartService, jobService) {
 	    _classCallCheck(this, metricsService);
 	
 	    this._resourceUrl = '/api/daily-metrics/';
 	    this._$http = $http;
+	    this._highChartService = highchartService;
+	    this._jobService = jobService;
 	  }
 	
 	  _createClass(metricsService, [{
@@ -71404,51 +71401,70 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart chart-config=\"vm.jobsByProduct\" refresh-data=\"vm.getJobsByProductData()\" start-date-model=\"vm.jobsByProduct.startDate\" end-date-model=\"vm.jobsByProduct.endDate\"> </date-chart> <date-chart chart-config=\"vm.jobsByType\" refresh-data=\"vm.getJobsByTypeData()\" start-date-model=\"vm.jobsByType.startDate\" end-date-model=\"vm.jobsByType.endDate\"> </date-chart> </div>";
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart config=\"vm.jobsByProduct\" refresh-data=\"vm.getJobsByProductData()\"> </date-chart> <date-chart config=\"vm.jobsByType\" refresh-data=\"vm.getJobsByTypeData()\"> </date-chart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _dateChartTemplateHtml = __webpack_require__(50);
-	
-	var _dateChartTemplateHtml2 = _interopRequireDefault(_dateChartTemplateHtml);
-	
-	exports['default'] = function () {
-	  'ngInject';
-	  return {
-	    scope: {
-	      startDateModel: '=',
-	      endDateModel: '=',
-	      chartConfig: '=',
-	      refreshData: '&'
-	    },
-	    template: _dateChartTemplateHtml2['default']
-	  };
-	};
-	
-	module.exports = exports['default'];
-
-/***/ },
+/* 49 */,
 /* 50 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div flex layout=\"row\"> <div flex=\"15\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"startDateModel\" md-placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"endDateModel\" md-placeholder=\"N/A\"></md-datepicker> <md-button ng-click=\"refreshData()\">Apply Date Filter</md-button> </div> <highchart flex=\"85\" config=\"chartConfig\"></highchart> </div>";
+	var v1="<div flex layout=\"row\"> <div flex=\"15\" layout=\"column\" layout-margin> <label>Start Date</label> <md-datepicker ng-model=\"$ctrl.config.startDate\" md-placeholder=\"N/A\"></md-datepicker> <label>End Date</label> <md-datepicker ng-model=\"$ctrl.config.endDate\" md-placeholder=\"N/A\"></md-datepicker> <md-button ng-click=\"$ctrl.refreshData()\">Apply Date Filter</md-button> </div> <highchart flex=\"85\" config=\"$ctrl.config\"></highchart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("date-chart.template.html",v1)}]);
 	module.exports=v1;
+
+/***/ },
+/* 51 */,
+/* 52 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var ChartController = (function () {
+	  function ChartController(jobService) {
+	    _classCallCheck(this, ChartController);
+	
+	    this._jobService = jobService;
+	  }
+	
+	  _createClass(ChartController, [{
+	    key: "$onInit",
+	    value: function $onInit() {
+	      var _this = this;
+	
+	      this.getDefaultDates().then(function () {
+	        return _this.refreshData();
+	      });
+	    }
+	  }, {
+	    key: "getDefaultDates",
+	    value: function getDefaultDates() {
+	      var _this2 = this;
+	
+	      return this._jobService.getOldestJobDate().then(function (oldestDate) {
+	        _this2.config.startDate = oldestDate;
+	        _this2.config.endDate = new Date(); // today;
+	      });
+	    }
+	  }]);
+	
+	  return ChartController;
+	})();
+	
+	exports["default"] = ChartController;
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ]);
