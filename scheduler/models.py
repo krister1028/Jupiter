@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import datetime
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.utils import timezone
@@ -120,6 +119,13 @@ class Job(models.Model):
     @property
     def product_code(self):
         return self.product.code
+
+    def get_task_minutes_by_expertise_level(self, expertise_level):
+        minutes = 0
+        for product_task in self.product_tasks.all():
+            if product_task.task.expertise_level == expertise_level:
+                minutes += product_task.completion_time
+        return minutes
 
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
