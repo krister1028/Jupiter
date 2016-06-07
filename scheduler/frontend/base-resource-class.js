@@ -5,6 +5,7 @@ here is that the items are cached in memory and managed by the http verb methods
 There are cases (for example when working with data that's paginated on the backend) where the in memory caching
 provided here is undesirable, so use this class with caution.
 */
+import angular from 'angular';
 
 export default class baseResourceClass {
   /* @ngInject */
@@ -132,7 +133,7 @@ export default class baseResourceClass {
 
   _makeItemListPristine() {
     this.itemList.length = 0;
-    this.itemList.push(...this._pristineItemList);
+    this.itemList.push(...angular.copy(this._pristineItemList));
   }
 
   _putToPristineList(item) {
