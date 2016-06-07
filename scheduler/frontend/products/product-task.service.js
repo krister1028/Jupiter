@@ -18,7 +18,6 @@ export default class productTaskService extends baseResourceClass {
   syncTasks(product) {
     const promiseList = this._postNewTasks(product.productTasks);
     promiseList.push(...this._removeDeletedTasks(product.productTasks));
-    promiseList.push(...this._putUpdatedTasks(product.productTasks));
     return this._$q.all(promiseList);
   }
 
@@ -43,9 +42,18 @@ export default class productTaskService extends baseResourceClass {
     return promiseList;
   }
 
-  safePut(productTask) {
-    if (productTask.id) {
-      this.put(productTask);
-    }
+  putUpdatedTasks(productTasks) {
+    const promiseList = [];
+    productTasks.forEach(productTask => {
+      const pristineItem = this._getPristineItem(productTask.id);
+      if (productTask.id && pristineItem.completion_time !== productTask.completion_time) {
+        promiseList.push(this.put(productTask));
+      }
+    });
+    return this._$q.all(promiseList);
+  }
+
+  _getPristineItem(id) {
+    return this._pristineItemList.filter(i => i.id === id)[0];
   }
 }
