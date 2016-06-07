@@ -137,7 +137,7 @@ export default class baseResourceClass {
   }
 
   _putToPristineList(item) {
-    const index = this._pristineItemList.indexOf(item);
+    const index = this._getPristineIndex(item[this.itemIdField]);
     if (index > -1) {
       this._pristineItemList[index] = item;
     }
@@ -148,10 +148,14 @@ export default class baseResourceClass {
   }
 
   _deleteFromPristineList(item) {
-    const index = this._pristineItemList.indexOf(item);
+    const index = this._getPristineIndex(item[this.itemIdField]);;
     if (index > -1) {
       this._pristineItemList.splice(index, 1);
     }
+  }
+
+  _getPristineIndex(id) {
+    return this._pristineItemList.findIndex(item => item.id === id);
   }
 
   _getRelatedLists() {
