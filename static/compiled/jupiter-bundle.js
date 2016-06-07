@@ -72749,9 +72749,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseResourceClass2 = __webpack_require__(28);
+	var _baseCachedResourceClass = __webpack_require__(52);
 	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
 	var productService = (function (_baseResourceClass) {
 	  _inherits(productService, _baseResourceClass);
@@ -72815,246 +72815,13 @@
 	  }]);
 	
 	  return productService;
-	})(_baseResourceClass3['default']);
+	})(_baseCachedResourceClass2['default']);
 	
 	exports['default'] = productService;
 	module.exports = exports['default'];
 
 /***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	This is a base class that can be extended by a child service which represents a RESTful resource.  The primary value
-	here is that the items are cached in memory and managed by the http verb methods below.
-	
-	There are cases (for example when working with data that's paginated on the backend) where the in memory caching
-	provided here is undesirable, so use this class with caution.
-	*/
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var _angular = __webpack_require__(3);
-	
-	var _angular2 = _interopRequireDefault(_angular);
-	
-	var baseResourceClass = (function () {
-	  /* @ngInject */
-	
-	  function baseResourceClass($http, $q) {
-	    _classCallCheck(this, baseResourceClass);
-	
-	    this._initialRequest = $q.defer();
-	    this._$q = $q;
-	    this._$http = $http;
-	    this._pristineItemList = []; // private cache, not exposed outside of service
-	
-	    this.itemList = [];
-	
-	    // if populated in child class, included services getList methods will be appended to main service's getList
-	    this.relatedServices = [];
-	    // must be overwritten in child class
-	    this.resourceUrl = null;
-	    // may be overwritten in child class as needed
-	    this.itemIdField = 'id';
-	  }
-	
-	  /* /////////////////////////////////////////////////////////////////////////////////////////////////////
-	  // HTTP verbs
-	  ///////////////////////////////////////////////////////////////////////////////////////////////////// */
-	
-	  _createClass(baseResourceClass, [{
-	    key: 'getList',
-	    value: function getList() {
-	      var _this = this;
-	
-	      var deferred = this._$q.defer();
-	
-	      if (this._initialRequest.promise.$$state.status === 0) {
-	        // if successful get request has not yet resolved
-	        this._$http.get(this.resourceUrl).then(function (response) {
-	          return _this._$q.all(_this._getRelatedLists()).then(function () {
-	            _this._initialRequest.resolve(response);
-	            _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
-	            _this._makeItemListPristine();
-	            deferred.resolve(_this.itemList);
-	          });
-	        });
-	      } else {
-	        // if items are in memory already, resolve without making request
-	        this._makeItemListPristine();
-	        deferred.resolve(this.itemList);
-	      }
-	      return deferred.promise;
-	    }
-	  }, {
-	    key: 'get',
-	    value: function get(itemId, queryParams) {
-	      var _this2 = this;
-	
-	      var noCache = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-	
-	      if (noCache) {
-	        return this._$http.get(this._itemSpecificUrl(itemId), { params: queryParams }).then(function (response) {
-	          return _this2.transformResponse(response);
-	        });
-	      }
-	      return this.getList().then(function () {
-	        return _this2.itemList.filter(function (i) {
-	          return i[_this2.itemIdField] === itemId;
-	        })[0];
-	      });
-	    }
-	  }, {
-	    key: 'deleteList',
-	    value: function deleteList(itemList) {
-	      var _this3 = this;
-	
-	      var promiseList = [];
-	      itemList.forEach(function (item) {
-	        promiseList.push(_this3['delete'](item, item[_this3.itemIdField]));
-	      });
-	      return this._$q.all(promiseList);
-	    }
-	  }, {
-	    key: 'delete',
-	    value: function _delete(item) {
-	      var _this4 = this;
-	
-	      return this._$http['delete'](this._itemSpecificUrl(item[this.itemIdField])).then(function () {
-	        var index = _this4.itemList.indexOf(item);
-	        _this4._deleteFromPristineList(item);
-	        _this4.itemList.splice(index, 1); // remove item from cached list
-	      });
-	    }
-	  }, {
-	    key: 'post',
-	    value: function post(item) {
-	      var _this5 = this;
-	
-	      this.itemList.push(item);
-	      return this._$http.post(this.resourceUrl, item).then(function (response) {
-	        _this5._postToPristineList(item);
-	        return response.data;
-	      }, function (response) {
-	        _this5.itemList.pop();
-	        return _this5._$q.reject(response.data);
-	      });
-	    }
-	  }, {
-	    key: 'put',
-	    value: function put(item) {
-	      var _this6 = this;
-	
-	      return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(function (response) {
-	        _this6._putToPristineList(item);
-	        return response.data;
-	      }, function (response) {
-	        _this6._makeItemListPristine();
-	        return _this6._$q.reject(response.data);
-	      });
-	    }
-	
-	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // Base methods (to be overwritten as needed in child class)
-	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
-	
-	  }, {
-	    key: 'transformResponse',
-	    value: function transformResponse(response) {
-	      // can be overwritten in child class if special response processing is needed
-	      return response.data;
-	    }
-	
-	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // Public Utility Methods
-	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
-	
-	  }, {
-	    key: 'refreshCache',
-	    value: function refreshCache() {
-	      this._initialRequest = this._$q.defer();
-	      return this.getList();
-	    }
-	
-	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // Private utility methods
-	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
-	
-	  }, {
-	    key: '_itemSpecificUrl',
-	    value: function _itemSpecificUrl(itemId) {
-	      // just appends the item id to the base resource url if it exists
-	      if (itemId === undefined) {
-	        return this.resourceUrl;
-	      }
-	      return '' + this.resourceUrl + itemId + '/';
-	    }
-	  }, {
-	    key: '_makeItemListPristine',
-	    value: function _makeItemListPristine() {
-	      var _itemList;
-	
-	      this.itemList.length = 0;
-	      (_itemList = this.itemList).push.apply(_itemList, _toConsumableArray(_angular2['default'].copy(this._pristineItemList)));
-	    }
-	  }, {
-	    key: '_putToPristineList',
-	    value: function _putToPristineList(item) {
-	      var index = this._getPristineIndex(item[this.itemIdField]);
-	      if (index > -1) {
-	        this._pristineItemList[index] = item;
-	      }
-	    }
-	  }, {
-	    key: '_postToPristineList',
-	    value: function _postToPristineList(item) {
-	      this._pristineItemList.push(item);
-	    }
-	  }, {
-	    key: '_deleteFromPristineList',
-	    value: function _deleteFromPristineList(item) {
-	      var index = this._getPristineIndex(item[this.itemIdField]);;
-	      if (index > -1) {
-	        this._pristineItemList.splice(index, 1);
-	      }
-	    }
-	  }, {
-	    key: '_getPristineIndex',
-	    value: function _getPristineIndex(id) {
-	      return this._pristineItemList.findIndex(function (item) {
-	        return item.id === id;
-	      });
-	    }
-	  }, {
-	    key: '_getRelatedLists',
-	    value: function _getRelatedLists() {
-	      var deferredList = [];
-	      this.relatedServices.forEach(function (service) {
-	        return deferredList.push(service.getList());
-	      });
-	      return deferredList;
-	    }
-	  }]);
-	
-	  return baseResourceClass;
-	})();
-	
-	exports['default'] = baseResourceClass;
-	module.exports = exports['default'];
-
-/***/ },
+/* 28 */,
 /* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -73074,9 +72841,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseResourceClass2 = __webpack_require__(28);
+	var _baseCachedResourceClass = __webpack_require__(52);
 	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
 	var jobService = (function (_baseResourceClass) {
 	  _inherits(jobService, _baseResourceClass);
@@ -73245,7 +73012,7 @@
 	  }]);
 	
 	  return jobService;
-	})(_baseResourceClass3['default']);
+	})(_baseCachedResourceClass2['default']);
 	
 	exports['default'] = jobService;
 	module.exports = exports['default'];
@@ -73268,9 +73035,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseResourceClass2 = __webpack_require__(28);
+	var _baseCachedResourceClass = __webpack_require__(52);
 	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
 	var taskService = (function (_baseResourceClass) {
 	  _inherits(taskService, _baseResourceClass);
@@ -73285,7 +73052,7 @@
 	  }
 	
 	  return taskService;
-	})(_baseResourceClass3['default']);
+	})(_baseCachedResourceClass2['default']);
 	
 	exports['default'] = taskService;
 	module.exports = exports['default'];
@@ -73310,9 +73077,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseResourceClass2 = __webpack_require__(28);
+	var _baseCachedResourceClass = __webpack_require__(52);
 	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
 	var jobTaskService = (function (_baseResourceClass) {
 	  _inherits(jobTaskService, _baseResourceClass);
@@ -73347,7 +73114,7 @@
 	  }]);
 	
 	  return jobTaskService;
-	})(_baseResourceClass3['default']);
+	})(_baseCachedResourceClass2['default']);
 	
 	exports['default'] = jobTaskService;
 	module.exports = exports['default'];
@@ -73370,9 +73137,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseResourceClass2 = __webpack_require__(28);
+	var _baseCachedResourceClass = __webpack_require__(52);
 	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
 	var groupUserService = (function (_baseResourceClass) {
 	  _inherits(groupUserService, _baseResourceClass);
@@ -73387,7 +73154,7 @@
 	  }
 	
 	  return groupUserService;
-	})(_baseResourceClass3['default']);
+	})(_baseCachedResourceClass2['default']);
 	
 	exports['default'] = groupUserService;
 	module.exports = exports['default'];
@@ -73453,9 +73220,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseResourceClass2 = __webpack_require__(28);
+	var _baseCachedResourceClass = __webpack_require__(52);
 	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
 	var jobTypeService = (function (_baseResourceClass) {
 	  _inherits(jobTypeService, _baseResourceClass);
@@ -73479,7 +73246,7 @@
 	  }]);
 	
 	  return jobTypeService;
-	})(_baseResourceClass3['default']);
+	})(_baseCachedResourceClass2['default']);
 	
 	exports['default'] = jobTypeService;
 	module.exports = exports['default'];
@@ -73504,9 +73271,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseResourceClass2 = __webpack_require__(28);
+	var _baseCachedResourceClass = __webpack_require__(52);
 	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
 	var jobStatusService = (function (_baseResourceClass) {
 	  _inherits(jobStatusService, _baseResourceClass);
@@ -73530,7 +73297,7 @@
 	  }]);
 	
 	  return jobStatusService;
-	})(_baseResourceClass3['default']);
+	})(_baseCachedResourceClass2['default']);
 	
 	exports['default'] = jobStatusService;
 	module.exports = exports['default'];
@@ -73557,9 +73324,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseResourceClass2 = __webpack_require__(28);
+	var _baseCachedResourceClass = __webpack_require__(52);
 	
-	var _baseResourceClass3 = _interopRequireDefault(_baseResourceClass2);
+	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
 	var productTaskService = (function (_baseResourceClass) {
 	  _inherits(productTaskService, _baseResourceClass);
@@ -73642,7 +73409,7 @@
 	  }]);
 	
 	  return productTaskService;
-	})(_baseResourceClass3['default']);
+	})(_baseCachedResourceClass2['default']);
 	
 	exports['default'] = productTaskService;
 	module.exports = exports['default'];
@@ -74375,6 +74142,243 @@
 	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart config=\"vm.jobsByProduct\" refresh-data=\"vm.getJobsByProductData()\"> </date-chart> <date-chart config=\"vm.jobsByType\" refresh-data=\"vm.getJobsByTypeData()\"> </date-chart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
+
+/***/ },
+/* 51 */,
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	This is a base class that can be extended by a child service which represents a RESTful resource.  The primary value
+	here is that the items are cached in memory and managed by the http verb methods below.
+	
+	There are cases (for example when working with data that's paginated on the backend) where the in memory caching
+	provided here is undesirable, so use this class with caution.
+	*/
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _angular = __webpack_require__(3);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	var baseResourceClass = (function () {
+	  /* @ngInject */
+	
+	  function baseResourceClass($http, $q) {
+	    _classCallCheck(this, baseResourceClass);
+	
+	    this._initialized = false;
+	    this._$q = $q;
+	    this._$http = $http;
+	    this._pristineItemList = []; // private cache, not exposed outside of service
+	
+	    this.itemList = [];
+	
+	    // if populated in child class, included services getList methods will be appended to main service's getList
+	    this.relatedServices = [];
+	    // must be overwritten in child class
+	    this.resourceUrl = null;
+	    // may be overwritten in child class as needed
+	    this.itemIdField = 'id';
+	  }
+	
+	  /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	  // HTTP verbs
+	  ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  _createClass(baseResourceClass, [{
+	    key: 'getList',
+	    value: function getList() {
+	      var _this = this;
+	
+	      var deferred = this._$q.defer();
+	
+	      if (this._initialized) {
+	        // if successful get request has not yet resolved
+	        this._$http.get(this.resourceUrl).then(function (response) {
+	          return _this._$q.all(_this._getRelatedLists()).then(function () {
+	            _this._initialized = true;
+	            _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
+	            _this._makeItemListPristine();
+	            deferred.resolve(_this.itemList);
+	          });
+	        });
+	      } else {
+	        // if items are in memory already, resolve without making request
+	        this._makeItemListPristine();
+	        deferred.resolve(this.itemList);
+	      }
+	      return deferred.promise;
+	    }
+	  }, {
+	    key: 'get',
+	    value: function get(itemId, queryParams) {
+	      var _this2 = this;
+	
+	      var noCache = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+	
+	      if (noCache) {
+	        return this._$http.get(this._itemSpecificUrl(itemId), { params: queryParams }).then(function (response) {
+	          return _this2.transformResponse(response);
+	        });
+	      }
+	      return this.getList().then(function () {
+	        return _this2.itemList.filter(function (i) {
+	          return i[_this2.itemIdField] === itemId;
+	        })[0];
+	      });
+	    }
+	  }, {
+	    key: 'deleteList',
+	    value: function deleteList(itemList) {
+	      var _this3 = this;
+	
+	      var promiseList = [];
+	      itemList.forEach(function (item) {
+	        promiseList.push(_this3['delete'](item));
+	      });
+	      return this._$q.all(promiseList);
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete(item) {
+	      var _this4 = this;
+	
+	      return this._$http['delete'](this._itemSpecificUrl(item[this.itemIdField])).then(function () {
+	        var index = _this4.itemList.indexOf(item);
+	        _this4._deleteFromPristineList(item);
+	        _this4.itemList.splice(index, 1); // remove item from cached list
+	      });
+	    }
+	  }, {
+	    key: 'post',
+	    value: function post(item) {
+	      var _this5 = this;
+	
+	      this.itemList.push(item);
+	      return this._$http.post(this.resourceUrl, item).then(function (response) {
+	        _this5._postToPristineList(item);
+	        return response.data;
+	      }, function (response) {
+	        _this5.itemList.pop();
+	        return _this5._$q.reject(response.data);
+	      });
+	    }
+	  }, {
+	    key: 'put',
+	    value: function put(item) {
+	      var _this6 = this;
+	
+	      return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(function (response) {
+	        _this6._putToPristineList(item);
+	        return response.data;
+	      }, function (response) {
+	        _this6._makeItemListPristine();
+	        return _this6._$q.reject(response.data);
+	      });
+	    }
+	
+	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // Base methods (to be overwritten as needed in child class)
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  }, {
+	    key: 'transformResponse',
+	    value: function transformResponse(response) {
+	      // can be overwritten in child class if special response processing is needed
+	      return response.data;
+	    }
+	
+	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // Public Utility Methods
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  }, {
+	    key: 'refreshCache',
+	    value: function refreshCache() {
+	      this._initialized = false;
+	      return this.getList();
+	    }
+	
+	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // Private utility methods
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  }, {
+	    key: '_itemSpecificUrl',
+	    value: function _itemSpecificUrl(itemId) {
+	      // just appends the item id to the base resource url if it exists
+	      if (itemId === undefined) {
+	        return this.resourceUrl;
+	      }
+	      return '' + this.resourceUrl + itemId + '/';
+	    }
+	  }, {
+	    key: '_makeItemListPristine',
+	    value: function _makeItemListPristine() {
+	      var _itemList;
+	
+	      this.itemList.length = 0;
+	      (_itemList = this.itemList).push.apply(_itemList, _toConsumableArray(_angular2['default'].copy(this._pristineItemList)));
+	    }
+	  }, {
+	    key: '_putToPristineList',
+	    value: function _putToPristineList(item) {
+	      var index = this._getPristineIndex(item[this.itemIdField]);
+	      if (index > -1) {
+	        this._pristineItemList[index] = item;
+	      }
+	    }
+	  }, {
+	    key: '_postToPristineList',
+	    value: function _postToPristineList(item) {
+	      this._pristineItemList.push(item);
+	    }
+	  }, {
+	    key: '_deleteFromPristineList',
+	    value: function _deleteFromPristineList(item) {
+	      var index = this._getPristineIndex(item[this.itemIdField]);
+	      if (index > -1) {
+	        this._pristineItemList.splice(index, 1);
+	      }
+	    }
+	  }, {
+	    key: '_getPristineIndex',
+	    value: function _getPristineIndex(id) {
+	      var _this7 = this;
+	
+	      return this._pristineItemList.findIndex(function (item) {
+	        return item[_this7.itemIdField] === id;
+	      });
+	    }
+	  }, {
+	    key: '_getRelatedLists',
+	    value: function _getRelatedLists() {
+	      var deferredList = [];
+	      this.relatedServices.forEach(function (service) {
+	        return deferredList.push(service.getList());
+	      });
+	      return deferredList;
+	    }
+	  }]);
+	
+	  return baseResourceClass;
+	})();
+	
+	exports['default'] = baseResourceClass;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

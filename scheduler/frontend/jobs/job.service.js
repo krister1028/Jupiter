@@ -1,4 +1,4 @@
-import baseResourceClass from '../base-resource-class';
+import baseResourceClass from '../base-cached-resource-class';
 
 export default class jobService extends baseResourceClass {
   /* @ngInject */

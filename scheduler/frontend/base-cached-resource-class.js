@@ -10,7 +10,7 @@ import angular from 'angular';
 export default class baseResourceClass {
   /* @ngInject */
   constructor($http, $q) {
-    this._initialRequest = $q.defer();
+    this._initialized = false;
     this._$q = $q;
     this._$http = $http;
     this._pristineItemList = [];  // private cache, not exposed outside of service
@@ -32,11 +32,11 @@ export default class baseResourceClass {
   getList() {
     const deferred = this._$q.defer();
 
-    if (this._initialRequest.promise.$$state.status === 0) { // if successful get request has not yet resolved
+    if (this._initialized) { // if successful get request has not yet resolved
       this._$http.get(this.resourceUrl).then(
         response => {
           return this._$q.all(this._getRelatedLists()).then(() => {
-            this._initialRequest.resolve(response);
+            this._initialized = true;
             this._pristineItemList = [...this.transformResponse(response)];
             this._makeItemListPristine();
             deferred.resolve(this.itemList);
@@ -61,7 +61,7 @@ export default class baseResourceClass {
   deleteList(itemList) {
     const promiseList = [];
     itemList.forEach(item => {
-      promiseList.push(this.delete(item, item[this.itemIdField]));
+      promiseList.push(this.delete(item));
     });
     return this._$q.all(promiseList);
   }
@@ -116,7 +116,7 @@ export default class baseResourceClass {
   ///////////////////////////////////////////////////////////////////////////////////////////////////// */
 
   refreshCache() {
-    this._initialRequest = this._$q.defer();
+    this._initialized = false;
     return this.getList();
   }
 
@@ -148,14 +148,14 @@ export default class baseResourceClass {
   }
 
   _deleteFromPristineList(item) {
-    const index = this._getPristineIndex(item[this.itemIdField]);;
+    const index = this._getPristineIndex(item[this.itemIdField]);
     if (index > -1) {
       this._pristineItemList.splice(index, 1);
     }
   }
 
   _getPristineIndex(id) {
-    return this._pristineItemList.findIndex(item => item.id === id);
+    return this._pristineItemList.findIndex(item => item[this.itemIdField] === id);
   }
 
   _getRelatedLists() {
