@@ -1,6 +1,7 @@
 import angular from 'angular';
-import {flushHttp} from '../../utils/requests.js';
-import BaseCachedResourceClass from 'baseclasses/base-cached-resource-class.js';
+import mocks from 'angular-mocks';
+import {flushHttp} from './utils/requests.js';
+import BaseCachedResourceClass from '../../../scheduler/frontend/base-cached-resource-class.js';
 
 describe('BaseCachedResourceClass', () => {
 
@@ -12,7 +13,7 @@ describe('BaseCachedResourceClass', () => {
 
 
   beforeEach(angular.mock.inject((_$q_, _$http_, _$httpBackend_) => {
-    BaseResourceInstance = new BaseCachedResourceClass(_$q_, _$http_);
+    BaseResourceInstance = new BaseCachedResourceClass(_$http_, _$q_);
     BaseResourceInstance.resourceUrl = resourceUrl;
     httpBackend = _$httpBackend_;
 

@@ -74205,7 +74205,7 @@
 	
 	      var deferred = this._$q.defer();
 	
-	      if (this._initialized) {
+	      if (!this._initialized) {
 	        // if successful get request has not yet resolved
 	        this._$http.get(this.resourceUrl).then(function (response) {
 	          return _this._$q.all(_this._getRelatedLists()).then(function () {
@@ -74224,20 +74224,19 @@
 	    }
 	  }, {
 	    key: 'get',
-	    value: function get(itemId, queryParams) {
+	    value: function get(queryParams) {
 	      var _this2 = this;
 	
-	      var noCache = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-	
-	      if (noCache) {
-	        return this._$http.get(this._itemSpecificUrl(itemId), { params: queryParams }).then(function (response) {
-	          return _this2.transformResponse(response);
-	        });
-	      }
 	      return this.getList().then(function () {
-	        return _this2.itemList.filter(function (i) {
-	          return i[_this2.itemIdField] === itemId;
-	        })[0];
+	        return _this2.itemList.filter(function (item) {
+	          var isMatch = true;
+	          Object.keys(queryParams).forEach(function (key) {
+	            if (item[key] !== queryParams[key]) {
+	              isMatch = false;
+	            }
+	          });
+	          return isMatch;
+	        });
 	      });
 	    }
 	  }, {

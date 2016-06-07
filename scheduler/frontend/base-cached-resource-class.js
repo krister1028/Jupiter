@@ -32,7 +32,7 @@ export default class baseResourceClass {
   getList() {
     const deferred = this._$q.defer();
 
-    if (this._initialized) { // if successful get request has not yet resolved
+    if (!this._initialized) { // if successful get request has not yet resolved
       this._$http.get(this.resourceUrl).then(
         response => {
           return this._$q.all(this._getRelatedLists()).then(() => {
@@ -50,12 +50,16 @@ export default class baseResourceClass {
     return deferred.promise;
   }
 
-  get(itemId, queryParams, noCache = false) {
-    if (noCache) {
-      return this._$http.get(this._itemSpecificUrl(itemId), {params: queryParams})
-        .then(response => this.transformResponse(response));
-    }
-    return this.getList().then(() => this.itemList.filter(i => i[this.itemIdField] === itemId)[0]);
+  get(queryParams) {
+    return this.getList().then(() => this.itemList.filter(item => {
+      let isMatch = true;
+      Object.keys(queryParams).forEach(key => {
+        if (item[key] !== queryParams[key]) {
+          isMatch = false;
+        }
+      });
+      return isMatch;
+    }));
   }
 
   deleteList(itemList) {
