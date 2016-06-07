@@ -25,8 +25,8 @@ export default class EditJobController {
   initializeServices() {
     this._jobTypeService.getList();
     this._jobStatusService.getList();
-    this._jobService.get(this._$stateParams.jobId).then(job => {
-      this.job = job;
+    this._jobService.get({id: this._$stateParams.jobId}).then(jobs => {
+      this.job = jobs[0];
     });
   }
 

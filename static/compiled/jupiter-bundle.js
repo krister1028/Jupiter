@@ -272,7 +272,9 @@
 	      }
 	    },
 	    resolve: { product: function product(productService, $stateParams) {
-	        return productService.get($stateParams.productId);
+	        return productService.get({ id: $stateParams.productId }).then(function (productList) {
+	          return productList[0];
+	        });
 	      } }
 	  }).state('root.editJob', {
 	    url: '/job/{jobId:int}',
@@ -73900,8 +73902,8 @@
 	
 	      this._jobTypeService.getList();
 	      this._jobStatusService.getList();
-	      this._jobService.get(this._$stateParams.jobId).then(function (job) {
-	        _this.job = job;
+	      this._jobService.get({ id: this._$stateParams.jobId }).then(function (jobs) {
+	        _this.job = jobs[0];
 	      });
 	    }
 	  }, {

@@ -124,7 +124,7 @@ class Job(models.Model):
         minutes = 0
         for job_task in self.jobtask_set.all():
             try:
-                if job_task.task.expertise_level == expertise_level and job_task.status != JobTask.COMPLETE:
+                if job_task.product_task.task.expertise_level == expertise_level and job_task.status != JobTask.COMPLETE:
                     minutes += job_task.product_task.completion_time
             except JobTask.DoesNotExist:
                 continue

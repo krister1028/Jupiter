@@ -105,7 +105,10 @@ def backlog_hours(request):
         date_dict = {'date': time_string, 'tasks': defaultdict(lambda: 0)}
         for job in all_jobs:
             # get most recent record for date in question
-            record = filter(lambda x: x.id == job.id and x.history_date.date() <= date, records)[0]
+            try:
+                record = filter(lambda x: x.id == job.id and x.history_date.date() <= date, records)[0]
+            except IndexError:  # if the job didn't exist on this date (and therefore has no records)
+                continue
             if record.completed_timestamp is None:  # if job was still had pending tasks at that point
                 for level in Task.EXPERTISE_CHOICES:
                     date_dict['tasks'][level[1]] += record.instance.get_remaining_task_minutes_by_expertise_level(level[0])
