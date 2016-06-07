@@ -260,7 +260,7 @@
 	      }
 	    },
 	    resolve: { product: function product() {
-	        return { tasks: [] };
+	        return { tasks: [], productTasks: [] };
 	      } }
 	  }).state('root.productDetail', {
 	    url: '/product/{productId:int}',
@@ -72337,78 +72337,84 @@
 /* 21 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var ProductController = (function () {
 	  /* @ngInject */
 	
-	  function ProductController(product, productService, productTaskService, $state, taskService) {
+	  function ProductController(product, productService, $state, taskService, productTaskService) {
 	    _classCallCheck(this, ProductController);
 	
 	    this.product = product;
 	    this._taskService = taskService;
 	    this.unselectedTasks = [];
 	    this._productService = productService;
+	    this._productTaskService = productTaskService;
 	    this._$state = $state;
 	  }
 	
 	  _createClass(ProductController, [{
-	    key: "$onInit",
+	    key: '$onInit',
 	    value: function $onInit() {
 	      var _this = this;
 	
 	      this._taskService.getList().then(function () {
-	        return _this.refreshUnselectedTasks();
+	        return _this._refreshTaskSelection();
 	      });
 	    }
 	  }, {
-	    key: "submit",
+	    key: 'submit',
 	    value: function submit() {
 	      if (this._$state.$current.data.detailView) {
 	        this._productService.put(this.product);
 	      } else {
 	        this._productService.post(this.product);
 	      }
+	      this._$state.go('root.home');
 	    }
 	  }, {
-	    key: "refreshUnselectedTasks",
-	    value: function refreshUnselectedTasks() {
-	      var selectedTaskIds = this.product.tasks.map(function (t) {
-	        return t.id;
+	    key: '_refreshTaskSelection',
+	    value: function _refreshTaskSelection() {
+	      var selectedTasks = this.product.productTasks.map(function (pt) {
+	        return pt.id;
 	      });
 	      this.unselectedTasks = this._taskService.itemList.filter(function (t) {
-	        return selectedTaskIds.indexOf(t.id) === -1;
+	        return selectedTasks.indexOf(t.id) === -1;
 	      });
 	    }
 	  }, {
-	    key: "searchTasks",
+	    key: 'searchTasks',
 	    value: function searchTasks(query) {
 	      return this.unselectedTasks.filter(function (f) {
 	        return f.description.toLowerCase().indexOf(query.toLowerCase()) > -1;
 	      });
 	    }
 	  }, {
-	    key: "addTask",
+	    key: 'addTask',
 	    value: function addTask(task) {
-	      task.completion_time = task.max_completion_time;
-	      this.product.tasks.push(task);
-	      this.refreshUnselectedTasks();
+	      this.product.productTasks.push(this._productTaskService.convertTaskToProductTask(task, this.product.id));
+	      this._refreshTaskSelection();
+	    }
+	  }, {
+	    key: 'removeTask',
+	    value: function removeTask() {
+	      this._refreshTaskSelection();
 	    }
 	  }]);
 	
 	  return ProductController;
 	})();
 	
-	exports["default"] = ProductController;
-	module.exports = exports["default"];
+	exports['default'] = ProductController;
+	module.exports = exports['default'];
 
 /***/ },
 /* 22 */
@@ -72752,19 +72758,57 @@
 	
 	  /* @ngInject */
 	
-	  function productService($http, $q) {
+	  function productService($http, $q, productTaskService) {
 	    _classCallCheck(this, productService);
 	
 	    _get(Object.getPrototypeOf(productService.prototype), 'constructor', this).call(this, $http, $q);
 	    this.resourceUrl = '/api/products/';
-	    this.taskCompleteCode = 3;
+	    this._productTaskService = productTaskService;
+	    this.relatedServices = [productTaskService];
 	  }
 	
 	  _createClass(productService, [{
+	    key: 'post',
+	    value: function post(product) {
+	      var _this = this;
+	
+	      return _get(Object.getPrototypeOf(productService.prototype), 'post', this).call(this, product).then(function () {
+	        return _this._productTaskService.postTasksForNewProduct(product);
+	      });
+	    }
+	  }, {
+	    key: 'put',
+	    value: function put(product) {
+	      return this._productTaskService.syncTasks(product).then(_get(Object.getPrototypeOf(productService.prototype), 'put', this).call(this, product));
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete(product) {
+	      return this._productTaskService.deleteTasksForProduct(product).then(_get(Object.getPrototypeOf(productService.prototype), 'delete', this).call(this, product));
+	    }
+	  }, {
 	    key: 'getDescriptionList',
 	    value: function getDescriptionList() {
 	      return this.itemList.map(function (product) {
 	        return product.description;
+	      });
+	    }
+	  }, {
+	    key: 'transformResponse',
+	    value: function transformResponse(response) {
+	      var _this2 = this;
+	
+	      var products = response.data;
+	      products.forEach(function (p) {
+	        p.productTasks = _this2.getProductTasks(p);
+	      });
+	      return products;
+	    }
+	  }, {
+	    key: 'getProductTasks',
+	    value: function getProductTasks(product) {
+	      return this._productTaskService.itemList.filter(function (productTask) {
+	        return product.tasks.indexOf(productTask.task) > -1 && productTask.product === product.id;
 	      });
 	    }
 	  }]);
@@ -73488,9 +73532,13 @@
 	  value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
@@ -73510,7 +73558,89 @@
 	
 	    _get(Object.getPrototypeOf(productTaskService.prototype), 'constructor', this).call(this, $http, $q);
 	    this.resourceUrl = '/api/product-tasks/';
+	    this._postTask = 'postTask';
+	    this._putTask = 'putTask';
 	  }
+	
+	  _createClass(productTaskService, [{
+	    key: 'convertTaskToProductTask',
+	    value: function convertTaskToProductTask(task, productId) {
+	      task.task = task.id;
+	      task.id = undefined;
+	      task.product = productId;
+	      task.completion_time = task.max_completion_time; // always default to max
+	      return task;
+	    }
+	  }, {
+	    key: 'deleteTasksForProduct',
+	    value: function deleteTasksForProduct(product) {
+	      var relatedProductTasks = this.itemList.filter(function (i) {
+	        return i.product === product.id;
+	      });
+	      return this.deleteList(relatedProductTasks);
+	    }
+	  }, {
+	    key: 'postTasksForNewProduct',
+	    value: function postTasksForNewProduct(product) {
+	      var _this = this;
+	
+	      var promiseList = [];
+	      product.productTasks.forEach(function (productTask) {
+	        return promiseList.push(_this.post(productTask));
+	      });
+	      return this._$q.all(promiseList);
+	    }
+	  }, {
+	    key: 'syncTasks',
+	    value: function syncTasks(product) {
+	      var _this2 = this;
+	
+	      var promiseList = [];
+	      var requiredAction = undefined;
+	      product.productTasks.forEach(function (productTask) {
+	        requiredAction = _this2._getRequiredAction(productTask);
+	        if (requiredAction === _this2._postTask) {
+	          promiseList.push(_this2.post(productTask));
+	        }
+	        if (requiredAction === _this2._putTask) {
+	          promiseList.push(_this2.put(productTask));
+	        }
+	      });
+	      promiseList.push.apply(promiseList, _toConsumableArray(this._removeDeletedTasks(product)));
+	      return this._$q.all(promiseList);
+	    }
+	  }, {
+	    key: '_removeDeletedTasks',
+	    value: function _removeDeletedTasks(product) {
+	      var _this3 = this;
+	
+	      var promiseList = [];
+	      var activeIds = product.productTasks.map(function (pt) {
+	        return pt.id;
+	      });
+	      this.itemList.filter(function (productTask) {
+	        if (activeIds.indexOf(productTask) === -1) {
+	          promiseList.push(_this3['delete'](productTask));
+	        }
+	      });
+	      return promiseList;
+	    }
+	  }, {
+	    key: '_getRequiredAction',
+	    value: function _getRequiredAction(productTask) {
+	      if (this.itemList.indexOf(productTask) > -1) {
+	        return false; // item is unchanged
+	      }
+	      var idMap = this.itemList.map(function (item) {
+	        return item.id;
+	      });
+	      if (idMap.indexOf(productTask.id) > -1) {
+	        // item is changed, but exists
+	        return this._putTask;
+	      }
+	      return this._postTask;
+	    }
+	  }]);
 	
 	  return productTaskService;
 	})(_baseResourceClass3['default']);
@@ -74210,7 +74340,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"description\" ng-model=\"vm.product.description\" required> <div ng-messages=\"addProduct.description.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.product.code\" required> <div ng-messages=\"addProduct.productCode.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-chips ng-model=\"vm.product.tasks\" md-autocomplete-snap md-on-add=\"vm.refreshUnselectedTasks()\" md-on-remove=\"vm.refreshUnselectedTasks()\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> <div layout-align=\"start start\"> <md-button class=\"md-raised md-primary\" ng-click=\"vm.submit()\">Submit Product</md-button> </div> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.product.tasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"start start\" flex=\"33\"> <h2>Assign Tasks</h2> <div ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> <md-button ui-sref=\"root.addTask\">Add New Task</md-button> </div> </div>";
+	var v1="<div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"description\" ng-model=\"vm.product.description\" required> <div ng-messages=\"addProduct.description.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.product.code\" required> <div ng-messages=\"addProduct.productCode.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-chips ng-model=\"vm.product.productTasks\" md-on-add=\"vm.addTask(vm.newTask)\" md-on-remove=\"vm.removeTask($chip)\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-selected-item=\"vm.newTask\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> <div layout-align=\"start start\"> <md-button class=\"md-raised md-primary\" ng-click=\"vm.submit()\">Submit Product</md-button> </div> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.product.productTasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"start start\" flex=\"33\"> <h2>Assign Tasks</h2> <div ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> <md-button ui-sref=\"root.addTask\">Add New Task</md-button> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
 	module.exports=v1;
 

@@ -116,7 +116,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
           controller: 'AddProductController as vm'
         }
       },
-      resolve: {product: () => {return {tasks: []};}}
+      resolve: {product: () => {return {tasks: [], productTasks: []};}}
     })
     .state('root.productDetail', {
       url: '/product/{productId:int}',

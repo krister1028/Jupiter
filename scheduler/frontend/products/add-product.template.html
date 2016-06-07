@@ -15,12 +15,13 @@
         </div>
       </md-input-container>
         <md-chips
-                  ng-model="vm.product.tasks" md-autocomplete-snap
-                  md-on-add="vm.refreshUnselectedTasks()"
-                  md-on-remove="vm.refreshUnselectedTasks()"
-                  md-require-match="true">
+          ng-model="vm.product.productTasks"
+          md-on-add="vm.addTask(vm.newTask)"
+          md-on-remove="vm.removeTask($chip)"
+          md-require-match="true">
           <md-autocomplete
               md-search-text="vm.searchText"
+              md-selected-item="vm.newTask"
               md-items="item in vm.searchTasks(vm.searchText)"
               placeholder="Add Product Tasks">
             <span md-highlight-text="vm.searchText">{{item.description}}</span>
@@ -38,7 +39,7 @@
 
     <div layout="column" flex="33">
         <h4>Product Tasks</h4>
-        <div ng-repeat="task in vm.product.tasks track by $index" layout-margin>
+        <div ng-repeat="task in vm.product.productTasks track by $index" layout-margin>
             {{ task.description }}
             <md-slider
                     aria-label="Select Time"

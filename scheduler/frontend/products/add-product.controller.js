@@ -1,15 +1,16 @@
 export default class ProductController {
   /* @ngInject */
-  constructor(product, productService, productTaskService, $state, taskService) {
+  constructor(product, productService, $state, taskService, productTaskService) {
     this.product = product;
     this._taskService = taskService;
     this.unselectedTasks = [];
     this._productService = productService;
+    this._productTaskService = productTaskService;
     this._$state = $state;
   }
 
   $onInit() {
-    this._taskService.getList().then(() => this.refreshUnselectedTasks());
+    this._taskService.getList().then(() => this._refreshTaskSelection());
   }
 
   submit() {
@@ -18,11 +19,12 @@ export default class ProductController {
     } else {
       this._productService.post(this.product);
     }
+    this._$state.go('root.home');
   }
 
-  refreshUnselectedTasks() {
-    const selectedTaskIds = this.product.tasks.map(t => t.id);
-    this.unselectedTasks = this._taskService.itemList.filter(t => selectedTaskIds.indexOf(t.id) === -1);
+  _refreshTaskSelection() {
+    const selectedTasks = this.product.productTasks.map(pt => pt.id);
+    this.unselectedTasks = this._taskService.itemList.filter(t => selectedTasks.indexOf(t.id) === -1);
   }
 
   searchTasks(query) {
@@ -30,8 +32,11 @@ export default class ProductController {
   }
 
   addTask(task) {
-    task.completion_time = task.max_completion_time;
-    this.product.tasks.push(task);
-    this.refreshUnselectedTasks();
+    this.product.productTasks.push(this._productTaskService.convertTaskToProductTask(task, this.product.id));
+    this._refreshTaskSelection();
+  }
+
+  removeTask() {
+    this._refreshTaskSelection();
   }
 }
