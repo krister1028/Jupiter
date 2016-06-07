@@ -10,17 +10,11 @@ export default class productService extends baseResourceClass {
   }
 
   post(product) {
-    return super.post(product).then(() => {
-      return this._productTaskService.postTasksForNewProduct(product);
-    });
+    return super.post(product).then(() => this._productTaskService.syncTasks(product));
   }
 
   put(product) {
     return this._productTaskService.syncTasks(product).then(super.put(product));
-  }
-
-  delete(product) {
-    return this._productTaskService.deleteTasksForProduct(product).then(super.delete(product));
   }
 
   getDescriptionList() {

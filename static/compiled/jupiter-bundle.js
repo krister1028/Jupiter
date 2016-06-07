@@ -198,9 +198,13 @@
 	
 	var _metricsMetricsTemplateHtml2 = _interopRequireDefault(_metricsMetricsTemplateHtml);
 	
+	var _productsSliderOnchangeDirective = __webpack_require__(51);
+	
+	var _productsSliderOnchangeDirective2 = _interopRequireDefault(_productsSliderOnchangeDirective);
+	
 	window.Highcharts = _highcharts2['default'];
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('productTaskService', _productsProductTaskService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).service('utilityService', _utilityService2['default']).component('dateChart', {
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _highchartsNg2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('productTaskService', _productsProductTaskService2['default']).service('metricsService', _metricsMetricsService2['default']).service('highchartService', _metricsHighchartServiceJs2['default']).service('utilityService', _utilityService2['default']).directive('sliderOnChange', _productsSliderOnchangeDirective2['default']).component('dateChart', {
 	  bindings: {
 	    config: '=',
 	    refreshData: '&'
@@ -72773,18 +72777,13 @@
 	      var _this = this;
 	
 	      return _get(Object.getPrototypeOf(productService.prototype), 'post', this).call(this, product).then(function () {
-	        return _this._productTaskService.postTasksForNewProduct(product);
+	        return _this._productTaskService.syncTasks(product);
 	      });
 	    }
 	  }, {
 	    key: 'put',
 	    value: function put(product) {
 	      return this._productTaskService.syncTasks(product).then(_get(Object.getPrototypeOf(productService.prototype), 'put', this).call(this, product));
-	    }
-	  }, {
-	    key: 'delete',
-	    value: function _delete(product) {
-	      return this._productTaskService.deleteTasksForProduct(product).then(_get(Object.getPrototypeOf(productService.prototype), 'delete', this).call(this, product));
 	    }
 	  }, {
 	    key: 'getDescriptionList',
@@ -73558,8 +73557,6 @@
 	
 	    _get(Object.getPrototypeOf(productTaskService.prototype), 'constructor', this).call(this, $http, $q);
 	    this.resourceUrl = '/api/product-tasks/';
-	    this._postTask = 'postTask';
-	    this._putTask = 'putTask';
 	  }
 	
 	  _createClass(productTaskService, [{
@@ -73572,73 +73569,48 @@
 	      return task;
 	    }
 	  }, {
-	    key: 'deleteTasksForProduct',
-	    value: function deleteTasksForProduct(product) {
-	      var relatedProductTasks = this.itemList.filter(function (i) {
-	        return i.product === product.id;
-	      });
-	      return this.deleteList(relatedProductTasks);
+	    key: 'syncTasks',
+	    value: function syncTasks(product) {
+	      var promiseList = this._postNewTasks(product.productTasks);
+	      promiseList.push.apply(promiseList, _toConsumableArray(this._removeDeletedTasks(product.productTasks)));
+	      promiseList.push.apply(promiseList, _toConsumableArray(this._putUpdatedTasks(product.productTasks)));
+	      return this._$q.all(promiseList);
 	    }
 	  }, {
-	    key: 'postTasksForNewProduct',
-	    value: function postTasksForNewProduct(product) {
+	    key: '_postNewTasks',
+	    value: function _postNewTasks(productTasks) {
 	      var _this = this;
 	
 	      var promiseList = [];
-	      product.productTasks.forEach(function (productTask) {
-	        return promiseList.push(_this.post(productTask));
-	      });
-	      return this._$q.all(promiseList);
-	    }
-	  }, {
-	    key: 'syncTasks',
-	    value: function syncTasks(product) {
-	      var _this2 = this;
-	
-	      var promiseList = [];
-	      var requiredAction = undefined;
-	      product.productTasks.forEach(function (productTask) {
-	        requiredAction = _this2._getRequiredAction(productTask);
-	        if (requiredAction === _this2._postTask) {
-	          promiseList.push(_this2.post(productTask));
-	        }
-	        if (requiredAction === _this2._putTask) {
-	          promiseList.push(_this2.put(productTask));
-	        }
-	      });
-	      promiseList.push.apply(promiseList, _toConsumableArray(this._removeDeletedTasks(product)));
-	      return this._$q.all(promiseList);
-	    }
-	  }, {
-	    key: '_removeDeletedTasks',
-	    value: function _removeDeletedTasks(product) {
-	      var _this3 = this;
-	
-	      var promiseList = [];
-	      var activeIds = product.productTasks.map(function (pt) {
-	        return pt.id;
-	      });
-	      this.itemList.filter(function (productTask) {
-	        if (activeIds.indexOf(productTask) === -1) {
-	          promiseList.push(_this3['delete'](productTask));
+	      productTasks.forEach(function (productTask) {
+	        if (productTask.id === undefined) {
+	          promiseList.push(_this.post(productTask));
 	        }
 	      });
 	      return promiseList;
 	    }
 	  }, {
-	    key: '_getRequiredAction',
-	    value: function _getRequiredAction(productTask) {
-	      if (this.itemList.indexOf(productTask) > -1) {
-	        return false; // item is unchanged
-	      }
-	      var idMap = this.itemList.map(function (item) {
-	        return item.id;
+	    key: '_removeDeletedTasks',
+	    value: function _removeDeletedTasks(productTasks) {
+	      var _this2 = this;
+	
+	      var promiseList = [];
+	      var activeIds = productTasks.map(function (pt) {
+	        return pt.id;
 	      });
-	      if (idMap.indexOf(productTask.id) > -1) {
-	        // item is changed, but exists
-	        return this._putTask;
+	      this.itemList.forEach(function (productTask) {
+	        if (productTask.id !== undefined && activeIds.indexOf(productTask.id) === -1) {
+	          promiseList.push(_this2['delete'](productTask));
+	        }
+	      });
+	      return promiseList;
+	    }
+	  }, {
+	    key: 'safePut',
+	    value: function safePut(productTask) {
+	      if (productTask.id) {
+	        this.put(productTask);
 	      }
-	      return this._postTask;
 	    }
 	  }]);
 	
@@ -74340,7 +74312,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"description\" ng-model=\"vm.product.description\" required> <div ng-messages=\"addProduct.description.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.product.code\" required> <div ng-messages=\"addProduct.productCode.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-chips ng-model=\"vm.product.productTasks\" md-on-add=\"vm.addTask(vm.newTask)\" md-on-remove=\"vm.removeTask($chip)\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-selected-item=\"vm.newTask\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> <div layout-align=\"start start\"> <md-button class=\"md-raised md-primary\" ng-click=\"vm.submit()\">Submit Product</md-button> </div> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.product.productTasks track by $index\" layout-margin> {{ task.description }} <md-slider aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"start start\" flex=\"33\"> <h2>Assign Tasks</h2> <div ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> <md-button ui-sref=\"root.addTask\">Add New Task</md-button> </div> </div>";
+	var v1="<div layout-margin layout=\"row\"> <form name=\"addProduct\" layout=\"column\" flex=\"66\"> <md-input-container> <label>Product Description</label> <input name=\"description\" ng-model=\"vm.product.description\" required> <div ng-messages=\"addProduct.description.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-input-container> <label>Product Code</label> <input name=\"productCode\" ng-model=\"vm.product.code\" required> <div ng-messages=\"addProduct.productCode.$error\"> <div ng-message=\"required\">This field is required.</div> </div> </md-input-container> <md-chips ng-model=\"vm.product.productTasks\" md-on-add=\"vm.addTask(vm.newTask)\" md-on-remove=\"vm.removeTask($chip)\" md-require-match=\"true\"> <md-autocomplete md-search-text=\"vm.searchText\" md-selected-item=\"vm.newTask\" md-items=\"item in vm.searchTasks(vm.searchText)\" placeholder=\"Add Product Tasks\"> <span md-highlight-text=\"vm.searchText\">{{item.description}}</span> </md-autocomplete> <md-chip-template> <span> <strong>{{$chip.description}}</strong> </span> </md-chip-template> </md-chips> <div layout-align=\"start start\"> <md-button class=\"md-raised md-primary\" ng-click=\"vm.submit()\">Submit Product</md-button> </div> </form> <div layout=\"column\" flex=\"33\"> <h4>Product Tasks</h4> <div ng-repeat=\"task in vm.product.productTasks track by $index\" layout-margin> {{ task.description }} <md-slider slider-on-change aria-label=\"Select Time\" ng-model=\"task.completion_time\" md-discrete=\"true\" min=\"{{ task.min_completion_time }}\" max=\"{{ task.max_completion_time }}\"> </md-slider> </div> </div> <div layout=\"column\" layout-align=\"start start\" flex=\"33\"> <h2>Assign Tasks</h2> <div ng-repeat=\"task in vm.unselectedTasks track by $index\" ng-click=\"vm.addTask(task)\"> {{ task.description }} </div> <md-button ui-sref=\"root.addTask\">Add New Task</md-button> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("add-product.template.html",v1)}]);
 	module.exports=v1;
 
@@ -74376,6 +74348,29 @@
 	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart config=\"vm.jobsByProduct\" refresh-data=\"vm.getJobsByProductData()\"> </date-chart> <date-chart config=\"vm.jobsByType\" refresh-data=\"vm.getJobsByTypeData()\"> </date-chart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
+
+/***/ },
+/* 51 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	exports['default'] = function (productTaskService) {
+	  return {
+	    restrict: 'A',
+	    link: function link(scope, element, attrs) {
+	      element.on('$md.dragend', function () {
+	        console.info('Drag Ended', attrs);
+	      });
+	    }
+	  };
+	};
+	
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
