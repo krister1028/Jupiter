@@ -2,7 +2,10 @@ import factory
 import factory.fuzzy as fuzzy
 from django.contrib.auth.models import Group
 
-from scheduler.models import Job, JobTask, Product, ProductTask, JobStatus
+from scheduler.models import Job, JobTask, Product, ProductTask, JobStatus, Task
+
+
+expertise_choices = [c[0] for c in Task.EXPERTISE_CHOICES]
 
 
 class GroupFactory(factory.DjangoModelFactory):
@@ -10,6 +13,17 @@ class GroupFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = Group
+
+
+class TaskFactory(factory.DjangoModelFactory):
+    group = factory.SubFactory(GroupFactory)
+    expertise_level = fuzzy.FuzzyChoice(expertise_choices)
+    min_completion_time = fuzzy.FuzzyInteger(999)
+    max_completion_time = fuzzy.FuzzyInteger(999)
+    cost = fuzzy.FuzzyInteger(999)
+
+    class Meta:
+        model = Task
 
 
 class ProductFactory(factory.DjangoModelFactory):
@@ -42,5 +56,7 @@ class JobTaskFactory(factory.DjangoModelFactory):
 
 
 class ProductTaskFactory(factory.DjangoModelFactory):
+    task = factory.SubFactory(TaskFactory)
+
     class Meta:
         model = ProductTask
