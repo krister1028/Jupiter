@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 from datetime import datetime
 import utils
+from scheduler.metric_helpers import get_default_start_end_dates
 
 from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
@@ -82,31 +83,19 @@ def backlog_hours(request):
     date_list = []
     primary_group = request.user.groups.all()[0]
 
-    start_date_string = request.GET.get('start_date')
-    end_date_string = request.GET.get('end_date')
-    # get start/end dates
-    if start_date_string:
-        start_date = utils.parse_date_string(start_date_string)
-    else:
-        try:
-            start_date = Job.objects.filter(group=primary_group).aggregate(Min('created'))['created__min'].date()
-        except AttributeError:
-            return HttpResponse(json.dumps([]))  # happens if we have no jobs
-    if end_date_string:
-        end_date = utils.parse_date_string(end_date_string).date()
-    else:
-        end_date = datetime.today().date()
+    start_date, end_date = get_default_start_end_dates(primary_group, request.GET.get('start_date'), request.GET.get('end_date'))
 
-    all_jobs = Job.objects.filter(group=primary_group).exclude(completed_timestamp__lt=start_date, created__gt=end_date)
-    records = Job.history.filter(id__in=[j.id for j in all_jobs]).order_by('-history_date')
+    records = Job.history.filter(
+        group=primary_group
+    ).exclude(completed_timestamp__lt=start_date, created__gt=end_date).order_by('-history_date')
 
-    for date in utils.daterange(start_date, end_date):
+    for date in utils.daterange(start_date.date(), end_date.date()):
         time_string = datetime.strftime(date, '%Y-%m-%d')
         date_dict = {'date': time_string, 'tasks': defaultdict(lambda: 0)}
-        for job in all_jobs:
+        for r in records:
             # get most recent record for date in question
             try:
-                record = filter(lambda x: x.id == job.id and x.history_date.date() <= date, records)[0]
+                record = filter(lambda x: x.id == r.instance.id and x.history_date.date() <= date, records)[0]
             except IndexError:  # if the job didn't exist on this date (and therefore has no records)
                 continue
             if record.completed_timestamp is None:  # if job was still had pending tasks at that point
