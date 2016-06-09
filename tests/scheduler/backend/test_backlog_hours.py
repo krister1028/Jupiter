@@ -4,7 +4,7 @@ import datetime
 from dateutil.parser import parse
 from factories import JobFactory, GroupFactory, HistoricalJobTaskFactory
 from scheduler.metric_helpers import get_default_start_end_dates, get_task_breakdown
-from scheduler.models import Task
+from scheduler.models import Task, JobTask
 
 
 class TestBackLogHours(TestCase):
@@ -35,7 +35,7 @@ class TestBackLogHours(TestCase):
     def test_task_breakdown_ignores_task_before_date_range(self):
         start_date = datetime.datetime(2015, 01, 01)
         end_date = datetime.datetime(2015, 01, 02)
-        self.create_historical_task(datetime.datetime(2015, 12, 31))
+        self.create_historical_task(Task.LOW, datetime.datetime(2015, 12, 31))
 
         date_breakdown = get_task_breakdown(self.group, start_date, end_date)
         self.assert_empty_breakdown(date_breakdown)
@@ -43,7 +43,7 @@ class TestBackLogHours(TestCase):
     def test_task_breakdown_ignores_task_after_date_range(self):
         start_date = datetime.datetime(2015, 01, 01)
         end_date = datetime.datetime(2015, 01, 02)
-        self.create_historical_task(datetime.datetime(2015, 01, 03))
+        self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 03))
 
         date_breakdown = get_task_breakdown(self.group, start_date, end_date)
         self.assert_empty_breakdown(date_breakdown)
@@ -78,12 +78,20 @@ class TestBackLogHours(TestCase):
         start_date = datetime.datetime(2015, 01, 01, tzinfo=pytz.utc)
         end_date = datetime.datetime(2015, 01, 02, tzinfo=pytz.utc)
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
-        self.create_historical_task(Task.LOW, datetime.datetime(2015, 02, 01))
+        self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 02))
 
         date_breakdown = get_task_breakdown(self.group, start_date, end_date)
-        import pdb; pdb.set_trace()
         self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 1)
         self.assertTrue(date_breakdown[1][Task.get_level_text(Task.LOW)] == 2)
+
+    def test_breakdown_persists(self):
+        start_date = datetime.datetime(2015, 01, 01, tzinfo=pytz.utc)
+        end_date = datetime.datetime(2015, 01, 02, tzinfo=pytz.utc)
+        self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
+
+        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 1)
+        self.assertTrue(date_breakdown[1][Task.get_level_text(Task.LOW)] == 1)
 
     ###############################################################################################
     # Helpers
