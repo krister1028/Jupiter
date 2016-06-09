@@ -47,6 +47,10 @@ class Task(models.Model):
     def __unicode__(self):
         return self.description
 
+    @classmethod
+    def get_level_text(cls, level_id):
+        return filter(lambda x: x[0] == level_id, cls.EXPERTISE_CHOICES)[0][1]
+
 
 class Product(models.Model):
     group = models.ForeignKey(Group)
@@ -133,10 +137,9 @@ class Job(models.Model):
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
         if not self.product_tasks.all():
-            job_tasks = []
             for product_task in ProductTask.objects.filter(product=self.product):
-                job_tasks.append(JobTask(job=self, product_task=product_task))
-            JobTask.objects.bulk_create(job_tasks)
+                # intentionally not doing a bulk create here to make sure and call JobTask.save() and log a history
+                JobTask(job=self, product_task=product_task).save()
 
 
 class JobTask(models.Model):

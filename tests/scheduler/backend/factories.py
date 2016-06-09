@@ -1,8 +1,10 @@
+import datetime
 import factory
 import factory.fuzzy as fuzzy
+import pytz
 from django.contrib.auth.models import Group
 
-from scheduler.models import Job, JobTask, Product, ProductTask, JobStatus, Task
+from scheduler.models import Job, JobTask, Product, ProductTask, JobStatus, Task, HistoricalJobTask
 
 
 expertise_choices = [c[0] for c in Task.EXPERTISE_CHOICES]
@@ -50,13 +52,26 @@ class JobFactory(factory.DjangoModelFactory):
         model = Job
 
 
-class JobTaskFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = JobTask
-
-
 class ProductTaskFactory(factory.DjangoModelFactory):
+    product = factory.SubFactory(ProductFactory)
     task = factory.SubFactory(TaskFactory)
 
     class Meta:
         model = ProductTask
+
+
+class JobTaskFactory(factory.DjangoModelFactory):
+    job = factory.SubFactory(JobFactory)
+    product_task = factory.SubFactory(ProductTaskFactory)
+
+    class Meta:
+        model = JobTask
+
+
+class HistoricalJobTaskFactory(factory.DjangoModelFactory):
+    id = fuzzy.FuzzyInteger(999)
+    history_date = fuzzy.FuzzyDateTime(datetime.datetime.now(pytz.utc))
+    instance = factory.SubFactory(JobTaskFactory)
+
+    class Meta:
+        model = HistoricalJobTask

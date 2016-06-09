@@ -1,15 +1,11 @@
 import json
-from collections import defaultdict
 
 from django.contrib.auth.models import User
-from django.db.models import Min
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
-from datetime import datetime
-import utils
-from scheduler.metric_helpers import get_default_start_end_dates
+from scheduler.metric_helpers import get_default_start_end_dates, get_task_breakdown
 
 from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
@@ -80,26 +76,8 @@ class CustomLoginView(LoginView):
 
 
 def backlog_hours(request):
-    date_list = []
     primary_group = request.user.groups.all()[0]
-
     start_date, end_date = get_default_start_end_dates(primary_group, request.GET.get('start_date'), request.GET.get('end_date'))
 
-    records = Job.history.filter(
-        group=primary_group
-    ).exclude(completed_timestamp__lt=start_date, created__gt=end_date).order_by('-history_date')
-
-    for date in utils.daterange(start_date.date(), end_date.date()):
-        time_string = datetime.strftime(date, '%Y-%m-%d')
-        date_dict = {'date': time_string, 'tasks': defaultdict(lambda: 0)}
-        for r in records:
-            # get most recent record for date in question
-            try:
-                record = filter(lambda x: x.id == r.instance.id and x.history_date.date() <= date, records)[0]
-            except IndexError:  # if the job didn't exist on this date (and therefore has no records)
-                continue
-            if record.completed_timestamp is None:  # if job was still had pending tasks at that point
-                for level in Task.EXPERTISE_CHOICES:
-                    date_dict['tasks'][level[1]] += record.instance.get_remaining_task_minutes_by_expertise_level(level[0])
-        date_list.append(date_dict)
+    date_list = get_task_breakdown(primary_group, start_date, end_date)
     return HttpResponse(json.dumps(date_list))
