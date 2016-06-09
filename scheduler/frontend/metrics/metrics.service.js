@@ -1,12 +1,10 @@
 export default class metricsService {
-  constructor($http, highchartService, jobService) {
-    this._resourceUrl = '/api/daily-metrics/';
+  constructor($http) {
+    this._backLogUrl = '/backlog-hours/';
     this._$http = $http;
-    this._highChartService = highchartService;
-    this._jobService = jobService;
   }
 
-  get() {
-    return this._$http.get(this._resourceUrl).then(response => response.data);
+  getBacklog() {
+    return this._$http.get(this._backLogUrl).then(response => response.data);
   }
 }

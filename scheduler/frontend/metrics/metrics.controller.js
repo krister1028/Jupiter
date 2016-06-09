@@ -1,8 +1,9 @@
 export default class MetricsController {
-  constructor(highchartService, jobService, productService, jobStatusService, jobTypeService) {
+  constructor(highchartService, jobService, productService, jobStatusService, jobTypeService, metricsService) {
     this._jobService = jobService;
     this._jobStatusService = jobStatusService;
     this._highchartService = highchartService;
+    this._metricService = metricsService;
 
     this.jobsByProduct = highchartService.getColumnConfig({
       categories: productService.getDescriptionList(),
@@ -14,6 +15,9 @@ export default class MetricsController {
       title: 'Jobs By Type',
       xAxisLabel: 'Type',
       yAxisLabel: 'Job Count'});
+    this.taskBacklog = highchartService.getTimeLineConfig({
+      title: 'Task By Expertise Backlog',
+      yAxisLabel: 'Backlog (minutes)'});
   }
 
   getJobsByProductData() {
@@ -37,6 +41,12 @@ export default class MetricsController {
         'jobType.description',
         'jobStatus.description'
       );
+    });
+  }
+
+  getTaskBackLogData() {
+    this._metricService.getBacklog().then(backlog => {
+      this.taskBacklog.series = this._highchartService.getDataForTimeLine(backlog, ['High', 'Medium', 'Low', 'CP']);
     });
   }
 }

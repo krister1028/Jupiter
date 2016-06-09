@@ -48,7 +48,8 @@ export default class highchartService {
         currentMax: undefined,
         title: {
           text: ''
-        }
+        },
+        labels: {}
       },
       yAxis: {
         currentMin: undefined,
@@ -67,6 +68,19 @@ export default class highchartService {
     config.xAxis.title.text = configDetail.xAxisLabel;
     config.xAxis.categories = configDetail.categories;
     config.yAxis.title.text = configDetail.yAxisLabel;
+    config.series = [{data: []}];
+    return config;
+  }
+
+  getTimeLineConfig(configDetail) {
+    const config = highchartService._getBaseChartConfig();
+    config.options.chart.type = 'line';
+    config.title.text = configDetail.title;
+    config.xAxis.title.text = 'Date';
+    config.yAxis.title.text = configDetail.yAxisLabel;
+    config.xAxis.labels.format = '{value:%m-%d-%Y}';
+    config.xAxis.labels.align = 'left';
+    config.xAxis.type = 'datetime';
     config.series = [{data: []}];
     return config;
   }
@@ -111,6 +125,25 @@ export default class highchartService {
       });
     });
     return series;
+  }
+
+  getDataForTimeLine(rawData, categoryKeys) {
+    const processedData = [];
+    categoryKeys.forEach(categoryName => {
+      const series = {name: categoryName, data: []};
+      rawData.forEach(point => {
+        series.data.push([highchartService._makeUTCDate(point.date), point[categoryName]]);
+      });
+      processedData.push(series);
+    });
+    return processedData;
+  }
+
+  static _makeUTCDate(dateString) {
+    // expect YYYY-MM-DD
+    const dateVals = dateString.split('-');
+    dateVals[1] = dateVals[1] - 1;  // months are 0 indexed in JS
+    return Date.UTC(...dateVals);
   }
 
 }
