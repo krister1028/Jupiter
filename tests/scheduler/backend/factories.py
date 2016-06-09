@@ -71,6 +71,8 @@ class JobTaskFactory(factory.DjangoModelFactory):
 class HistoricalJobTaskFactory(factory.DjangoModelFactory):
     id = fuzzy.FuzzyInteger(999)
     history_date = fuzzy.FuzzyDateTime(datetime.datetime.now(pytz.utc))
+    product_task = factory.SubFactory(ProductTaskFactory)
+    job = factory.SubFactory(JobFactory)
     instance = factory.SubFactory(JobTaskFactory)
 
     class Meta:

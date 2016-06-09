@@ -47,6 +47,10 @@ class TestBackLogHours(TestCase):
         date_breakdown = get_task_breakdown(self.group, start_date, end_date)
         self.assert_empty_breakdown(date_breakdown)
 
+    def test_breakdown_counts_task(self):
+        task = self.create_historical_task(datetime.datetime(2015, 01, 01))
+        date_breakdown = get_task_breakdown(self.group, datetime.datetime(2015, 01, 01, tzinfo=pytz.utc), datetime.datetime(2015, 01, 01, tzinfo=pytz.utc))
+
     ###############################################################################################
     # Helpers
     ###############################################################################################
@@ -58,9 +62,17 @@ class TestBackLogHours(TestCase):
                     continue
                 self.assertEqual(value, 0)
 
-    def create_historical_task(self, completed_time):
+    def create_historical_task(self, record_created=None, completion_time=10):
+        record_created = record_created or datetime.datetime.now()
+        record_created.replace(tzinfo=pytz.utc)
+
         task = HistoricalJobTaskFactory.create()
-        task.completed_time = completed_time.replace(tzinfo=pytz.utc)
-        task.instance.group = self.group
+        task.product_task.completion_time = completion_time
+        task.history_date = record_created
+        task.job.group = self.group
         task.save()
+        task.instance.save()
+        task.product_task.save()
+        task.job.save()
+        return task
 
