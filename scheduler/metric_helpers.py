@@ -35,8 +35,8 @@ def get_task_breakdown(primary_group, start_date, end_date):
     ).exclude(completed_time__lt=start_date, completed_time__gt=end_date).order_by('-completed_time')
 
     for date in utils.daterange(start_date, end_date):
-        time_string = datetime.strftime(date, '%Y-%m-%d')
-        date_dict = {'date': time_string, 'tasks': defaultdict(lambda: 0)}
+        date_string = datetime.strftime(date, '%Y-%m-%d')
+        date_dict = build_default_dict_for_date(date_string)
         for r in records:
             # get most recent record for date in question
             try:
@@ -44,6 +44,13 @@ def get_task_breakdown(primary_group, start_date, end_date):
             except IndexError:  # if the task didn't exist on this date (and therefore has no records)
                 continue
             if record['completed_time__max'] is None:  # if the task was incomplete at this point
-                date_dict['tasks'][Task.get_level_text(record['product_task__task__expertise_level'])] += record['product_task__completion_time']
+                date_dict[Task.get_level_text(record['product_task__task__expertise_level'])] += record['product_task__completion_time']
         date_list.append(date_dict)
     return date_list
+
+
+def build_default_dict_for_date(date_string):
+    default_breakdown = {'date': date_string}
+    for expertise_level in Task.EXPERTISE_CHOICES:
+        default_breakdown[expertise_level[1]] = 0
+    return default_breakdown
