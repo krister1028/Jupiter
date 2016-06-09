@@ -2,7 +2,7 @@ import pytz
 from django.test import TestCase
 import datetime
 from dateutil.parser import parse
-from factories import JobFactory, GroupFactory, HistoricalJobTaskFactory
+from factories import JobFactory, GroupFactory, HistoricalJobTaskFactory, UserFactory
 from scheduler.metric_helpers import get_default_start_end_dates, get_task_breakdown
 from scheduler.models import Task, JobTask
 
@@ -88,6 +88,16 @@ class TestBackLogHours(TestCase):
         start_date = datetime.datetime(2015, 01, 01, tzinfo=pytz.utc)
         end_date = datetime.datetime(2015, 01, 02, tzinfo=pytz.utc)
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
+
+        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 1)
+        self.assertTrue(date_breakdown[1][Task.get_level_text(Task.LOW)] == 1)
+
+    def test_complete_clears(self):
+        start_date = datetime.datetime(2015, 01, 01, tzinfo=pytz.utc)
+        end_date = datetime.datetime(2015, 01, 02, tzinfo=pytz.utc)
+        task = self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
+        task.completed_by = UserFactory.create()
 
         date_breakdown = get_task_breakdown(self.group, start_date, end_date)
         self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 1)

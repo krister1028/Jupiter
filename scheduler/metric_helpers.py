@@ -32,9 +32,9 @@ def get_task_breakdown(primary_group, start_date, end_date):
         date_dict = build_default_dict_for_date(date_string)
         for job in jobs:
             # get most recent record for date in question
-            for task in job.jobtask_set.all():
+            for job_task in job.jobtask_set.all():
                 try:
-                    record = filter(lambda x: x.id == task.id and x.history_date <= date, records)[0]
+                    record = filter(lambda x: x.id == job_task.id and x.history_date.date() <= date.date(), records)[0]
                 except IndexError:  # if the task didn't exist on this date (and therefore has no records)
                     continue
                 if record.completed_by is None:  # if the task was incomplete at this point

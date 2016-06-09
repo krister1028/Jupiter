@@ -2,7 +2,7 @@ import datetime
 import factory
 import factory.fuzzy as fuzzy
 import pytz
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 
 from scheduler.models import Job, JobTask, Product, ProductTask, JobStatus, Task, HistoricalJobTask
 
@@ -15,6 +15,11 @@ class GroupFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = Group
+
+
+class UserFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = User
 
 
 class TaskFactory(factory.DjangoModelFactory):
@@ -73,7 +78,6 @@ class HistoricalJobTaskFactory(factory.DjangoModelFactory):
     history_date = fuzzy.FuzzyDateTime(datetime.datetime.now(pytz.utc))
     product_task = factory.SubFactory(ProductTaskFactory)
     job = factory.SubFactory(JobFactory)
-    instance = factory.SubFactory(JobTaskFactory)
 
     class Meta:
         model = HistoricalJobTask
