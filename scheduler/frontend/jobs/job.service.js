@@ -11,7 +11,6 @@ export default class jobService extends baseResourceClass {
     this._jobStatusService = jobStatusService;
     this._jobTaskService = jobTaskService;
     this._utilityService = utilityService;
-    this.relatedServices = [jobTaskService, jobTypeService, jobStatusService];
   }
 
   getProgress(job) {
@@ -24,7 +23,10 @@ export default class jobService extends baseResourceClass {
         completedTime += t.completion_time;
       }
     });
-    return completedTime / totalTime;
+    if (totalTime) {
+      return completedTime / totalTime;
+    }
+    return 0;
   }
 
   getJobProduct(job) {
@@ -96,19 +98,40 @@ export default class jobService extends baseResourceClass {
     });
   }
 
-  transformItem(j) {
-    j.jobTasks = this._getJobTasks(j);
-    j.productItem = this._productService.itemList.filter(product => product.id === j.product)[0];
-    j.jobStatus = this._jobStatusService.itemList.filter(status => status.id === j.status)[0];
-    j.jobType = this._jobTypeService.itemList.filter(type => type.id === j.type)[0];
-    j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
-    j.created = new Date(j.created);
-    return j;
+  transformItem(job) {
+    this._getJobTasks(job);
+    this._getJobStatus(job);
+    this._getProductItem(job);
+    this._getJobType(job);
+    job.completed_timestamp = job.completed_timestamp ? new Date(job.completed_timestamp) : null;
+    job.created = new Date(job.created);
+    return job;
   };
 
   _getJobTasks(job) {
-    return this._jobTaskService.itemList.filter(jobTask => {
-      return (job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job);
+    job.jobTasks = [];
+    return this._jobTaskService.getList().then(jobTasks => {
+      job.jobTasks.push(...jobTasks.filter(jobTask => {
+        return (job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job);
+      }));
+    });
+  }
+
+  _getJobStatus(job) {
+    return this._jobStatusService.getList().then(statusList => {
+      job.jobStatus = statusList.filter(status => status.id === job.status)[0];
+    });
+  }
+
+  _getProductItem(job) {
+    return this._productService.getList().then(productList => {
+      job.productItem = productList.filter(product => product.id === job.product)[0];
+    });
+  }
+
+  _getJobType(job) {
+    return this._jobTypeService.getList().then(jobTypeList => {
+      job.jobType = jobTypeList.filter(type => type.id === job.type)[0];
     });
   }
 }

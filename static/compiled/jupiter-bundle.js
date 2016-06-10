@@ -72847,6 +72847,8 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
@@ -72871,7 +72873,6 @@
 	    this._jobStatusService = jobStatusService;
 	    this._jobTaskService = jobTaskService;
 	    this._utilityService = utilityService;
-	    this.relatedServices = [jobTaskService, jobTypeService, jobStatusService];
 	  }
 	
 	  _createClass(jobService, [{
@@ -72888,7 +72889,10 @@
 	          completedTime += t.completion_time;
 	        }
 	      });
-	      return completedTime / totalTime;
+	      if (totalTime) {
+	        return completedTime / totalTime;
+	      }
+	      return 0;
 	    }
 	  }, {
 	    key: 'getJobProduct',
@@ -72992,26 +72996,52 @@
 	    }
 	  }, {
 	    key: 'transformItem',
-	    value: function transformItem(j) {
-	      j.jobTasks = this._getJobTasks(j);
-	      j.productItem = this._productService.itemList.filter(function (product) {
-	        return product.id === j.product;
-	      })[0];
-	      j.jobStatus = this._jobStatusService.itemList.filter(function (status) {
-	        return status.id === j.status;
-	      })[0];
-	      j.jobType = this._jobTypeService.itemList.filter(function (type) {
-	        return type.id === j.type;
-	      })[0];
-	      j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
-	      j.created = new Date(j.created);
-	      return j;
+	    value: function transformItem(job) {
+	      this._getJobTasks(job);
+	      this._getJobStatus(job);
+	      this._getProductItem(job);
+	      this._getJobType(job);
+	      job.completed_timestamp = job.completed_timestamp ? new Date(job.completed_timestamp) : null;
+	      job.created = new Date(job.created);
+	      return job;
 	    }
 	  }, {
 	    key: '_getJobTasks',
 	    value: function _getJobTasks(job) {
-	      return this._jobTaskService.itemList.filter(function (jobTask) {
-	        return job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job;
+	      job.jobTasks = [];
+	      return this._jobTaskService.getList().then(function (jobTasks) {
+	        var _job$jobTasks;
+	
+	        (_job$jobTasks = job.jobTasks).push.apply(_job$jobTasks, _toConsumableArray(jobTasks.filter(function (jobTask) {
+	          return job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job;
+	        })));
+	      });
+	    }
+	  }, {
+	    key: '_getJobStatus',
+	    value: function _getJobStatus(job) {
+	      return this._jobStatusService.getList().then(function (statusList) {
+	        job.jobStatus = statusList.filter(function (status) {
+	          return status.id === job.status;
+	        })[0];
+	      });
+	    }
+	  }, {
+	    key: '_getProductItem',
+	    value: function _getProductItem(job) {
+	      return this._productService.getList().then(function (productList) {
+	        job.productItem = productList.filter(function (product) {
+	          return product.id === job.product;
+	        })[0];
+	      });
+	    }
+	  }, {
+	    key: '_getJobType',
+	    value: function _getJobType(job) {
+	      return this._jobTypeService.getList().then(function (jobTypeList) {
+	        job.jobType = jobTypeList.filter(function (type) {
+	          return type.id === job.type;
+	        })[0];
 	      });
 	    }
 	  }]);
