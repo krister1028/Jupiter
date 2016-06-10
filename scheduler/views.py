@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
-from scheduler.metric_helpers import get_default_start_end_dates, get_task_breakdown
+from scheduler.metric_helpers import get_default_start_end_dates, get_task_backlog
 
 from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
@@ -77,7 +77,7 @@ class CustomLoginView(LoginView):
 
 def backlog_hours(request):
     primary_group = request.user.groups.all()[0]
-    start_date, end_date = get_default_start_end_dates(primary_group, request.GET.get('start_date'), request.GET.get('end_date'))
+    start_date, end_date = get_default_start_end_dates(request.user, request.GET.get('start_date'), request.GET.get('end_date'))
 
-    date_list = get_task_breakdown(primary_group, start_date, end_date)
+    date_list = get_task_backlog(primary_group, start_date, end_date)
     return HttpResponse(json.dumps(date_list))

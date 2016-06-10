@@ -44,6 +44,8 @@ class Task(models.Model):
     max_completion_time = models.IntegerField()
     cost = models.IntegerField()
 
+    history = HistoricalRecords()
+
     def __unicode__(self):
         return self.description
 
@@ -82,6 +84,7 @@ class ProductTask(models.Model):
     product = models.ForeignKey(Product)
     task = models.ForeignKey(Task)
     completion_time = models.IntegerField(null=True, blank=True)  # in minutes
+    history = HistoricalRecords()
 
     @property
     def description(self):

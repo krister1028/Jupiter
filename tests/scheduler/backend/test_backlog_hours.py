@@ -3,7 +3,7 @@ from django.test import TestCase
 import datetime
 from dateutil.parser import parse
 from factories import JobFactory, GroupFactory, HistoricalJobTaskFactory, UserFactory
-from scheduler.metric_helpers import get_default_start_end_dates, get_task_breakdown
+from scheduler.metric_helpers import get_default_start_end_dates, get_task_backlog
 from scheduler.models import Task, JobTask
 
 
@@ -37,7 +37,7 @@ class TestBackLogHours(TestCase):
         end_date = datetime.datetime(2015, 01, 02)
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 12, 31))
 
-        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        date_breakdown = get_task_backlog(self.group, start_date, end_date)
         self.assert_empty_breakdown(date_breakdown)
 
     def test_task_breakdown_ignores_task_after_date_range(self):
@@ -45,7 +45,7 @@ class TestBackLogHours(TestCase):
         end_date = datetime.datetime(2015, 01, 02)
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 03))
 
-        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        date_breakdown = get_task_backlog(self.group, start_date, end_date)
         self.assert_empty_breakdown(date_breakdown)
 
     def test_breakdown_counts_task(self):
@@ -53,7 +53,7 @@ class TestBackLogHours(TestCase):
         end_date = datetime.datetime(2015, 01, 01, tzinfo=pytz.utc)
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
 
-        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        date_breakdown = get_task_backlog(self.group, start_date, end_date)
         self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 1)
 
     def test_breakdown_sums_task_type(self):
@@ -62,7 +62,7 @@ class TestBackLogHours(TestCase):
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
 
-        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        date_breakdown = get_task_backlog(self.group, start_date, end_date)
         self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 2)
 
     def test_breakdown_persists_for_future_dates(self):
@@ -70,7 +70,7 @@ class TestBackLogHours(TestCase):
         end_date = datetime.datetime(2015, 01, 02, tzinfo=pytz.utc)
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
 
-        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        date_breakdown = get_task_backlog(self.group, start_date, end_date)
         self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 1)
         self.assertTrue(date_breakdown[1][Task.get_level_text(Task.LOW)] == 1)
 
@@ -80,7 +80,7 @@ class TestBackLogHours(TestCase):
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 02))
 
-        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        date_breakdown = get_task_backlog(self.group, start_date, end_date)
         self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 1)
         self.assertTrue(date_breakdown[1][Task.get_level_text(Task.LOW)] == 2)
 
@@ -89,7 +89,7 @@ class TestBackLogHours(TestCase):
         end_date = datetime.datetime(2015, 01, 02, tzinfo=pytz.utc)
         self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
 
-        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        date_breakdown = get_task_backlog(self.group, start_date, end_date)
         self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 1)
         self.assertTrue(date_breakdown[1][Task.get_level_text(Task.LOW)] == 1)
 
@@ -99,7 +99,7 @@ class TestBackLogHours(TestCase):
         task = self.create_historical_task(Task.LOW, datetime.datetime(2015, 01, 01))
         task.completed_by = UserFactory.create()
 
-        date_breakdown = get_task_breakdown(self.group, start_date, end_date)
+        date_breakdown = get_task_backlog(self.group, start_date, end_date)
         self.assertTrue(date_breakdown[0][Task.get_level_text(Task.LOW)] == 1)
         self.assertTrue(date_breakdown[1][Task.get_level_text(Task.LOW)] == 1)
 
