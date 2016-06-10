@@ -81,10 +81,11 @@ export default class baseResourceClass {
   }
 
   post(item) {
-    this.itemList.push(item);
     return this._$http.post(this.resourceUrl, item).then(
       response => {
-        this._postToPristineList(this.transformItem(item));
+        const newJob = this.transformItem(response.data);
+        this._postToPristineList(newJob);
+        this.itemList.push(newJob);
         return response.data;
       },
       response => {
@@ -97,7 +98,7 @@ export default class baseResourceClass {
   put(item) {
     return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(
       response => {
-        this._putToPristineList(this.transformItem(item));
+        this._putToPristineList(this.transformItem(response.data));
         return response.data;
       },
       response => {
