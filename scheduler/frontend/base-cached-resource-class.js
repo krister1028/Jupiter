@@ -16,9 +16,6 @@ export default class baseResourceClass {
     this._pristineItemList = [];  // private cache, not exposed outside of service
 
     this.itemList = [];
-
-    // if populated in child class, included services getList methods will be appended to main service's getList
-    this.relatedServices = [];
     // must be overwritten in child class
     this.resourceUrl = null;
     // may be overwritten in child class as needed
@@ -35,12 +32,10 @@ export default class baseResourceClass {
     if (!this._initialized) { // if successful get request has not yet resolved
       this._$http.get(this.resourceUrl).then(
         response => {
-          return this._$q.all(this._getRelatedLists()).then(() => {
-            this._initialized = true;
-            this._pristineItemList = [...this.transformResponse(response)];
-            this._makeItemListPristine();
-            deferred.resolve(this.itemList);
-          });
+          this._initialized = true;
+          this._pristineItemList = [...this.transformResponse(response)];
+          this._makeItemListPristine();
+          deferred.resolve(this.itemList);
         }
       );
     } else { // if items are in memory already, resolve without making request
@@ -167,11 +162,5 @@ export default class baseResourceClass {
 
   _getPristineIndex(id) {
     return this._pristineItemList.findIndex(item => item[this.itemIdField] === id);
-  }
-
-  _getRelatedLists() {
-    const deferredList = [];
-    this.relatedServices.forEach(service => deferredList.push(service.getList()));
-    return deferredList;
   }
 }
