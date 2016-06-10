@@ -11,7 +11,7 @@ def get_default_start_end_dates(group, start_date_string=None, end_date_string=N
     if start_date_string:
         start_date = utils.parse_date_string(start_date_string)
     else:
-        start_date = Job.objects.filter(group=group).aggregate(Min('created'))['created__min'] or datetime.now(pytz.utc)
+        start_date = Job.history.filter(group=group).aggregate(Min('created'))['created__min'] or datetime.now(pytz.utc)
 
     if end_date_string:
         end_date = utils.parse_date_string(end_date_string)

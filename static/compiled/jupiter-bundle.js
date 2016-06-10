@@ -74226,9 +74226,6 @@
 	    this._pristineItemList = []; // private cache, not exposed outside of service
 	
 	    this.itemList = [];
-	
-	    // if populated in child class, included services getList methods will be appended to main service's getList
-	    this.relatedServices = [];
 	    // must be overwritten in child class
 	    this.resourceUrl = null;
 	    // may be overwritten in child class as needed
@@ -74249,12 +74246,10 @@
 	      if (!this._initialized) {
 	        // if successful get request has not yet resolved
 	        this._$http.get(this.resourceUrl).then(function (response) {
-	          return _this._$q.all(_this._getRelatedLists()).then(function () {
-	            _this._initialized = true;
-	            _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
-	            _this._makeItemListPristine();
-	            deferred.resolve(_this.itemList);
-	          });
+	          _this._initialized = true;
+	          _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
+	          _this._makeItemListPristine();
+	          deferred.resolve(_this.itemList);
 	        });
 	      } else {
 	        // if items are in memory already, resolve without making request
@@ -74414,15 +74409,6 @@
 	      return this._pristineItemList.findIndex(function (item) {
 	        return item[_this8.itemIdField] === id;
 	      });
-	    }
-	  }, {
-	    key: '_getRelatedLists',
-	    value: function _getRelatedLists() {
-	      var deferredList = [];
-	      this.relatedServices.forEach(function (service) {
-	        return deferredList.push(service.getList());
-	      });
-	      return deferredList;
 	    }
 	  }]);
 	
