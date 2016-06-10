@@ -23,12 +23,9 @@ export default class productService extends baseResourceClass {
     return this.itemList.map(product => product.description);
   }
 
-  transformResponse(response) {
-    const products = response.data;
-    products.forEach(p => {
-      p.productTasks = this.getProductTasks(p);
-    });
-    return products;
+  transformItem(p) {
+    p.productTasks = this.getProductTasks(p);
+    return p;
   }
 
   getProductTasks(product) {

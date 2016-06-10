@@ -96,18 +96,15 @@ export default class jobService extends baseResourceClass {
     });
   }
 
-  transformResponse(response) {
-    const jobs = response.data;
-    jobs.forEach(j => {
-      j.jobTasks = this._getJobTasks(j);
-      j.productItem = this._productService.itemList.filter(product => product.id === j.product)[0];
-      j.jobStatus = this._jobStatusService.itemList.filter(status => status.id === j.status)[0];
-      j.jobType = this._jobTypeService.itemList.filter(type => type.id === j.type)[0];
-      j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
-      j.created = new Date(j.created);
-    });
-    return jobs;
-  }
+  transformItem(j) {
+    j.jobTasks = this._getJobTasks(j);
+    j.productItem = this._productService.itemList.filter(product => product.id === j.product)[0];
+    j.jobStatus = this._jobStatusService.itemList.filter(status => status.id === j.status)[0];
+    j.jobType = this._jobTypeService.itemList.filter(type => type.id === j.type)[0];
+    j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
+    j.created = new Date(j.created);
+    return j;
+  };
 
   _getJobTasks(job) {
     return this._jobTaskService.itemList.filter(jobTask => {

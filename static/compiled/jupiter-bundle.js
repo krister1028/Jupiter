@@ -72810,15 +72810,10 @@
 	      });
 	    }
 	  }, {
-	    key: 'transformResponse',
-	    value: function transformResponse(response) {
-	      var _this3 = this;
-	
-	      var products = response.data;
-	      products.forEach(function (p) {
-	        p.productTasks = _this3.getProductTasks(p);
-	      });
-	      return products;
+	    key: 'transformItem',
+	    value: function transformItem(p) {
+	      p.productTasks = this.getProductTasks(p);
+	      return p;
 	    }
 	  }, {
 	    key: 'getProductTasks',
@@ -72959,7 +72954,7 @@
 	
 	      this.itemList.push(item);
 	      return this._$http.post(this.resourceUrl, item).then(function (response) {
-	        _this5._postToPristineList(item);
+	        _this5._postToPristineList(_this5.transformItem(item));
 	        return response.data;
 	      }, function (response) {
 	        _this5.itemList.pop();
@@ -72972,7 +72967,7 @@
 	      var _this6 = this;
 	
 	      return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(function (response) {
-	        _this6._putToPristineList(item);
+	        _this6._putToPristineList(_this6.transformItem(item));
 	        return response.data;
 	      }, function (response) {
 	        _this6._makeItemListPristine();
@@ -72987,8 +72982,19 @@
 	  }, {
 	    key: 'transformResponse',
 	    value: function transformResponse(response) {
+	      var _this7 = this;
+	
 	      // can be overwritten in child class if special response processing is needed
-	      return response.data;
+	      var data = response.data;
+	      data.forEach(function (d) {
+	        return _this7.transformItem(d);
+	      });
+	      return data;
+	    }
+	  }, {
+	    key: 'transformItem',
+	    value: function transformItem(item) {
+	      return item;
 	    }
 	
 	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73047,10 +73053,10 @@
 	  }, {
 	    key: '_getPristineIndex',
 	    value: function _getPristineIndex(id) {
-	      var _this7 = this;
+	      var _this8 = this;
 	
 	      return this._pristineItemList.findIndex(function (item) {
-	        return item[_this7.itemIdField] === id;
+	        return item[_this8.itemIdField] === id;
 	      });
 	    }
 	  }, {
@@ -73230,26 +73236,21 @@
 	      });
 	    }
 	  }, {
-	    key: 'transformResponse',
-	    value: function transformResponse(response) {
-	      var _this8 = this;
-	
-	      var jobs = response.data;
-	      jobs.forEach(function (j) {
-	        j.jobTasks = _this8._getJobTasks(j);
-	        j.productItem = _this8._productService.itemList.filter(function (product) {
-	          return product.id === j.product;
-	        })[0];
-	        j.jobStatus = _this8._jobStatusService.itemList.filter(function (status) {
-	          return status.id === j.status;
-	        })[0];
-	        j.jobType = _this8._jobTypeService.itemList.filter(function (type) {
-	          return type.id === j.type;
-	        })[0];
-	        j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
-	        j.created = new Date(j.created);
-	      });
-	      return jobs;
+	    key: 'transformItem',
+	    value: function transformItem(j) {
+	      j.jobTasks = this._getJobTasks(j);
+	      j.productItem = this._productService.itemList.filter(function (product) {
+	        return product.id === j.product;
+	      })[0];
+	      j.jobStatus = this._jobStatusService.itemList.filter(function (status) {
+	        return status.id === j.status;
+	      })[0];
+	      j.jobType = this._jobTypeService.itemList.filter(function (type) {
+	        return type.id === j.type;
+	      })[0];
+	      j.completed_timestamp = j.completed_timestamp ? new Date(j.completed_timestamp) : null;
+	      j.created = new Date(j.created);
+	      return j;
 	    }
 	  }, {
 	    key: '_getJobTasks',
@@ -74430,4 +74431,4 @@
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=jupiter-bundle.js.mapupiter-bundle.js.map
+//# sourceMappingURL=jupiter-bundle.js.map

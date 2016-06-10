@@ -84,7 +84,7 @@ export default class baseResourceClass {
     this.itemList.push(item);
     return this._$http.post(this.resourceUrl, item).then(
       response => {
-        this._postToPristineList(item);
+        this._postToPristineList(this.transformItem(item));
         return response.data;
       },
       response => {
@@ -97,7 +97,7 @@ export default class baseResourceClass {
   put(item) {
     return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(
       response => {
-        this._putToPristineList(item);
+        this._putToPristineList(this.transformItem(item));
         return response.data;
       },
       response => {
@@ -112,7 +112,13 @@ export default class baseResourceClass {
   ///////////////////////////////////////////////////////////////////////////////////////////////////// */
 
   transformResponse(response) {  // can be overwritten in child class if special response processing is needed
-    return response.data;
+    const data = response.data;
+    data.forEach(d => this.transformItem(d));
+    return data;
+  }
+
+  transformItem(item) {
+    return item;
   }
 
   /* /////////////////////////////////////////////////////////////////////////////////////////////////////
