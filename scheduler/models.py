@@ -142,7 +142,7 @@ class Job(models.Model):
         if not self.product_tasks.all():
             for product_task in ProductTask.objects.filter(product=self.product):
                 # intentionally not doing a bulk create here to make sure and call JobTask.save() and log a history
-                JobTask(job=self, product_task=product_task).save()
+                JobTask(job=self, product_task=product_task, group=self.group).save()
 
 
 class JobTask(models.Model):
@@ -154,7 +154,7 @@ class JobTask(models.Model):
         (IN_PROGRESS, 'In Progress'),
         (COMPLETE, 'Complete')
     )
-
+    group = models.ForeignKey(Group)
     job = models.ForeignKey(Job)
     product_task = models.ForeignKey(ProductTask)
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
