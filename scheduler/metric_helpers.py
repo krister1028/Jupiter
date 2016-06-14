@@ -51,7 +51,7 @@ class BackLogMetrics(object):
         record = self._get_empty_backlog_record(time)
         job_tasks = self._get_records_as_of_time(time, self.job_task_records)
         for job_task in job_tasks:
-            if job_task.completed_by is None:
+            if job_task.completed_by is None and job_task.history_type != self.DELETED:
                 product_task = self._get_product_task_as_of(job_task.history_date, job_task.product_task_id)
                 task = self._get_task_as_of(job_task.history_date, product_task.task_id)
                 task_level = Task.get_level_text(task.expertise_level)
@@ -65,7 +65,7 @@ class BackLogMetrics(object):
         return self._get_records_as_of_time(time, self.tasks, lambda x: x.id == task_id)[0]
 
     def _get_records_as_of_time(self, time, records, sub_filter_func=None):
-        records = filter(lambda x: x.history_date <= time and x.history_type != self.DELETED, records)
+        records = filter(lambda x: x.history_date <= time, records)
         if sub_filter_func:
             records = filter(sub_filter_func, records)
         return self._build_unique_records(records)
