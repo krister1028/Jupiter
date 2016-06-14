@@ -1,11 +1,12 @@
-import json
+from dateutil.parser import parse
 
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
-from scheduler.metric_helpers import get_default_start_end_dates, get_task_backlog
+from rest_framework.views import APIView
+
+from scheduler.metric_helpers import BackLogMetrics
 
 from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
@@ -63,7 +64,7 @@ class JobTypeViewSet(viewsets.ModelViewSet, IsolateGroupMixin):
     serializer_class = JobTypeSerializer
 
 
-class JobTaskViewSet(viewsets.ModelViewSet):
+class JobTaskViewSet(viewsets.ModelViewSet, IsolateGroupMixin):
     queryset = JobTask.objects.all()
     serializer_class = JobTaskSerializer
 
@@ -75,9 +76,13 @@ class CustomLoginView(LoginView):
         return Response(self.response_serializer(self.request.user).data)
 
 
-def backlog_hours(request):
-    primary_group = request.user.groups.all()[0]
-    start_date, end_date = get_default_start_end_dates(request.user, request.GET.get('start_date'), request.GET.get('end_date'))
+class BackLogHours(APIView):
 
-    date_list = get_task_backlog(primary_group, start_date, end_date)
-    return HttpResponse(json.dumps(date_list))
+    def get(self, request, *args, **kwargs):
+        primary_group = request.user.groups.all()[0]
+        # start/end dates are required - possible KeyError is ok here
+        start_time = parse(request.query_params['startDate'])
+        end_time = parse(request.query_params['endDate'])
+
+        response = BackLogMetrics(primary_group, start_time, end_time).get_task_backlog()
+        return Response(response)

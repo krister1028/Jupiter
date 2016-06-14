@@ -74,7 +74,7 @@ export default class highchartService {
 
   getTimeLineConfig(configDetail) {
     const config = highchartService._getBaseChartConfig();
-    config.options.chart.type = 'line';
+    config.options.chart.type = 'spline';
     config.title.text = configDetail.title;
     config.xAxis.title.text = 'Date';
     config.yAxis.title.text = configDetail.yAxisLabel;
@@ -132,18 +132,11 @@ export default class highchartService {
     categoryKeys.forEach(categoryName => {
       const series = {name: categoryName, data: []};
       rawData.forEach(point => {
-        series.data.push([highchartService._makeUTCDate(point.date), point[categoryName]]);
+        series.data.push([point.date, point[categoryName]]);
       });
       processedData.push(series);
     });
     return processedData;
-  }
-
-  static _makeUTCDate(dateString) {
-    // expect YYYY-MM-DD
-    const dateVals = dateString.split('-');
-    dateVals[1] = dateVals[1] - 1;  // months are 0 indexed in JS
-    return Date.UTC(...dateVals);
   }
 
 }

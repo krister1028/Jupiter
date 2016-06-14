@@ -45,7 +45,7 @@ export default class MetricsController {
   }
 
   getTaskBackLogData() {
-    this._metricService.getBacklog().then(backlog => {
+    this._metricService.getBacklog(this.taskBacklog.startDate, this.taskBacklog.endDate).then(backlog => {
       this.taskBacklog.series = this._highchartService.getDataForTimeLine(backlog, ['High', 'Medium', 'Low', 'CP']);
     });
   }

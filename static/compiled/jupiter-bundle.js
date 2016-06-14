@@ -106,7 +106,7 @@
 	
 	var _productsAddProductController2 = _interopRequireDefault(_productsAddProductController);
 	
-	var _tasksAddTaskController = __webpack_require__(23);
+	var _tasksAddTaskController = __webpack_require__(22);
 	
 	var _tasksAddTaskController2 = _interopRequireDefault(_tasksAddTaskController);
 	
@@ -72420,6 +72420,68 @@
 
 /***/ },
 /* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseFormClass2 = __webpack_require__(23);
+	
+	var _baseFormClass3 = _interopRequireDefault(_baseFormClass2);
+	
+	var AddTaskController = (function (_baseFormClass) {
+	  _inherits(AddTaskController, _baseFormClass);
+	
+	  /* @ngInject */
+	
+	  function AddTaskController(taskService, $state, $stateParams, $q) {
+	    _classCallCheck(this, AddTaskController);
+	
+	    _get(Object.getPrototypeOf(AddTaskController.prototype), 'constructor', this).call(this, $stateParams, $q);
+	    this.paramIdName = 'taskId';
+	    this.resourceService = taskService;
+	
+	    this._$state = $state;
+	    this.expertiseLevels = [{ value: 1, description: 'Low' }, { value: 2, description: 'Medium' }, { value: 3, description: 'High' }, { value: 4, description: 'CP' }];
+	    this._getFormItem();
+	  }
+	
+	  _createClass(AddTaskController, [{
+	    key: 'publishItem',
+	    value: function publishItem() {
+	      var _this = this;
+	
+	      _get(Object.getPrototypeOf(AddTaskController.prototype), 'publishItem', this).call(this).then(function () {
+	        if (_this.created) {
+	          _this._$state.go('root.addProduct');
+	        } else {
+	          _this._$state.go('root.home');
+	        }
+	      });
+	    }
+	  }]);
+	
+	  return AddTaskController;
+	})(_baseFormClass3['default']);
+	
+	exports['default'] = AddTaskController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 23 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -72492,68 +72554,6 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _baseFormClass2 = __webpack_require__(22);
-	
-	var _baseFormClass3 = _interopRequireDefault(_baseFormClass2);
-	
-	var AddTaskController = (function (_baseFormClass) {
-	  _inherits(AddTaskController, _baseFormClass);
-	
-	  /* @ngInject */
-	
-	  function AddTaskController(taskService, $state, $stateParams, $q) {
-	    _classCallCheck(this, AddTaskController);
-	
-	    _get(Object.getPrototypeOf(AddTaskController.prototype), 'constructor', this).call(this, $stateParams, $q);
-	    this.paramIdName = 'taskId';
-	    this.resourceService = taskService;
-	
-	    this._$state = $state;
-	    this.expertiseLevels = [{ value: 1, description: 'Low' }, { value: 2, description: 'Medium' }, { value: 3, description: 'High' }, { value: 4, description: 'CP' }];
-	    this._getFormItem();
-	  }
-	
-	  _createClass(AddTaskController, [{
-	    key: 'publishItem',
-	    value: function publishItem() {
-	      var _this = this;
-	
-	      _get(Object.getPrototypeOf(AddTaskController.prototype), 'publishItem', this).call(this).then(function () {
-	        if (_this.created) {
-	          _this._$state.go('root.addProduct');
-	        } else {
-	          _this._$state.go('root.home');
-	        }
-	      });
-	    }
-	  }]);
-	
-	  return AddTaskController;
-	})(_baseFormClass3['default']);
-	
-	exports['default'] = AddTaskController;
-	module.exports = exports['default'];
-
-/***/ },
 /* 24 */
 /***/ function(module, exports) {
 
@@ -72614,7 +72614,7 @@
 	    value: function getTaskBackLogData() {
 	      var _this3 = this;
 	
-	      this._metricService.getBacklog().then(function (backlog) {
+	      this._metricService.getBacklog(this.taskBacklog.startDate, this.taskBacklog.endDate).then(function (backlog) {
 	        _this3.taskBacklog.series = _this3._highchartService.getDataForTimeLine(backlog, ['High', 'Medium', 'Low', 'CP']);
 	      });
 	    }
@@ -72764,7 +72764,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(52);
+	var _baseCachedResourceClass = __webpack_require__(28);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -72831,7 +72831,239 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 28 */,
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	This is a base class that can be extended by a child service which represents a RESTful resource.  The primary value
+	here is that the items are cached in memory and managed by the http verb methods below.
+	
+	There are cases (for example when working with data that's paginated on the backend) where the in memory caching
+	provided here is undesirable, so use this class with caution.
+	*/
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _angular = __webpack_require__(3);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	var baseResourceClass = (function () {
+	  /* @ngInject */
+	
+	  function baseResourceClass($http, $q) {
+	    _classCallCheck(this, baseResourceClass);
+	
+	    this._initialized = false;
+	    this._$q = $q;
+	    this._$http = $http;
+	    this._pristineItemList = []; // private cache, not exposed outside of service
+	
+	    this.itemList = [];
+	    // must be overwritten in child class
+	    this.resourceUrl = null;
+	    // may be overwritten in child class as needed
+	    this.itemIdField = 'id';
+	  }
+	
+	  /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	  // HTTP verbs
+	  ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  _createClass(baseResourceClass, [{
+	    key: 'getList',
+	    value: function getList() {
+	      var _this = this;
+	
+	      var deferred = this._$q.defer();
+	
+	      if (!this._initialized) {
+	        // if successful get request has not yet resolved
+	        this._$http.get(this.resourceUrl).then(function (response) {
+	          _this._initialized = true;
+	          _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
+	          _this._makeItemListPristine();
+	          deferred.resolve(_this.itemList);
+	        });
+	      } else {
+	        // if items are in memory already, resolve without making request
+	        this._makeItemListPristine();
+	        deferred.resolve(this.itemList);
+	      }
+	      return deferred.promise;
+	    }
+	  }, {
+	    key: 'get',
+	    value: function get(queryParams) {
+	      var _this2 = this;
+	
+	      return this.getList().then(function () {
+	        return _this2.itemList.filter(function (item) {
+	          var isMatch = true;
+	          Object.keys(queryParams).forEach(function (key) {
+	            if (item[key] !== queryParams[key]) {
+	              isMatch = false;
+	            }
+	          });
+	          return isMatch;
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'deleteList',
+	    value: function deleteList(itemList) {
+	      var _this3 = this;
+	
+	      var promiseList = [];
+	      itemList.forEach(function (item) {
+	        promiseList.push(_this3['delete'](item));
+	      });
+	      return this._$q.all(promiseList);
+	    }
+	  }, {
+	    key: 'delete',
+	    value: function _delete(item) {
+	      var _this4 = this;
+	
+	      return this._$http['delete'](this._itemSpecificUrl(item[this.itemIdField])).then(function () {
+	        var index = _this4.itemList.indexOf(item);
+	        _this4._deleteFromPristineList(item);
+	        _this4.itemList.splice(index, 1); // remove item from cached list
+	      });
+	    }
+	  }, {
+	    key: 'post',
+	    value: function post(item) {
+	      var _this5 = this;
+	
+	      return this._$http.post(this.resourceUrl, item).then(function (response) {
+	        var newJob = _this5.transformItem(response.data);
+	        _this5._postToPristineList(newJob);
+	        _this5.itemList.push(newJob);
+	        return response.data;
+	      }, function (response) {
+	        _this5.itemList.pop();
+	        return _this5._$q.reject(response.data);
+	      });
+	    }
+	  }, {
+	    key: 'put',
+	    value: function put(item) {
+	      var _this6 = this;
+	
+	      return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(function (response) {
+	        _this6._putToPristineList(_this6.transformItem(response.data));
+	        return response.data;
+	      }, function (response) {
+	        _this6._makeItemListPristine();
+	        return _this6._$q.reject(response.data);
+	      });
+	    }
+	
+	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // Base methods (to be overwritten as needed in child class)
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  }, {
+	    key: 'transformResponse',
+	    value: function transformResponse(response) {
+	      var _this7 = this;
+	
+	      // can be overwritten in child class if special response processing is needed
+	      var data = response.data;
+	      data.forEach(function (d) {
+	        return _this7.transformItem(d);
+	      });
+	      return data;
+	    }
+	  }, {
+	    key: 'transformItem',
+	    value: function transformItem(item) {
+	      return item;
+	    }
+	
+	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // Public Utility Methods
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  }, {
+	    key: 'refreshCache',
+	    value: function refreshCache() {
+	      this._initialized = false;
+	      return this.getList();
+	    }
+	
+	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // Private utility methods
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
+	
+	  }, {
+	    key: '_itemSpecificUrl',
+	    value: function _itemSpecificUrl(itemId) {
+	      // just appends the item id to the base resource url if it exists
+	      if (itemId === undefined) {
+	        return this.resourceUrl;
+	      }
+	      return '' + this.resourceUrl + itemId + '/';
+	    }
+	  }, {
+	    key: '_makeItemListPristine',
+	    value: function _makeItemListPristine() {
+	      var _itemList;
+	
+	      this.itemList.length = 0;
+	      (_itemList = this.itemList).push.apply(_itemList, _toConsumableArray(_angular2['default'].copy(this._pristineItemList)));
+	    }
+	  }, {
+	    key: '_putToPristineList',
+	    value: function _putToPristineList(item) {
+	      var index = this._getPristineIndex(item[this.itemIdField]);
+	      if (index > -1) {
+	        this._pristineItemList[index] = item;
+	      }
+	    }
+	  }, {
+	    key: '_postToPristineList',
+	    value: function _postToPristineList(item) {
+	      this._pristineItemList.push(item);
+	    }
+	  }, {
+	    key: '_deleteFromPristineList',
+	    value: function _deleteFromPristineList(item) {
+	      var index = this._getPristineIndex(item[this.itemIdField]);
+	      if (index > -1) {
+	        this._pristineItemList.splice(index, 1);
+	      }
+	    }
+	  }, {
+	    key: '_getPristineIndex',
+	    value: function _getPristineIndex(id) {
+	      var _this8 = this;
+	
+	      return this._pristineItemList.findIndex(function (item) {
+	        return item[_this8.itemIdField] === id;
+	      });
+	    }
+	  }]);
+	
+	  return baseResourceClass;
+	})();
+	
+	exports['default'] = baseResourceClass;
+	module.exports = exports['default'];
+
+/***/ },
 /* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -72853,7 +73085,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(52);
+	var _baseCachedResourceClass = __webpack_require__(28);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73070,7 +73302,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(52);
+	var _baseCachedResourceClass = __webpack_require__(28);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73112,7 +73344,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(52);
+	var _baseCachedResourceClass = __webpack_require__(28);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73172,7 +73404,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(52);
+	var _baseCachedResourceClass = __webpack_require__(28);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73255,7 +73487,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(52);
+	var _baseCachedResourceClass = __webpack_require__(28);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73306,7 +73538,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(52);
+	var _baseCachedResourceClass = __webpack_require__(28);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73359,7 +73591,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(52);
+	var _baseCachedResourceClass = __webpack_require__(28);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73462,8 +73694,6 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var highchartService = (function () {
@@ -73539,7 +73769,7 @@
 	    key: 'getTimeLineConfig',
 	    value: function getTimeLineConfig(configDetail) {
 	      var config = highchartService._getBaseChartConfig();
-	      config.options.chart.type = 'line';
+	      config.options.chart.type = 'spline';
 	      config.title.text = configDetail.title;
 	      config.xAxis.title.text = 'Date';
 	      config.yAxis.title.text = configDetail.yAxisLabel;
@@ -73602,7 +73832,7 @@
 	      categoryKeys.forEach(function (categoryName) {
 	        var series = { name: categoryName, data: [] };
 	        rawData.forEach(function (point) {
-	          series.data.push([highchartService._makeUTCDate(point.date), point[categoryName]]);
+	          series.data.push([point.date, point[categoryName]]);
 	        });
 	        processedData.push(series);
 	      });
@@ -73667,14 +73897,6 @@
 	      };
 	      return chartConfig;
 	    }
-	  }, {
-	    key: '_makeUTCDate',
-	    value: function _makeUTCDate(dateString) {
-	      // expect YYYY-MM-DD
-	      var dateVals = dateString.split('-');
-	      dateVals[1] = dateVals[1] - 1; // months are 0 indexed in JS
-	      return Date.UTC.apply(Date, _toConsumableArray(dateVals));
-	    }
 	  }]);
 	
 	  return highchartService;
@@ -73707,9 +73929,13 @@
 	
 	  _createClass(metricsService, [{
 	    key: 'getBacklog',
-	    value: function getBacklog() {
-	      return this._$http.get(this._backLogUrl).then(function (response) {
-	        return response.data;
+	    value: function getBacklog(startDate, endDate) {
+	      return this._$http.get(this._backLogUrl, { params: { startDate: startDate, endDate: endDate } }).then(function (response) {
+	        var data = response.data;
+	        data.forEach(function (point) {
+	          return point.date = new Date(point.date);
+	        });
+	        return data;
 	      });
 	    }
 	  }]);
@@ -74213,240 +74439,6 @@
 	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart config=\"vm.jobsByProduct\" refresh-data=\"vm.getJobsByProductData()\"> </date-chart> <date-chart config=\"vm.jobsByType\" refresh-data=\"vm.getJobsByTypeData()\"> </date-chart> <date-chart config=\"vm.taskBacklog\" refresh-data=\"vm.getTaskBackLogData()\"> </date-chart> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
-
-/***/ },
-/* 51 */,
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	This is a base class that can be extended by a child service which represents a RESTful resource.  The primary value
-	here is that the items are cached in memory and managed by the http verb methods below.
-	
-	There are cases (for example when working with data that's paginated on the backend) where the in memory caching
-	provided here is undesirable, so use this class with caution.
-	*/
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var _angular = __webpack_require__(3);
-	
-	var _angular2 = _interopRequireDefault(_angular);
-	
-	var baseResourceClass = (function () {
-	  /* @ngInject */
-	
-	  function baseResourceClass($http, $q) {
-	    _classCallCheck(this, baseResourceClass);
-	
-	    this._initialized = false;
-	    this._$q = $q;
-	    this._$http = $http;
-	    this._pristineItemList = []; // private cache, not exposed outside of service
-	
-	    this.itemList = [];
-	    // must be overwritten in child class
-	    this.resourceUrl = null;
-	    // may be overwritten in child class as needed
-	    this.itemIdField = 'id';
-	  }
-	
-	  /* /////////////////////////////////////////////////////////////////////////////////////////////////////
-	  // HTTP verbs
-	  ///////////////////////////////////////////////////////////////////////////////////////////////////// */
-	
-	  _createClass(baseResourceClass, [{
-	    key: 'getList',
-	    value: function getList() {
-	      var _this = this;
-	
-	      var deferred = this._$q.defer();
-	
-	      if (!this._initialized) {
-	        // if successful get request has not yet resolved
-	        this._$http.get(this.resourceUrl).then(function (response) {
-	          _this._initialized = true;
-	          _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
-	          _this._makeItemListPristine();
-	          deferred.resolve(_this.itemList);
-	        });
-	      } else {
-	        // if items are in memory already, resolve without making request
-	        this._makeItemListPristine();
-	        deferred.resolve(this.itemList);
-	      }
-	      return deferred.promise;
-	    }
-	  }, {
-	    key: 'get',
-	    value: function get(queryParams) {
-	      var _this2 = this;
-	
-	      return this.getList().then(function () {
-	        return _this2.itemList.filter(function (item) {
-	          var isMatch = true;
-	          Object.keys(queryParams).forEach(function (key) {
-	            if (item[key] !== queryParams[key]) {
-	              isMatch = false;
-	            }
-	          });
-	          return isMatch;
-	        });
-	      });
-	    }
-	  }, {
-	    key: 'deleteList',
-	    value: function deleteList(itemList) {
-	      var _this3 = this;
-	
-	      var promiseList = [];
-	      itemList.forEach(function (item) {
-	        promiseList.push(_this3['delete'](item));
-	      });
-	      return this._$q.all(promiseList);
-	    }
-	  }, {
-	    key: 'delete',
-	    value: function _delete(item) {
-	      var _this4 = this;
-	
-	      return this._$http['delete'](this._itemSpecificUrl(item[this.itemIdField])).then(function () {
-	        var index = _this4.itemList.indexOf(item);
-	        _this4._deleteFromPristineList(item);
-	        _this4.itemList.splice(index, 1); // remove item from cached list
-	      });
-	    }
-	  }, {
-	    key: 'post',
-	    value: function post(item) {
-	      var _this5 = this;
-	
-	      return this._$http.post(this.resourceUrl, item).then(function (response) {
-	        var newJob = _this5.transformItem(response.data);
-	        _this5._postToPristineList(newJob);
-	        _this5.itemList.push(newJob);
-	        return response.data;
-	      }, function (response) {
-	        _this5.itemList.pop();
-	        return _this5._$q.reject(response.data);
-	      });
-	    }
-	  }, {
-	    key: 'put',
-	    value: function put(item) {
-	      var _this6 = this;
-	
-	      return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(function (response) {
-	        _this6._putToPristineList(_this6.transformItem(response.data));
-	        return response.data;
-	      }, function (response) {
-	        _this6._makeItemListPristine();
-	        return _this6._$q.reject(response.data);
-	      });
-	    }
-	
-	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // Base methods (to be overwritten as needed in child class)
-	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
-	
-	  }, {
-	    key: 'transformResponse',
-	    value: function transformResponse(response) {
-	      var _this7 = this;
-	
-	      // can be overwritten in child class if special response processing is needed
-	      var data = response.data;
-	      data.forEach(function (d) {
-	        return _this7.transformItem(d);
-	      });
-	      return data;
-	    }
-	  }, {
-	    key: 'transformItem',
-	    value: function transformItem(item) {
-	      return item;
-	    }
-	
-	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // Public Utility Methods
-	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
-	
-	  }, {
-	    key: 'refreshCache',
-	    value: function refreshCache() {
-	      this._initialized = false;
-	      return this.getList();
-	    }
-	
-	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // Private utility methods
-	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
-	
-	  }, {
-	    key: '_itemSpecificUrl',
-	    value: function _itemSpecificUrl(itemId) {
-	      // just appends the item id to the base resource url if it exists
-	      if (itemId === undefined) {
-	        return this.resourceUrl;
-	      }
-	      return '' + this.resourceUrl + itemId + '/';
-	    }
-	  }, {
-	    key: '_makeItemListPristine',
-	    value: function _makeItemListPristine() {
-	      var _itemList;
-	
-	      this.itemList.length = 0;
-	      (_itemList = this.itemList).push.apply(_itemList, _toConsumableArray(_angular2['default'].copy(this._pristineItemList)));
-	    }
-	  }, {
-	    key: '_putToPristineList',
-	    value: function _putToPristineList(item) {
-	      var index = this._getPristineIndex(item[this.itemIdField]);
-	      if (index > -1) {
-	        this._pristineItemList[index] = item;
-	      }
-	    }
-	  }, {
-	    key: '_postToPristineList',
-	    value: function _postToPristineList(item) {
-	      this._pristineItemList.push(item);
-	    }
-	  }, {
-	    key: '_deleteFromPristineList',
-	    value: function _deleteFromPristineList(item) {
-	      var index = this._getPristineIndex(item[this.itemIdField]);
-	      if (index > -1) {
-	        this._pristineItemList.splice(index, 1);
-	      }
-	    }
-	  }, {
-	    key: '_getPristineIndex',
-	    value: function _getPristineIndex(id) {
-	      var _this8 = this;
-	
-	      return this._pristineItemList.findIndex(function (item) {
-	        return item[_this8.itemIdField] === id;
-	      });
-	    }
-	  }]);
-	
-	  return baseResourceClass;
-	})();
-	
-	exports['default'] = baseResourceClass;
-	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
