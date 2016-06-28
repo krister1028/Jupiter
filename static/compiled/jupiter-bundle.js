@@ -72615,6 +72615,8 @@
 	      var _this3 = this;
 	
 	      this._metricService.getBacklog(this.taskBacklog.startDate, this.taskBacklog.endDate).then(function (backlog) {
+	        _this3.taskBacklog.xAxis.min = _this3.taskBacklog.startDate.valueOf();
+	        _this3.taskBacklog.xAxis.max = _this3.taskBacklog.endDate.valueOf();
 	        _this3.taskBacklog.series = _this3._highchartService.getDataForTimeLine(backlog, ['High', 'Medium', 'Low', 'CP']);
 	      });
 	    }
@@ -73772,6 +73774,10 @@
 	      config.options.chart.type = 'spline';
 	      config.title.text = configDetail.title;
 	      config.xAxis.title.text = 'Date';
+	      config.xAxis.dateTimeLabelFormats = {
+	        day: '%e of %b'
+	      };
+	      config.xAxis.minTickInterval = 86400000;
 	      config.yAxis.title.text = configDetail.yAxisLabel;
 	      config.xAxis.labels.format = '{value:%m-%d-%Y}';
 	      config.xAxis.labels.align = 'left';
@@ -73832,7 +73838,7 @@
 	      categoryKeys.forEach(function (categoryName) {
 	        var series = { name: categoryName, data: [] };
 	        rawData.forEach(function (point) {
-	          series.data.push([point.date, point[categoryName]]);
+	          series.data.push([point.date, point[categoryName.toLowerCase()]]);
 	        });
 	        processedData.push(series);
 	      });
@@ -73933,7 +73939,7 @@
 	      return this._$http.get(this._backLogUrl, { params: { startDate: startDate, endDate: endDate } }).then(function (response) {
 	        var data = response.data;
 	        data.forEach(function (point) {
-	          return point.date = new Date(point.date);
+	          return point.date = new Date(point.date).valueOf();
 	        });
 	        return data;
 	      });

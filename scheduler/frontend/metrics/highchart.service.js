@@ -77,6 +77,10 @@ export default class highchartService {
     config.options.chart.type = 'spline';
     config.title.text = configDetail.title;
     config.xAxis.title.text = 'Date';
+    config.xAxis.dateTimeLabelFormats = {
+      day: '%e of %b'
+    };
+    config.xAxis.minTickInterval = 86400000;
     config.yAxis.title.text = configDetail.yAxisLabel;
     config.xAxis.labels.format = '{value:%m-%d-%Y}';
     config.xAxis.labels.align = 'left';
@@ -132,7 +136,7 @@ export default class highchartService {
     categoryKeys.forEach(categoryName => {
       const series = {name: categoryName, data: []};
       rawData.forEach(point => {
-        series.data.push([point.date, point[categoryName]]);
+        series.data.push([point.date, point[categoryName.toLowerCase()]]);
       });
       processedData.push(series);
     });

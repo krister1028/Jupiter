@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from scheduler.metric_helpers import BackLogMetrics
 
-from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask
+from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, JobTaskMetrics
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
     JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
 
@@ -80,9 +80,15 @@ class BackLogHours(APIView):
 
     def get(self, request, *args, **kwargs):
         primary_group = request.user.groups.all()[0]
-        # start/end dates are required - possible KeyError is ok here
+        # start/end dates are required - not checking for a possible KeyError is ok here
         start_time = parse(request.query_params['startDate'])
         end_time = parse(request.query_params['endDate'])
 
-        response = BackLogMetrics(primary_group, start_time, end_time).get_task_backlog()
-        return Response(response)
+        data = list(JobTaskMetrics.objects.filter(date__gt=start_time, date__lte=end_time).values().order_by('date'))
+        try:
+            # grab the status as of the query start
+            data.insert(0, JobTaskMetrics.objects.filter(group=primary_group, date__lte=start_time).latest('date'))
+        except JobTaskMetrics.DoesNotExist:
+            pass
+
+        return Response(data)
