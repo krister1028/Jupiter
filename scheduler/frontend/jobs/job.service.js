@@ -79,7 +79,7 @@ export default class jobService extends baseResourceClass {
   }
 
   checkJobComplete(job) {
-    const incompleteTasks = job.job_tasks.filter(t => t.status !== this.taskCompleteStatus);
+    const incompleteTasks = job.jobTasks.filter(t => t.status !== this._jobTaskService.taskCompleteStatus);
     if (!incompleteTasks.length && !job.completed_timestamp) {
       job.completed_timestamp = new Date();
       this.put(job);

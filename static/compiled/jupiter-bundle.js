@@ -73205,8 +73205,8 @@
 	    value: function checkJobComplete(job) {
 	      var _this6 = this;
 	
-	      var incompleteTasks = job.job_tasks.filter(function (t) {
-	        return t.status !== _this6.taskCompleteStatus;
+	      var incompleteTasks = job.jobTasks.filter(function (t) {
+	        return t.status !== _this6._jobTaskService.taskCompleteStatus;
 	      });
 	      if (!incompleteTasks.length && !job.completed_timestamp) {
 	        job.completed_timestamp = new Date();

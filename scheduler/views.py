@@ -6,9 +6,7 @@ from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 from rest_framework.views import APIView
 
-from scheduler.metric_helpers import BackLogMetrics
-
-from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, JobTaskMetrics
+from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, JobTaskMetrics, HistoricalJob
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
     JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
 
@@ -90,5 +88,19 @@ class BackLogHours(APIView):
             data.insert(0, JobTaskMetrics.objects.filter(group=primary_group, date__lte=start_time).latest('date'))
         except JobTaskMetrics.DoesNotExist:
             pass
+
+        return Response(data)
+
+
+class JobsCompleted(APIView):
+
+    def get(self, request, *args, **kwargs):
+        primary_group = request.user.groups.all()[0]
+        # start/end dates are required - not checking for a possible KeyError is ok here
+        start_time = parse(request.query_params['startDate'])
+        end_time = parse(request.query_params['endDate'])
+
+        data = HistoricalJob.objects.filter(group=primary_group, completed_timestamp__range=(start_time, end_time)).values(
+            'started_timestamp', 'completed_timestamp', 'product__description', 'type__description')
 
         return Response(data)
