@@ -73688,6 +73688,7 @@
 /***/ function(module, exports) {
 
 	/* eslint no-trailing-spaces: 0 */
+	
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -73697,6 +73698,8 @@
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var highchartColors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
 	
 	var highchartService = (function () {
 	  function highchartService(utilityService) {
@@ -73815,7 +73818,7 @@
 	      var series = groups.map(function (groupName) {
 	        return { name: groupName, data: categories.map(function () {
 	            return 0;
-	          }) };
+	          }), color: highchartColors[0] };
 	      });
 	
 	      series.forEach(function (group) {
@@ -73835,8 +73838,8 @@
 	    key: 'getDataForTimeLine',
 	    value: function getDataForTimeLine(rawData, categoryKeys) {
 	      var processedData = [];
-	      categoryKeys.forEach(function (categoryName) {
-	        var series = { name: categoryName, data: [] };
+	      categoryKeys.forEach(function (categoryName, index) {
+	        var series = { name: categoryName, data: [], color: highchartColors[index] };
 	        rawData.forEach(function (point) {
 	          series.data.push([point.date, point[categoryName.toLowerCase()]]);
 	        });

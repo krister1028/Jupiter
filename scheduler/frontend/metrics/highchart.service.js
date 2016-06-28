@@ -1,4 +1,7 @@
 /* eslint no-trailing-spaces: 0 */
+
+const highchartColors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
+
 export default class highchartService {
   constructor(utilityService) {
     this._utilityService = utilityService;
@@ -114,7 +117,7 @@ export default class highchartService {
     // initialize series list w/o data.  For the example above, series = [{name: 'Active' data: [0, 0, 0]},
     //                                                                    {name: 'Inactive' data: [0, 0, 0]}]
     const series = groups.map(groupName => {
-      return {name: groupName, data: categories.map(() => 0)};
+      return {name: groupName, data: categories.map(() => 0), color: highchartColors[0]};
     });
 
     series.forEach(group => {
@@ -133,8 +136,8 @@ export default class highchartService {
 
   getDataForTimeLine(rawData, categoryKeys) {
     const processedData = [];
-    categoryKeys.forEach(categoryName => {
-      const series = {name: categoryName, data: []};
+    categoryKeys.forEach((categoryName, index) => {
+      const series = {name: categoryName, data: [], color: highchartColors[index]};
       rawData.forEach(point => {
         series.data.push([point.date, point[categoryName.toLowerCase()]]);
       });
