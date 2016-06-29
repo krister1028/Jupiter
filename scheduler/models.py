@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.models import User, Group
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Max
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
@@ -147,6 +147,43 @@ class Job(models.Model):
         JobTaskMetrics.take_snapshot(self.group)
 
 
+class CustomHistoricalJobTask(models.Model):
+    DELETED = '-'
+
+    completion_status_change = models.BooleanField(default=False)
+    task_expertise_description = models.CharField(max_length=255)
+    task_minutes = models.IntegerField()
+    job_status_description = models.CharField(max_length=255)
+
+    def save(self, *args, **kwargs):
+        self.completion_status_change = self._is_completion_status_change()
+        self.task_expertise_description = Task.get_level_text(self.instance.product_task.task.expertise_level)
+        self.task_minutes = self.instance.product_task.completion_time
+        self.job_status_description = self.job.status.description
+        super(CustomHistoricalJobTask, self).save(*args, **kwargs)
+
+    def _is_completion_status_change(self):
+        try:
+            last_completion_time = self.instance.history.most_recent().completed_time
+        except JobTask.DoesNotExist:
+            return True
+        # compare presence of timestamp, not timestamp value
+        return bool(self.completed_time) == bool(last_completion_time)
+
+    @classmethod
+    def historical_records_as_of(cls, time, group):
+        deleted_task_ids = JobTask.history.filter(
+            group=group, history_date__lte=time, history_type=cls.DELETED
+        ).values_list('id', flat=True).distinct()
+        ids_as_of = JobTask.history.filter(
+            group=group, history_date__lte=time
+        ).exclude(id__in=deleted_task_ids).values('id').annotate(Max('history_id')).distinct()
+        return JobTask.history.filter(history_id__in=[x['history_id__max'] for x in ids_as_of])
+
+    class Meta:
+        abstract = True
+
+
 class JobTask(models.Model):
     PENDING = 1
     IN_PROGRESS = 2
@@ -162,7 +199,7 @@ class JobTask(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     completed_by = models.ForeignKey(User, null=True, blank=True)
     completed_time = models.DateTimeField(null=True, blank=True)
-    history = HistoricalRecords()
+    history = HistoricalRecords(bases=[CustomHistoricalJobTask])
 
     @property
     def completion_time(self):

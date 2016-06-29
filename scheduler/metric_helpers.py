@@ -1,8 +1,25 @@
+from collections import defaultdict
 from datetime import datetime
 import pytz
+from django.db.models import Max
 
 import utils
-from scheduler.models import Job, JobTask, Task, ProductTask
+from scheduler.models import Job, JobTask, Task, ProductTask, CustomHistoricalJobTask
+
+
+def get_initial_task_backlog(start_time, group):
+    aggregate = defaultdict(lambda: 0)
+    initial_job_tasks = CustomHistoricalJobTask.historical_records_as_of(start_time, group)
+    for record in filter(lambda r: r.group_id == group_id, initial_job_tasks):
+        if not record.completed_time:
+            defaultdict[get_record_key(record, start_time)] += record.task_minutes
+    return {'date': start_time, 'data': aggregate}
+
+
+def get_record_key(job_task, time):
+    expertise_description = job_task.history.as_of(time).task_expertise_description
+    job_status = job_task.history.job_status_description
+    return '{}__{}'.format(expertise_description, job_status)
 
 
 class BackLogMetrics(object):

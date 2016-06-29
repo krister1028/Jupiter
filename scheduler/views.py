@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 from rest_framework.views import APIView
 
+from scheduler.metric_helpers import get_initial_task_backlog
 from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, JobTaskMetrics, HistoricalJob
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
     JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
@@ -81,6 +82,8 @@ class BackLogHours(APIView):
         # start/end dates are required - not checking for a possible KeyError is ok here
         start_time = parse(request.query_params['startDate'])
         end_time = parse(request.query_params['endDate'])
+
+        initial_backlog = get_initial_task_backlog(start_time, primary_group)
 
         data = list(JobTaskMetrics.objects.filter(date__gt=start_time, date__lte=end_time).values().order_by('date'))
         try:
