@@ -175,10 +175,12 @@ class CustomHistoricalJobTask(models.Model):
         deleted_task_ids = JobTask.history.filter(
             group=group, history_date__lte=time, history_type=cls.DELETED
         ).values_list('id', flat=True).distinct()
-        ids_as_of = JobTask.history.filter(
+
+        task_ids_as_of = JobTask.history.filter(
             group=group, history_date__lte=time
-        ).exclude(id__in=deleted_task_ids).values('id').annotate(Max('history_id')).distinct()
-        return JobTask.history.filter(history_id__in=[x['history_id__max'] for x in ids_as_of])
+        ).exclude(id__in=deleted_task_ids).values('id').annotate(Max('history_id')).distinct().order_by()
+
+        return JobTask.history.filter(history_id__in=[x['history_id__max'] for x in task_ids_as_of])
 
     class Meta:
         abstract = True
