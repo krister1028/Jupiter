@@ -135,12 +135,8 @@ class Job(models.Model):
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
         if not self.product_tasks.all():
-            new_tasks = []
             for product_task in ProductTask.objects.filter(product=self.product):
-                new_tasks.append(JobTask(job=self, product_task=product_task, group=self.group))
-                JobTask.objects.bulk_create(new_tasks)
-            # note that the bulk create doesn't call the save method, so we manually take a snapshot here
-            JobTaskMetrics.take_snapshot(self.group)
+                JobTask(job=self, product_task=product_task, group=self.group).save()
 
     def delete(self, *args, **kwargs):
         super(Job, self).delete(*args, **kwargs)
@@ -164,11 +160,11 @@ class CustomHistoricalJobTask(models.Model):
 
     def _is_completion_status_change(self):
         try:
-            last_completion_time = self.instance.history.most_recent().completed_time
+            last_completed_by = self.instance.history.most_recent().completed_by
         except JobTask.DoesNotExist:
-            return True
+            return bool(self.completed_by)
         # compare presence of timestamp, not timestamp value
-        return bool(self.completed_time) == bool(last_completion_time)
+        return bool(self.completed_by) != bool(last_completed_by)
 
     @classmethod
     def historical_records_as_of(cls, time, group):

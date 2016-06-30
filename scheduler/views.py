@@ -1,12 +1,15 @@
+from copy import copy
+
 from dateutil.parser import parse
 
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 from rest_framework.views import APIView
 
-from scheduler.metric_helpers import get_initial_task_backlog
+from scheduler.metric_helpers import get_initial_task_backlog, get_record_key, add_task_backlog_aggregate
 from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, JobTaskMetrics, HistoricalJob
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
     JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
@@ -83,16 +86,18 @@ class BackLogHours(APIView):
         start_time = parse(request.query_params['startDate'])
         end_time = parse(request.query_params['endDate'])
 
-        initial_backlog = get_initial_task_backlog(start_time, primary_group)
+        backlog = [get_initial_task_backlog(start_time, primary_group)]
 
-        data = list(JobTaskMetrics.objects.filter(date__gt=start_time, date__lte=end_time).values().order_by('date'))
-        try:
-            # grab the status as of the query start
-            data.insert(0, JobTaskMetrics.objects.filter(group=primary_group, date__lte=start_time).latest('date'))
-        except JobTaskMetrics.DoesNotExist:
-            pass
+        data = JobTask.history.filter(
+            Q(completion_status_change=True) | Q(history_type='+'),
+            group=primary_group, history_date__gt=start_time, history_date__lte=end_time
+        ).order_by('history_date')
 
-        return Response(data)
+        for record in data:
+            last_aggregation = backlog[-1]
+            backlog.append(add_task_backlog_aggregate(last_aggregation, record))
+
+        return Response(backlog)
 
 
 class JobsCompleted(APIView):
