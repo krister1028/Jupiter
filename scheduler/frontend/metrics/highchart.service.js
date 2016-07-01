@@ -134,16 +134,27 @@ export default class highchartService {
     return series;
   }
 
-  getDataForTimeLine(rawData, categoryKeys) {
+  getDataForTimeLine(rawData) {
     const processedData = [];
+    const categoryKeys = this._getKeysFromRawData(rawData);
     categoryKeys.forEach((categoryName, index) => {
-      const series = {name: categoryName, data: [], color: highchartColors[index]};
+      const series = {name: categoryName.replace('__', ' '), data: [], color: highchartColors[index]};
       rawData.forEach(point => {
-        series.data.push([point.date, point[categoryName.toLowerCase()]]);
+        if (point.data[categoryName] !== undefined) {
+          series.data.push([point.date, point.data[categoryName]]);
+        }
       });
       processedData.push(series);
     });
     return processedData;
+  }
+
+  _getKeysFromRawData(rawData) {
+    const keyList = new Set;
+    rawData.forEach(point => {
+      Object.keys(point.data).forEach(key => keyList.add(key));
+    });
+    return keyList;
   }
 
 }

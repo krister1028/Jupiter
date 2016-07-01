@@ -73836,16 +73836,30 @@
 	    }
 	  }, {
 	    key: 'getDataForTimeLine',
-	    value: function getDataForTimeLine(rawData, categoryKeys) {
+	    value: function getDataForTimeLine(rawData) {
 	      var processedData = [];
+	      var categoryKeys = this._getKeysFromRawData(rawData);
 	      categoryKeys.forEach(function (categoryName, index) {
-	        var series = { name: categoryName, data: [], color: highchartColors[index] };
+	        var series = { name: categoryName.replace('__', ' '), data: [], color: highchartColors[index] };
 	        rawData.forEach(function (point) {
-	          series.data.push([point.date, point[categoryName.toLowerCase()]]);
+	          if (point.data[categoryName] !== undefined) {
+	            series.data.push([point.date, point.data[categoryName]]);
+	          }
 	        });
 	        processedData.push(series);
 	      });
 	      return processedData;
+	    }
+	  }, {
+	    key: '_getKeysFromRawData',
+	    value: function _getKeysFromRawData(rawData) {
+	      var keyList = new Set();
+	      rawData.forEach(function (point) {
+	        Object.keys(point.data).forEach(function (key) {
+	          return keyList.add(key);
+	        });
+	      });
+	      return keyList;
 	    }
 	  }], [{
 	    key: '_getBaseChartConfig',

@@ -170,7 +170,7 @@ class CustomHistoricalJobTask(models.Model):
     def historical_records_as_of(cls, time, group):
         deleted_task_ids = JobTask.history.filter(
             group=group, history_date__lte=time, history_type=cls.DELETED
-        ).values_list('id', flat=True).distinct()
+        ).values_list('id', flat=True)
 
         task_ids_as_of = JobTask.history.filter(
             group=group, history_date__lte=time

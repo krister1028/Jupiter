@@ -26,5 +26,6 @@ def add_task_backlog_aggregate(last_aggregation, next_historical_job_task_record
     if not next_historical_job_task_record.completed_by or next_historical_job_task_record.history_type == '+':
         aggregation[key] += next_historical_job_task_record.task_minutes
     else:
-        aggregation[key] -= next_historical_job_task_record.task_minutes
+        if aggregation[key] != 0:
+            aggregation[key] -= next_historical_job_task_record.task_minutes
     return {'date': next_historical_job_task_record.history_date, 'data': aggregation}
