@@ -4,7 +4,7 @@ import SelectUserController from './select-user.controller';
 
 export default class EditJobController {
   /* @ngInject */
-  constructor($state, jobService, $mdDialog, jobTypeService, jobStatusService, jobTaskService, $stateParams) {
+  constructor($state, jobService, $mdDialog, jobTypeService, jobStatusService, jobTaskService, $stateParams, job) {
     // third party services
     this._$state = $state;
     this._$stateParams = $stateParams;
@@ -17,17 +17,7 @@ export default class EditJobController {
     // items
     this.jobTypes = jobTypeService.itemList;
     this.jobStatuses = jobStatusService.itemList;
-    this.job = {};
-    // init
-    this.initializeServices();
-  }
-
-  initializeServices() {
-    this._jobTypeService.getList();
-    this._jobStatusService.getList();
-    this._jobService.get({id: this._$stateParams.jobId}).then(jobs => {
-      this.job = jobs[0];
-    });
+    this.job = job;
   }
 
   static _taskComplete(task) {

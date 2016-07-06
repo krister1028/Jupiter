@@ -138,7 +138,9 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
           template: editJobTemplate,
           controller: 'EditJobController as vm'
         }
-      }
+      },
+      resolve: {job: (jobService, $stateParams) => jobService.get({id: $stateParams.jobId})
+        .then(jobList => jobList[0])}
 
     })
     .state('root.addTask', {

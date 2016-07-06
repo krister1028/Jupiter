@@ -284,7 +284,12 @@
 	        template: _jobsEditJobTemplateHtml2['default'],
 	        controller: 'EditJobController as vm'
 	      }
-	    }
+	    },
+	    resolve: { job: function job(jobService, $stateParams) {
+	        return jobService.get({ id: $stateParams.jobId }).then(function (jobList) {
+	          return jobList[0];
+	        });
+	      } }
 	
 	  }).state('root.addTask', {
 	    url: '/task/?taskId',
@@ -73247,7 +73252,7 @@
 	        var _job$jobTasks;
 	
 	        (_job$jobTasks = job.jobTasks).push.apply(_job$jobTasks, _toConsumableArray(jobTasks.filter(function (jobTask) {
-	          return job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job;
+	          return job.job_tasks.indexOf(jobTask.id) > -1 && job.id === jobTask.job;
 	        })));
 	      });
 	    }
@@ -74193,7 +74198,7 @@
 	var EditJobController = (function () {
 	  /* @ngInject */
 	
-	  function EditJobController($state, jobService, $mdDialog, jobTypeService, jobStatusService, jobTaskService, $stateParams) {
+	  function EditJobController($state, jobService, $mdDialog, jobTypeService, jobStatusService, jobTaskService, $stateParams, job) {
 	    _classCallCheck(this, EditJobController);
 	
 	    // third party services
@@ -74208,23 +74213,10 @@
 	    // items
 	    this.jobTypes = jobTypeService.itemList;
 	    this.jobStatuses = jobStatusService.itemList;
-	    this.job = {};
-	    // init
-	    this.initializeServices();
+	    this.job = job;
 	  }
 	
 	  _createClass(EditJobController, [{
-	    key: 'initializeServices',
-	    value: function initializeServices() {
-	      var _this = this;
-	
-	      this._jobTypeService.getList();
-	      this._jobStatusService.getList();
-	      this._jobService.get({ id: this._$stateParams.jobId }).then(function (jobs) {
-	        _this.job = jobs[0];
-	      });
-	    }
-	  }, {
 	    key: 'getTaskStyle',
 	    value: function getTaskStyle(task) {
 	      if (EditJobController._taskComplete(task)) {
@@ -74242,10 +74234,10 @@
 	  }, {
 	    key: 'updateJob',
 	    value: function updateJob() {
-	      var _this2 = this;
+	      var _this = this;
 	
 	      this._jobService.put(this.job).then(function () {
-	        return _this2._$state.go('root.home');
+	        return _this._$state.go('root.home');
 	      });
 	    }
 	  }, {
@@ -74266,7 +74258,7 @@
 	  }, {
 	    key: 'openMarkCompleteDialog',
 	    value: function openMarkCompleteDialog(task) {
-	      var _this3 = this;
+	      var _this2 = this;
 	
 	      this._$mdDialog.show({
 	        template: _selectUserTemplateHtml2['default'],
@@ -74276,7 +74268,7 @@
 	        clickOutsideToClose: true,
 	        locals: { job: this.job, task: task }
 	      }).then(function (userId) {
-	        return _this3._markTaskComplete(task, userId);
+	        return _this2._markTaskComplete(task, userId);
 	      });
 	    }
 	  }, {
@@ -74448,7 +74440,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.job.product_description }}</div> <div><b>Product Code:</b> {{ vm.job.product_code }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.jobTasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
+	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.job.product_description }}</div> <div><b>Product Code:</b> {{ vm.job.product_code }} {{ vm.job.jobTasks }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.jobTasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 

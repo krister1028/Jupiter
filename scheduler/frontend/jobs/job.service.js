@@ -112,7 +112,7 @@ export default class jobService extends baseResourceClass {
     job.jobTasks = [];
     return this._jobTaskService.getList().then(jobTasks => {
       job.jobTasks.push(...jobTasks.filter(jobTask => {
-        return (job.product_tasks.indexOf(jobTask.product_task) > -1 && job.id === jobTask.job);
+        return (job.job_tasks.indexOf(jobTask.id) > -1 && job.id === jobTask.job);
       }));
     });
   }
