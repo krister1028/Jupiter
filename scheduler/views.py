@@ -3,14 +3,14 @@ from copy import copy
 from dateutil.parser import parse
 
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Count, F, Sum, Max
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 from rest_framework.views import APIView
 
-from scheduler.metric_helpers import get_initial_task_backlog, get_record_key, add_task_backlog_aggregate
-from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, JobTaskMetrics, HistoricalJob
+from scheduler.metric_helpers import get_initial_task_backlog, add_task_backlog_aggregate
+from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, HistoricalJob
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
     JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
 
@@ -109,6 +109,30 @@ class JobsCompleted(APIView):
         end_time = parse(request.query_params['endDate'])
 
         data = HistoricalJob.objects.filter(group=primary_group, completed_timestamp__range=(start_time, end_time)).values(
-            'started_timestamp', 'completed_timestamp', 'product__description', 'type__description')
+            'started_timestamp', 'completed_timestamp', 'product__description', 'type__description', 'created')
 
         return Response(data)
+
+
+class JobTaskCompletionByTechnician(APIView):
+
+    def get(self, request, *args, **kwargs):
+        primary_group = request.user.groups.all()[0]
+        # start/end dates are required - not checking for a possible KeyError is ok here
+        start_time = parse(request.query_params['startDate'])
+        end_time = parse(request.query_params['endDate'])
+
+        completion_data = JobTask.history.filter(
+            group=primary_group, history_date__range=(start_time, end_time), completed_by__isnull=False).values(
+            'completed_by'
+        ).annotate(Sum('task_minutes')).order_by()
+
+        users = HistoricalUser.filter(group=primary_group, id__in=[x['completed_by'] for x in completion_data]).values(
+            'id', 'first_name', 'last_name'
+        ).annotate(Max('history_date')).order_by()
+
+        for completion_fact in completion_data:
+            user = filter(lambda u: u['id'] == completion_fact['completed_by'], users)[0]
+            completion_fact['username'] = user['first_name'] + user['last_name']
+
+        return Response(completion_data)
