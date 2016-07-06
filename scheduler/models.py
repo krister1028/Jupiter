@@ -108,7 +108,7 @@ class Job(models.Model):
     description = models.CharField(max_length=255)
     started_timestamp = models.DateTimeField(null=True, blank=True)
     completed_timestamp = models.DateTimeField(null=True, blank=True)
-    product_tasks = models.ManyToManyField(ProductTask, through='JobTask')
+    job_tasks = models.ManyToManyField(ProductTask, through='JobTask')
     history = HistoricalRecords()
 
     def __unicode__(self):
@@ -134,13 +134,9 @@ class Job(models.Model):
 
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
-        if not self.product_tasks.all():
+        if not self.job_tasks.all().count():
             for product_task in ProductTask.objects.filter(product=self.product):
                 JobTask(job=self, product_task=product_task, group=self.group).save()
-
-    def delete(self, *args, **kwargs):
-        super(Job, self).delete(*args, **kwargs)
-        JobTaskMetrics.take_snapshot(self.group)
 
 
 class CustomHistoricalJobTask(models.Model):
@@ -216,12 +212,6 @@ class JobTask(models.Model):
         elif not self.completed_by:  # allow regression
             self.completed_time = None
         super(JobTask, self).save(*args, **kwargs)
-        if self.completion_status_has_changed():
-            JobTaskMetrics.take_snapshot(self.group)
-
-    def delete(self, *args, **kwargs):
-        super(JobTask, self).delete(*args, **kwargs)
-        JobTaskMetrics.take_snapshot(self.group)
 
     def completion_status_has_changed(self):
         try:
@@ -231,37 +221,3 @@ class JobTask(models.Model):
         return bool(self.completion_time) == bool(last_completion_time)
 
 
-class JobTaskMetrics(models.Model):
-    group = models.ForeignKey(Group)
-    date = models.DateTimeField()
-    high = models.IntegerField()
-    medium = models.IntegerField()
-    low = models.IntegerField()
-    cp = models.IntegerField()
-
-    @classmethod
-    def take_snapshot(cls, group):
-        current_backlog = JobTask.objects.filter(
-            group=group, completed_by__isnull=True
-        ).values(
-            'product_task__task__expertise_level'
-        ).annotate(Sum('product_task__completion_time'))
-
-        snapshot = cls._make_empty_snapshot(group)
-
-        for aggregation in current_backlog:
-            field_name = Task.get_level_text(aggregation['product_task__task__expertise_level']).lower()
-            value = aggregation['product_task__completion_time__sum']
-            setattr(snapshot, field_name, value)
-        snapshot.save()
-
-    @classmethod
-    def _make_empty_snapshot(cls, group):
-        return cls(
-            group=group,
-            date=timezone.now(),
-            high=0,
-            medium=0,
-            low=0,
-            cp=0
-        )
