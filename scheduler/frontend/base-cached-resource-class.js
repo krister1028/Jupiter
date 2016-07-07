@@ -13,7 +13,6 @@ export default class baseResourceClass {
     this._initialized = false;
     this._$q = $q;
     this._$http = $http;
-    this._pristineItemList = [];  // private cache, not exposed outside of service
 
     this.itemList = [];
     // must be overwritten in child class
@@ -33,13 +32,11 @@ export default class baseResourceClass {
       this._$http.get(this.resourceUrl).then(
         response => {
           this._initialized = true;
-          this._pristineItemList = [...this.transformResponse(response)];
-          this._makeItemListPristine();
+          this.itemList.push(...this.transformResponse(response));
           deferred.resolve(this.itemList);
         }
       );
     } else { // if items are in memory already, resolve without making request
-      this._makeItemListPristine();
       deferred.resolve(this.itemList);
     }
     return deferred.promise;
@@ -69,7 +66,6 @@ export default class baseResourceClass {
     return this._$http.delete(this._itemSpecificUrl(item[this.itemIdField])).then(
       () => {
         const index = this.itemList.indexOf(item);
-        this._deleteFromPristineList(item);
         this.itemList.splice(index, 1); // remove item from cached list
       }
     );
@@ -79,7 +75,6 @@ export default class baseResourceClass {
     return this._$http.post(this.resourceUrl, item).then(
       response => {
         const newJob = this.transformItem(response.data);
-        this._postToPristineList(newJob);
         this.itemList.push(newJob);
         return response.data;
       },
@@ -93,11 +88,9 @@ export default class baseResourceClass {
   put(item) {
     return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(
       response => {
-        this._putToPristineList(this.transformItem(response.data));
-        return response.data;
+        return this.transformItem(response.data);
       },
       response => {
-        this._makeItemListPristine();
         return this._$q.reject(response.data);
       }
     );
@@ -135,32 +128,5 @@ export default class baseResourceClass {
       return this.resourceUrl;
     }
     return `${this.resourceUrl}${itemId}/`;
-  }
-
-  _makeItemListPristine() {
-    this.itemList.length = 0;
-    this.itemList.push(...angular.copy(this._pristineItemList));
-  }
-
-  _putToPristineList(item) {
-    const index = this._getPristineIndex(item[this.itemIdField]);
-    if (index > -1) {
-      this._pristineItemList[index] = item;
-    }
-  }
-
-  _postToPristineList(item) {
-    this._pristineItemList.push(item);
-  }
-
-  _deleteFromPristineList(item) {
-    const index = this._getPristineIndex(item[this.itemIdField]);
-    if (index > -1) {
-      this._pristineItemList.splice(index, 1);
-    }
-  }
-
-  _getPristineIndex(id) {
-    return this._pristineItemList.findIndex(item => item[this.itemIdField] === id);
   }
 }
