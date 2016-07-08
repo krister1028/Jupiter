@@ -89,11 +89,6 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
           template: homeTemplate,
           controller: HomeController,
           controllerAs: 'vm'
-        },
-        'metrics@root.home': {
-          template: metricsTemplate,
-          controller: MetricsController,
-          controllerAs: 'vm'
         }
       }
     })
@@ -148,6 +143,16 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
         'body@': {
           template: addTaskTemplate,
           controller: 'AddTaskController as vm'
+        }
+      }
+    })
+    .state('root.metrics', {
+      url: '/metrics',
+      data: {pageTitle: 'Metrics'},
+      views: {
+        'body@': {
+          template: metricsTemplate,
+          controller: MetricsController
         }
       }
     })
