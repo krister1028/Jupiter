@@ -83,7 +83,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
     })
     .state('root.home', {
       url: '/',
-      data: {pageTitle: 'Admin Welcome Page'},
+      data: {pageTitle: 'Admin Home Page'},
       views: {
         'body@': {
           template: homeTemplate,

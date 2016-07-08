@@ -4,20 +4,14 @@ import angular from 'angular';
 
 export default class HomeController {
   /* @ngInject */
-  constructor(userService, productService, jobService, $mdDialog, taskService, user) {
+  constructor(jobService, $mdDialog, user, $state) {
     // initialize services
-    this.products = [];
-    productService.getList().then(products => this.products.push(...products));
     this.jobs = [];
     jobService.getList().then(jobs => this.jobs = jobs);
-    this.tasks = [];
-    taskService.getList().then(tasks => this.tasks = tasks);
 
     this._jobService = jobService;
     this._$mdDialog = $mdDialog;
-
-    this.showFullNames = true;
-    this.showMetrics = false;
+    this._state = $state;
 
     this.loading = true;
     this.user = user;
@@ -38,17 +32,22 @@ export default class HomeController {
     return this._jobService.getProgress(job);
   }
 
-  getProductText(product) {
-    if (this.showFullNames) {
-      return product.description;
-    }
-    return product.code;
+  getTotalJobTime(job) {
+    return this._jobService.getTotalJobTime(job);
   }
 
-  nameAbbreviationToggleText() {
-    if (this.showFullNames) {
-      return 'Show Product Code';
+  getJobTimeRemaining(job) {
+    return this._jobService.getJobTimeRemaining(job);
+  }
+
+  editJob(job) {
+    this._state.go('root.editJob', {jobId:job.id});
+  }
+
+  isRework(job) {
+    if (job.rework) {
+      return 'True';
     }
-    return 'Show Product Name';
+    return 'False';
   }
 }

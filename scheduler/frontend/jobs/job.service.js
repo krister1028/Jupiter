@@ -14,19 +14,29 @@ export default class jobService extends baseResourceClass {
   }
 
   getProgress(job) {
-    let totalTime = 0;
-    let completedTime = 0;
+    const totalTime = this.getTotalJobTime(job);
+    const completedTime = this.getJobTimeRemaining(job);
 
-    job.jobTasks.forEach(t => {
-      totalTime += t.completion_time;
-      if (t.status === this._jobTaskService.taskCompleteStatus) {
-        completedTime += t.completion_time;
-      }
-    });
     if (totalTime) {
       return completedTime / totalTime;
     }
     return 0;
+  }
+
+  getTotalJobTime(job) {
+    let totalTime = 0;
+    job.jobTasks.forEach(task => totalTime += task.completion_time);
+    return totalTime;
+  }
+
+  getJobTimeRemaining(job) {
+    let timeRemaining = 0;
+    job.jobTasks.forEach(task => {
+      if (task.status === this._jobTaskService.taskCompleteStatus) {
+        timeRemaining += task.completion_time;
+      }
+    });
+    return timeRemaining;
   }
 
   getJobProduct(job) {
@@ -119,19 +129,19 @@ export default class jobService extends baseResourceClass {
 
   _getJobStatus(job) {
     return this._jobStatusService.getList().then(statusList => {
-      job.jobStatus = statusList.filter(status => status.id === job.status)[0];
+      job.status = statusList.filter(status => status.id === job.status)[0];
     });
   }
 
   _getProductItem(job) {
     return this._productService.getList().then(productList => {
-      job.productItem = productList.filter(product => product.id === job.product)[0];
+      job.product = productList.filter(product => product.id === job.product)[0];
     });
   }
 
   _getJobType(job) {
     return this._jobTypeService.getList().then(jobTypeList => {
-      job.jobType = jobTypeList.filter(type => type.id === job.type)[0];
+      job.type = jobTypeList.filter(type => type.id === job.type)[0];
     });
   }
 }

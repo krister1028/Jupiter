@@ -228,7 +228,7 @@
 	      } }
 	  }).state('root.home', {
 	    url: '/',
-	    data: { pageTitle: 'Admin Welcome Page' },
+	    data: { pageTitle: 'Admin Home Page' },
 	    views: {
 	      'body@': {
 	        template: _homeTemplateHtml2['default'],
@@ -72875,7 +72875,6 @@
 	    this._initialized = false;
 	    this._$q = $q;
 	    this._$http = $http;
-	    this._pristineItemList = []; // private cache, not exposed outside of service
 	
 	    this.itemList = [];
 	    // must be overwritten in child class
@@ -72898,14 +72897,14 @@
 	      if (!this._initialized) {
 	        // if successful get request has not yet resolved
 	        this._$http.get(this.resourceUrl).then(function (response) {
+	          var _itemList;
+	
 	          _this._initialized = true;
-	          _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
-	          _this._makeItemListPristine();
+	          (_itemList = _this.itemList).push.apply(_itemList, _toConsumableArray(_this.transformResponse(response)));
 	          deferred.resolve(_this.itemList);
 	        });
 	      } else {
 	        // if items are in memory already, resolve without making request
-	        this._makeItemListPristine();
 	        deferred.resolve(this.itemList);
 	      }
 	      return deferred.promise;
@@ -72945,7 +72944,6 @@
 	
 	      return this._$http['delete'](this._itemSpecificUrl(item[this.itemIdField])).then(function () {
 	        var index = _this4.itemList.indexOf(item);
-	        _this4._deleteFromPristineList(item);
 	        _this4.itemList.splice(index, 1); // remove item from cached list
 	      });
 	    }
@@ -72956,7 +72954,6 @@
 	
 	      return this._$http.post(this.resourceUrl, item).then(function (response) {
 	        var newJob = _this5.transformItem(response.data);
-	        _this5._postToPristineList(newJob);
 	        _this5.itemList.push(newJob);
 	        return response.data;
 	      }, function (response) {
@@ -72970,10 +72967,8 @@
 	      var _this6 = this;
 	
 	      return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(function (response) {
-	        _this6._putToPristineList(_this6.transformItem(response.data));
-	        return response.data;
+	        return _this6.transformItem(response.data);
 	      }, function (response) {
-	        _this6._makeItemListPristine();
 	        return _this6._$q.reject(response.data);
 	      });
 	    }
@@ -73023,44 +73018,6 @@
 	        return this.resourceUrl;
 	      }
 	      return '' + this.resourceUrl + itemId + '/';
-	    }
-	  }, {
-	    key: '_makeItemListPristine',
-	    value: function _makeItemListPristine() {
-	      var _itemList;
-	
-	      this.itemList.length = 0;
-	      (_itemList = this.itemList).push.apply(_itemList, _toConsumableArray(_angular2['default'].copy(this._pristineItemList)));
-	    }
-	  }, {
-	    key: '_putToPristineList',
-	    value: function _putToPristineList(item) {
-	      var index = this._getPristineIndex(item[this.itemIdField]);
-	      if (index > -1) {
-	        this._pristineItemList[index] = item;
-	      }
-	    }
-	  }, {
-	    key: '_postToPristineList',
-	    value: function _postToPristineList(item) {
-	      this._pristineItemList.push(item);
-	    }
-	  }, {
-	    key: '_deleteFromPristineList',
-	    value: function _deleteFromPristineList(item) {
-	      var index = this._getPristineIndex(item[this.itemIdField]);
-	      if (index > -1) {
-	        this._pristineItemList.splice(index, 1);
-	      }
-	    }
-	  }, {
-	    key: '_getPristineIndex',
-	    value: function _getPristineIndex(id) {
-	      var _this8 = this;
-	
-	      return this._pristineItemList.findIndex(function (item) {
-	        return item[_this8.itemIdField] === id;
-	      });
 	    }
 	  }]);
 	
@@ -73117,21 +73074,35 @@
 	  _createClass(jobService, [{
 	    key: 'getProgress',
 	    value: function getProgress(job) {
-	      var _this = this;
+	      var totalTime = this.getTotalJobTime(job);
+	      var completedTime = this.getJobTimeRemaining(job);
 	
-	      var totalTime = 0;
-	      var completedTime = 0;
-	
-	      job.jobTasks.forEach(function (t) {
-	        totalTime += t.completion_time;
-	        if (t.status === _this._jobTaskService.taskCompleteStatus) {
-	          completedTime += t.completion_time;
-	        }
-	      });
 	      if (totalTime) {
 	        return completedTime / totalTime;
 	      }
 	      return 0;
+	    }
+	  }, {
+	    key: 'getTotalJobTime',
+	    value: function getTotalJobTime(job) {
+	      var totalTime = 0;
+	      job.jobTasks.forEach(function (task) {
+	        return totalTime += task.completion_time;
+	      });
+	      return totalTime;
+	    }
+	  }, {
+	    key: 'getJobTimeRemaining',
+	    value: function getJobTimeRemaining(job) {
+	      var _this = this;
+	
+	      var timeRemaining = 0;
+	      job.jobTasks.forEach(function (task) {
+	        if (task.status === _this._jobTaskService.taskCompleteStatus) {
+	          timeRemaining += task.completion_time;
+	        }
+	      });
+	      return timeRemaining;
 	    }
 	  }, {
 	    key: 'getJobProduct',
@@ -73260,7 +73231,7 @@
 	    key: '_getJobStatus',
 	    value: function _getJobStatus(job) {
 	      return this._jobStatusService.getList().then(function (statusList) {
-	        job.jobStatus = statusList.filter(function (status) {
+	        job.status = statusList.filter(function (status) {
 	          return status.id === job.status;
 	        })[0];
 	      });
@@ -73269,7 +73240,7 @@
 	    key: '_getProductItem',
 	    value: function _getProductItem(job) {
 	      return this._productService.getList().then(function (productList) {
-	        job.productItem = productList.filter(function (product) {
+	        job.product = productList.filter(function (product) {
 	          return product.id === job.product;
 	        })[0];
 	      });
@@ -73278,7 +73249,7 @@
 	    key: '_getJobType',
 	    value: function _getJobType(job) {
 	      return this._jobTypeService.getList().then(function (jobTypeList) {
-	        job.jobType = jobTypeList.filter(function (type) {
+	        job.type = jobTypeList.filter(function (type) {
 	          return type.id === job.type;
 	        })[0];
 	      });
@@ -73988,8 +73959,6 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var _jobsAddJobModalTemplateHtml = __webpack_require__(40);
@@ -74007,32 +73976,20 @@
 	var HomeController = (function () {
 	  /* @ngInject */
 	
-	  function HomeController(userService, productService, jobService, $mdDialog, taskService, user) {
+	  function HomeController(jobService, $mdDialog, user, $state) {
 	    var _this = this;
 	
 	    _classCallCheck(this, HomeController);
 	
 	    // initialize services
-	    this.products = [];
-	    productService.getList().then(function (products) {
-	      var _products;
-	
-	      return (_products = _this.products).push.apply(_products, _toConsumableArray(products));
-	    });
 	    this.jobs = [];
 	    jobService.getList().then(function (jobs) {
 	      return _this.jobs = jobs;
 	    });
-	    this.tasks = [];
-	    taskService.getList().then(function (tasks) {
-	      return _this.tasks = tasks;
-	    });
 	
 	    this._jobService = jobService;
 	    this._$mdDialog = $mdDialog;
-	
-	    this.showFullNames = true;
-	    this.showMetrics = false;
+	    this._state = $state;
 	
 	    this.loading = true;
 	    this.user = user;
@@ -74056,20 +74013,27 @@
 	      return this._jobService.getProgress(job);
 	    }
 	  }, {
-	    key: 'getProductText',
-	    value: function getProductText(product) {
-	      if (this.showFullNames) {
-	        return product.description;
-	      }
-	      return product.code;
+	    key: 'getTotalJobTime',
+	    value: function getTotalJobTime(job) {
+	      return this._jobService.getTotalJobTime(job);
 	    }
 	  }, {
-	    key: 'nameAbbreviationToggleText',
-	    value: function nameAbbreviationToggleText() {
-	      if (this.showFullNames) {
-	        return 'Show Product Code';
+	    key: 'getJobTimeRemaining',
+	    value: function getJobTimeRemaining(job) {
+	      return this._jobService.getJobTimeRemaining(job);
+	    }
+	  }, {
+	    key: 'editJob',
+	    value: function editJob(job) {
+	      this._state.go('root.editJob', { jobId: job.id });
+	    }
+	  }, {
+	    key: 'isRework',
+	    value: function isRework(job) {
+	      if (job.rework) {
+	        return 'True';
 	      }
-	      return 'Show Product Name';
+	      return 'False';
 	    }
 	  }]);
 	
@@ -74407,7 +74371,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item ng-repeat=\"job in vm.jobs track by $index\" layout=\"row\"> <a flex=\"15\" ui-sref=\"root.editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear flex=\"85\" md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> <md-divider></md-divider> </div> <md-button class=\"md-primary\" ng-click=\"vm.showMetrics = !vm.showMetrics\">Toggle Metrics</md-button> <div ng-if=\"vm.showMetrics\" ui-view=\"metrics\"></div> <div layout=\"row\" layout-margin> <div flex=\"50\"> <h2> Products </h2> <md-list ng-show=\"vm.products.length\"> <md-list-item ui-sref=\"root.productDetail({productId: product.id})\" ng-repeat=\"product in vm.products track by $index\"> {{ vm.getProductText(product) }} </md-list-item> </md-list> <div ng-show=\"vm.products.length == 0\" layout-margin> You don't currently have any listed products </div> <md-divider></md-divider> <div layout=\"row\"> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addProduct\">Add Product</md-button> <md-button ng-if=\"vm.products.length > 0\" class=\"md-raised md-primary\" ng-click=\"vm.showFullNames = !vm.showFullNames\"> {{ vm.nameAbbreviationToggleText() }} </md-button> </div> </div> <md-divider></md-divider> <div flex=\"50\"> <h2> Tasks </h2> <md-list ng-show=\"vm.tasks.length\"> <md-list-item ui-sref=\"root.addTask({taskId: task.id})\" ng-repeat=\"task in vm.tasks track by $index\"> {{ task.description }} </md-list-item> </md-list> <div ng-show=\"vm.tasks.length == 0\" layout-margin> You don't currently have any tasks </div> <md-divider></md-divider> <md-button class=\"md-raised md-primary\" ui-sref=\"root.addTask\">Add Task</md-button> </div> </div>";
+	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item flex layout=\"column\" ng-repeat=\"job in vm.jobs track by $index\"> <md-divider></md-divider> <div layout-margin style=\"width: 100%\" layout=\"row\" layout-align=\"start center\"> <div flex=\"30\" layout=\"column\"> <div layout=\"row\" layout-align=\"start center\" ng-click=\"vm.editJob(job)\"> <h3>{{ job.description }}</h3> </div> <h5>Job Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Job Status:</span> <p layout-margin>{{ job.status.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Is Rework:</span> <p layout-margin>{{ vm.isRework(job) }}</p> </div> <h5>Product Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Product Description:</span> <p layout-margin>{{ job.product.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Product Code:</span> <p layout-margin>{{ job.product.code }}</p> </div> </div> <div flex=\"60\" layout=\"column\"> <div layout-margin>Total Job Time: {{ vm.getTotalJobTime(job) }} (mins)</div> <div layout-margin>Remaining Job Time: {{ vm.getJobTimeRemaining(job) }} (mins)</div> <md-divider></md-divider> <h4 layout-margin>Overall Progress: {{ vm.getJobProgress(job) * 100 }}%</h4> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </div> </div> <md-divider></md-divider> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <md-list-item ng-repeat=\"job in vm.jobs track by $index\" layout=\"row\"> <a flex=\"15\" ui-sref=\"root.editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear flex=\"85\" md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear></md-list-item>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
@@ -74440,7 +74404,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.job.product_description }}</div> <div><b>Product Code:</b> {{ vm.job.product_code }} {{ vm.job.jobTasks }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.jobTasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
+	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.job.product_description }}</div> <div><b>Product Code:</b> {{ vm.job.product_code }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.jobTasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 
