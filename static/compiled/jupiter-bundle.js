@@ -234,11 +234,6 @@
 	        template: _homeTemplateHtml2['default'],
 	        controller: _homeController2['default'],
 	        controllerAs: 'vm'
-	      },
-	      'metrics@root.home': {
-	        template: _metricsMetricsTemplateHtml2['default'],
-	        controller: _metricsMetricsController2['default'],
-	        controllerAs: 'vm'
 	      }
 	    }
 	  }).state('login', {
@@ -272,9 +267,7 @@
 	      }
 	    },
 	    resolve: { product: function product(productService, $stateParams) {
-	        return productService.get({ id: $stateParams.productId }).then(function (productList) {
-	          return productList[0];
-	        });
+	        return productService.get($stateParams.productId);
 	      } }
 	  }).state('root.editJob', {
 	    url: '/job/{jobId:int}',
@@ -286,9 +279,7 @@
 	      }
 	    },
 	    resolve: { job: function job(jobService, $stateParams) {
-	        return jobService.get({ id: $stateParams.jobId }).then(function (jobList) {
-	          return jobList[0];
-	        });
+	        return jobService.get($stateParams.jobId);
 	      } }
 	
 	  }).state('root.addTask', {
@@ -298,6 +289,15 @@
 	      'body@': {
 	        template: _tasksAddTaskTemplateHtml2['default'],
 	        controller: 'AddTaskController as vm'
+	      }
+	    }
+	  }).state('root.metrics', {
+	    url: '/metrics',
+	    data: { pageTitle: 'Metrics' },
+	    views: {
+	      'body@': {
+	        template: _metricsMetricsTemplateHtml2['default'],
+	        controller: _metricsMetricsController2['default']
 	      }
 	    }
 	  });
@@ -72202,7 +72202,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<md-toolbar layout=\"row\"> <md-button aria-label=\"menu\" ng-if=\"!vm.isLogin()\"> <md-icon class=\"material-icons\" ui-sref=\"root.home\">home</md-icon> </md-button> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">{{ vm.getPageTitle() }}</h2> </div> <md-button ng-show=\"!vm.isLogin()\" layout-align=\"center end\" ng-click=\"vm.logout()\">Logout</md-button> </md-toolbar>";
+	var v1="<md-toolbar layout=\"row\"> <md-button aria-label=\"menu\" ng-if=\"!vm.isLogin()\"> <md-icon class=\"material-icons\" ui-sref=\"root.home\">home</md-icon> </md-button> <div class=\"md-toolbar-tools\"> <h2 class=\"md-flex\">{{ vm.getPageTitle() }}</h2> </div> <md-button ng-show=\"!vm.isLogin()\" layout-align=\"center end\" ng-click=\"vm._$state.go('root.metrics')\">Metrics</md-button> <md-button ng-show=\"!vm.isLogin()\" layout-align=\"center end\" ng-click=\"vm.logout()\">Logout</md-button> </md-toolbar>";
 	ngModule.run(["$templateCache",function(c){c.put("header.template.html",v1)}]);
 	module.exports=v1;
 
@@ -72780,13 +72780,12 @@
 	
 	  /* @ngInject */
 	
-	  function productService($http, $q, productTaskService) {
+	  function productService($http, $q, productTaskService, $cacheFactory) {
 	    _classCallCheck(this, productService);
 	
-	    _get(Object.getPrototypeOf(productService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(productService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/products/';
 	    this._productTaskService = productTaskService;
-	    this.relatedServices = [productTaskService];
 	  }
 	
 	  _createClass(productService, [{
@@ -72839,7 +72838,7 @@
 
 /***/ },
 /* 28 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	/*
 	This is a base class that can be extended by a child service which represents a RESTful resource.  The primary value
@@ -72848,6 +72847,7 @@
 	There are cases (for example when working with data that's paginated on the backend) where the in memory caching
 	provided here is undesirable, so use this class with caution.
 	*/
+	
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -72856,27 +72856,22 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _angular = __webpack_require__(3);
-	
-	var _angular2 = _interopRequireDefault(_angular);
-	
 	var baseResourceClass = (function () {
 	  /* @ngInject */
 	
-	  function baseResourceClass($http, $q) {
+	  function baseResourceClass($http, $q, $cacheFactory) {
 	    _classCallCheck(this, baseResourceClass);
 	
-	    this._initialized = false;
 	    this._$q = $q;
 	    this._$http = $http;
+	    this._cache = $cacheFactory(this.constructor.name);
 	
 	    this.itemList = [];
+	
 	    // must be overwritten in child class
 	    this.resourceUrl = null;
 	    // may be overwritten in child class as needed
@@ -72892,38 +72887,21 @@
 	    value: function getList() {
 	      var _this = this;
 	
-	      var deferred = this._$q.defer();
+	      return this._$http.get(this.resourceUrl, { cache: this._cache }).then(function (response) {
+	        var _itemList;
 	
-	      if (!this._initialized) {
-	        // if successful get request has not yet resolved
-	        this._$http.get(this.resourceUrl).then(function (response) {
-	          var _itemList;
-	
-	          _this._initialized = true;
-	          (_itemList = _this.itemList).push.apply(_itemList, _toConsumableArray(_this.transformResponse(response)));
-	          deferred.resolve(_this.itemList);
-	        });
-	      } else {
-	        // if items are in memory already, resolve without making request
-	        deferred.resolve(this.itemList);
-	      }
-	      return deferred.promise;
+	        _this.itemList.length = 0;
+	        (_itemList = _this.itemList).push.apply(_itemList, _toConsumableArray(_this.transformResponse(response)));
+	        return _this.itemList;
+	      });
 	    }
 	  }, {
 	    key: 'get',
-	    value: function get(queryParams) {
+	    value: function get(id) {
 	      var _this2 = this;
 	
-	      return this.getList().then(function () {
-	        return _this2.itemList.filter(function (item) {
-	          var isMatch = true;
-	          Object.keys(queryParams).forEach(function (key) {
-	            if (item[key] !== queryParams[key]) {
-	              isMatch = false;
-	            }
-	          });
-	          return isMatch;
-	        });
+	      return this._$http.get(this._itemSpecificUrl(id), { cache: this._cache }).then(function (response) {
+	        return _this2.transformItem(response.data);
 	      });
 	    }
 	  }, {
@@ -72943,8 +72921,7 @@
 	      var _this4 = this;
 	
 	      return this._$http['delete'](this._itemSpecificUrl(item[this.itemIdField])).then(function () {
-	        var index = _this4.itemList.indexOf(item);
-	        _this4.itemList.splice(index, 1); // remove item from cached list
+	        _this4.clearCache();
 	      });
 	    }
 	  }, {
@@ -72953,12 +72930,8 @@
 	      var _this5 = this;
 	
 	      return this._$http.post(this.resourceUrl, item).then(function (response) {
-	        var newJob = _this5.transformItem(response.data);
-	        _this5.itemList.push(newJob);
-	        return response.data;
-	      }, function (response) {
-	        _this5.itemList.pop();
-	        return _this5._$q.reject(response.data);
+	        _this5.clearCache();
+	        return _this5.transformItem(response.data);
 	      });
 	    }
 	  }, {
@@ -72967,9 +72940,8 @@
 	      var _this6 = this;
 	
 	      return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(function (response) {
+	        _this6.clearCache();
 	        return _this6.transformItem(response.data);
-	      }, function (response) {
-	        return _this6._$q.reject(response.data);
 	      });
 	    }
 	
@@ -73000,10 +72972,9 @@
 	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
 	
 	  }, {
-	    key: 'refreshCache',
-	    value: function refreshCache() {
-	      this._initialized = false;
-	      return this.getList();
+	    key: 'clearCache',
+	    value: function clearCache() {
+	      this._cache.removeAll();
 	    }
 	
 	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73058,10 +73029,10 @@
 	
 	  /* @ngInject */
 	
-	  function jobService($http, $q, productService, jobTypeService, jobTaskService, utilityService, jobStatusService) {
+	  function jobService($http, $q, productService, jobTypeService, jobTaskService, utilityService, jobStatusService, $cacheFactory) {
 	    _classCallCheck(this, jobService);
 	
-	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this._$q = $q;
 	    this.resourceUrl = '/api/jobs/';
 	    this._productService = productService;
@@ -73223,7 +73194,7 @@
 	        var _job$jobTasks;
 	
 	        (_job$jobTasks = job.jobTasks).push.apply(_job$jobTasks, _toConsumableArray(jobTasks.filter(function (jobTask) {
-	          return job.job_tasks.indexOf(jobTask.id) > -1 && job.id === jobTask.job;
+	          return job.id === jobTask.job;
 	        })));
 	      });
 	    }
@@ -73289,10 +73260,10 @@
 	
 	  /* @ngInject */
 	
-	  function taskService($http, $q) {
+	  function taskService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, taskService);
 	
-	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/tasks/';
 	  }
 	
@@ -73331,10 +73302,10 @@
 	
 	  /* @ngInject */
 	
-	  function jobTaskService($http, $q) {
+	  function jobTaskService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, jobTaskService);
 	
-	    _get(Object.getPrototypeOf(jobTaskService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(jobTaskService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/job-tasks/';
 	    this.taskCompleteStatus = 3;
 	    this.taskIncompleteStatus = 1;
@@ -73391,10 +73362,10 @@
 	
 	  /* @ngInject */
 	
-	  function groupUserService($http, $q) {
+	  function groupUserService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, groupUserService);
 	
-	    _get(Object.getPrototypeOf(groupUserService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(groupUserService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/users/';
 	  }
 	
@@ -73474,10 +73445,10 @@
 	
 	  /* @ngInject */
 	
-	  function jobTypeService($http, $q, $state) {
+	  function jobTypeService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, jobTypeService);
 	
-	    _get(Object.getPrototypeOf(jobTypeService.prototype), 'constructor', this).call(this, $http, $q, $state);
+	    _get(Object.getPrototypeOf(jobTypeService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/job-types/';
 	  }
 	
@@ -73525,10 +73496,10 @@
 	
 	  /* @ngInject */
 	
-	  function jobStatusService($http, $q) {
+	  function jobStatusService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, jobStatusService);
 	
-	    _get(Object.getPrototypeOf(jobStatusService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(jobStatusService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/job-statuses/';
 	  }
 	
@@ -73578,10 +73549,10 @@
 	
 	  /* @ngInject */
 	
-	  function productTaskService($http, $q) {
+	  function productTaskService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, productTaskService);
 	
-	    _get(Object.getPrototypeOf(productTaskService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(productTaskService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/product-tasks/';
 	  }
 	
@@ -74371,7 +74342,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item flex layout=\"column\" ng-repeat=\"job in vm.jobs track by $index\"> <md-divider></md-divider> <div layout-margin style=\"width: 100%\" layout=\"row\" layout-align=\"start center\"> <div flex=\"30\" layout=\"column\"> <div layout=\"row\" layout-align=\"start center\" ng-click=\"vm.editJob(job)\"> <h3>{{ job.description }}</h3> </div> <h5>Job Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Job Status:</span> <p layout-margin>{{ job.status.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Is Rework:</span> <p layout-margin>{{ vm.isRework(job) }}</p> </div> <h5>Product Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Product Description:</span> <p layout-margin>{{ job.product.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Product Code:</span> <p layout-margin>{{ job.product.code }}</p> </div> </div> <div flex=\"60\" layout=\"column\"> <div layout-margin>Total Job Time: {{ vm.getTotalJobTime(job) }} (mins)</div> <div layout-margin>Remaining Job Time: {{ vm.getJobTimeRemaining(job) }} (mins)</div> <md-divider></md-divider> <h4 layout-margin>Overall Progress: {{ vm.getJobProgress(job) * 100 }}%</h4> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </div> </div> <md-divider></md-divider> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div> <md-list-item ng-repeat=\"job in vm.jobs track by $index\" layout=\"row\"> <a flex=\"15\" ui-sref=\"root.editJob({jobId:job.id})\" layout-margin>{{ job.description }}</a> <md-progress-linear flex=\"85\" md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear></md-list-item>";
+	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item flex layout=\"column\" ng-repeat=\"job in vm.jobs track by $index\"> <md-divider></md-divider> <div layout-margin style=\"width: 100%\" layout=\"row\" layout-align=\"start center\"> <div flex=\"30\" layout=\"column\"> <div layout=\"row\" layout-align=\"start center\" ng-click=\"vm.editJob(job)\"> <h3>{{ job.description }}</h3> </div> <h5>Job Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Job Status:</span> <p layout-margin>{{ job.status.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Is Rework:</span> <p layout-margin>{{ vm.isRework(job) }}</p> </div> <h5>Product Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Product Description:</span> <p layout-margin>{{ job.product.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Product Code:</span> <p layout-margin>{{ job.product.code }}</p> </div> </div> <div flex=\"60\" layout=\"column\"> <div layout-margin>Total Job Time: {{ vm.getTotalJobTime(job) }} (mins)</div> <div layout-margin>Remaining Job Time: {{ vm.getJobTimeRemaining(job) }} (mins)</div> <md-divider></md-divider> <h4 layout-margin>Overall Progress: {{ vm.getJobProgress(job) * 100 }}%</h4> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </div> </div> <md-divider></md-divider> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 

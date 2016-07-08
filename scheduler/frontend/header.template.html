@@ -5,5 +5,6 @@
     <div class="md-toolbar-tools">
       <h2 class="md-flex">{{ vm.getPageTitle() }}</h2>
     </div>
+    <md-button ng-show="!vm.isLogin()" layout-align="center end" ng-click="vm._$state.go('root.metrics')">Metrics</md-button>
     <md-button ng-show="!vm.isLogin()" layout-align="center end" ng-click="vm.logout()">Logout</md-button>
 </md-toolbar>

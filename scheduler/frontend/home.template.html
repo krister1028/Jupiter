@@ -52,6 +52,3 @@
     </div>
     <md-button class="md-raised md-primary" ng-click="vm.addJob()">Add Job</md-button>
 </div>
-        <md-list-item ng-repeat="job in vm.jobs track by $index" layout="row">
-            <a flex="15" ui-sref="root.editJob({jobId:job.id})" layout-margin>{{ job.description }}</a>
-            <md-progress-linear flex="85" md-mode="determinate" value="{{ vm.getJobProgress(job) * 100 }}"></md-progress-linear>

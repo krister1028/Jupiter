@@ -2,8 +2,8 @@ import baseResourceClass from '../base-cached-resource-class';
 
 export default class jobService extends baseResourceClass {
   /* @ngInject */
-  constructor($http, $q, productService, jobTypeService, jobTaskService, utilityService, jobStatusService) {
-    super($http, $q);
+  constructor($http, $q, productService, jobTypeService, jobTaskService, utilityService, jobStatusService, $cacheFactory) {
+    super($http, $q, $cacheFactory);
     this._$q = $q;
     this.resourceUrl = '/api/jobs/';
     this._productService = productService;
@@ -116,14 +116,12 @@ export default class jobService extends baseResourceClass {
     job.completed_timestamp = job.completed_timestamp ? new Date(job.completed_timestamp) : null;
     job.created = new Date(job.created);
     return job;
-  };
+  }
 
   _getJobTasks(job) {
     job.jobTasks = [];
     return this._jobTaskService.getList().then(jobTasks => {
-      job.jobTasks.push(...jobTasks.filter(jobTask => {
-        return (job.job_tasks.indexOf(jobTask.id) > -1 && job.id === jobTask.job);
-      }));
+      job.jobTasks.push(...jobTasks.filter(jobTask => job.id === jobTask.job));
     });
   }
 
