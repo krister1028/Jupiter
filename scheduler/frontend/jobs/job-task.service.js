@@ -2,8 +2,8 @@ import baseResourceClass from '../base-cached-resource-class';
 
 export default class jobTaskService extends baseResourceClass {
   /* @ngInject */
-  constructor($http, $q) {
-    super($http, $q);
+  constructor($http, $q, $cacheFactory) {
+    super($http, $q, $cacheFactory);
     this.resourceUrl = '/api/job-tasks/';
     this.taskCompleteStatus = 3;
     this.taskIncompleteStatus = 1;

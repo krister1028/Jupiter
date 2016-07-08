@@ -2,11 +2,10 @@ import baseResourceClass from '../base-cached-resource-class';
 
 export default class productService extends baseResourceClass {
   /* @ngInject */
-  constructor($http, $q, productTaskService) {
-    super($http, $q);
+  constructor($http, $q, productTaskService, $cacheFactory) {
+    super($http, $q, $cacheFactory);
     this.resourceUrl = '/api/products/';
     this._productTaskService = productTaskService;
-    this.relatedServices = [productTaskService];
   }
 
   post(product) {

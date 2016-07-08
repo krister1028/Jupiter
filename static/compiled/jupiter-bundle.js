@@ -272,9 +272,7 @@
 	      }
 	    },
 	    resolve: { product: function product(productService, $stateParams) {
-	        return productService.get({ id: $stateParams.productId }).then(function (productList) {
-	          return productList[0];
-	        });
+	        return productService.get($stateParams.productId);
 	      } }
 	  }).state('root.editJob', {
 	    url: '/job/{jobId:int}',
@@ -286,9 +284,7 @@
 	      }
 	    },
 	    resolve: { job: function job(jobService, $stateParams) {
-	        return jobService.get({ id: $stateParams.jobId }).then(function (jobList) {
-	          return jobList[0];
-	        });
+	        return jobService.get($stateParams.jobId);
 	      } }
 	
 	  }).state('root.addTask', {
@@ -72780,13 +72776,12 @@
 	
 	  /* @ngInject */
 	
-	  function productService($http, $q, productTaskService) {
+	  function productService($http, $q, productTaskService, $cacheFactory) {
 	    _classCallCheck(this, productService);
 	
-	    _get(Object.getPrototypeOf(productService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(productService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/products/';
 	    this._productTaskService = productTaskService;
-	    this.relatedServices = [productTaskService];
 	  }
 	
 	  _createClass(productService, [{
@@ -72839,7 +72834,7 @@
 
 /***/ },
 /* 28 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	/*
 	This is a base class that can be extended by a child service which represents a RESTful resource.  The primary value
@@ -72848,6 +72843,7 @@
 	There are cases (for example when working with data that's paginated on the backend) where the in memory caching
 	provided here is undesirable, so use this class with caution.
 	*/
+	
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
@@ -72856,28 +72852,22 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _angular = __webpack_require__(3);
-	
-	var _angular2 = _interopRequireDefault(_angular);
-	
 	var baseResourceClass = (function () {
 	  /* @ngInject */
 	
-	  function baseResourceClass($http, $q) {
+	  function baseResourceClass($http, $q, $cacheFactory) {
 	    _classCallCheck(this, baseResourceClass);
 	
-	    this._initialized = false;
 	    this._$q = $q;
 	    this._$http = $http;
-	    this._pristineItemList = []; // private cache, not exposed outside of service
+	    this._cache = $cacheFactory(this.constructor.name);
 	
 	    this.itemList = [];
+	
 	    // must be overwritten in child class
 	    this.resourceUrl = null;
 	    // may be overwritten in child class as needed
@@ -72893,38 +72883,21 @@
 	    value: function getList() {
 	      var _this = this;
 	
-	      var deferred = this._$q.defer();
+	      return this._$http.get(this.resourceUrl, { cache: this._cache }).then(function (response) {
+	        var _itemList;
 	
-	      if (!this._initialized) {
-	        // if successful get request has not yet resolved
-	        this._$http.get(this.resourceUrl).then(function (response) {
-	          _this._initialized = true;
-	          _this._pristineItemList = [].concat(_toConsumableArray(_this.transformResponse(response)));
-	          _this._makeItemListPristine();
-	          deferred.resolve(_this.itemList);
-	        });
-	      } else {
-	        // if items are in memory already, resolve without making request
-	        this._makeItemListPristine();
-	        deferred.resolve(this.itemList);
-	      }
-	      return deferred.promise;
+	        _this.itemList.length = 0;
+	        (_itemList = _this.itemList).push.apply(_itemList, _toConsumableArray(_this.transformResponse(response)));
+	        return _this.itemList;
+	      });
 	    }
 	  }, {
 	    key: 'get',
-	    value: function get(queryParams) {
+	    value: function get(id) {
 	      var _this2 = this;
 	
-	      return this.getList().then(function () {
-	        return _this2.itemList.filter(function (item) {
-	          var isMatch = true;
-	          Object.keys(queryParams).forEach(function (key) {
-	            if (item[key] !== queryParams[key]) {
-	              isMatch = false;
-	            }
-	          });
-	          return isMatch;
-	        });
+	      return this._$http.get(this._itemSpecificUrl(id), { cache: this._cache }).then(function (response) {
+	        return _this2.transformItem(response.data);
 	      });
 	    }
 	  }, {
@@ -72944,9 +72917,7 @@
 	      var _this4 = this;
 	
 	      return this._$http['delete'](this._itemSpecificUrl(item[this.itemIdField])).then(function () {
-	        var index = _this4.itemList.indexOf(item);
-	        _this4._deleteFromPristineList(item);
-	        _this4.itemList.splice(index, 1); // remove item from cached list
+	        _this4.clearCache();
 	      });
 	    }
 	  }, {
@@ -72955,13 +72926,8 @@
 	      var _this5 = this;
 	
 	      return this._$http.post(this.resourceUrl, item).then(function (response) {
-	        var newJob = _this5.transformItem(response.data);
-	        _this5._postToPristineList(newJob);
-	        _this5.itemList.push(newJob);
-	        return response.data;
-	      }, function (response) {
-	        _this5.itemList.pop();
-	        return _this5._$q.reject(response.data);
+	        _this5.clearCache();
+	        return _this5.transformItem(response.data);
 	      });
 	    }
 	  }, {
@@ -72970,11 +72936,8 @@
 	      var _this6 = this;
 	
 	      return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(function (response) {
-	        _this6._putToPristineList(_this6.transformItem(response.data));
-	        return response.data;
-	      }, function (response) {
-	        _this6._makeItemListPristine();
-	        return _this6._$q.reject(response.data);
+	        _this6.clearCache();
+	        return _this6.transformItem(response.data);
 	      });
 	    }
 	
@@ -73005,10 +72968,9 @@
 	    ///////////////////////////////////////////////////////////////////////////////////////////////////// */
 	
 	  }, {
-	    key: 'refreshCache',
-	    value: function refreshCache() {
-	      this._initialized = false;
-	      return this.getList();
+	    key: 'clearCache',
+	    value: function clearCache() {
+	      this._cache.removeAll();
 	    }
 	
 	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73023,44 +72985,6 @@
 	        return this.resourceUrl;
 	      }
 	      return '' + this.resourceUrl + itemId + '/';
-	    }
-	  }, {
-	    key: '_makeItemListPristine',
-	    value: function _makeItemListPristine() {
-	      var _itemList;
-	
-	      this.itemList.length = 0;
-	      (_itemList = this.itemList).push.apply(_itemList, _toConsumableArray(_angular2['default'].copy(this._pristineItemList)));
-	    }
-	  }, {
-	    key: '_putToPristineList',
-	    value: function _putToPristineList(item) {
-	      var index = this._getPristineIndex(item[this.itemIdField]);
-	      if (index > -1) {
-	        this._pristineItemList[index] = item;
-	      }
-	    }
-	  }, {
-	    key: '_postToPristineList',
-	    value: function _postToPristineList(item) {
-	      this._pristineItemList.push(item);
-	    }
-	  }, {
-	    key: '_deleteFromPristineList',
-	    value: function _deleteFromPristineList(item) {
-	      var index = this._getPristineIndex(item[this.itemIdField]);
-	      if (index > -1) {
-	        this._pristineItemList.splice(index, 1);
-	      }
-	    }
-	  }, {
-	    key: '_getPristineIndex',
-	    value: function _getPristineIndex(id) {
-	      var _this8 = this;
-	
-	      return this._pristineItemList.findIndex(function (item) {
-	        return item[_this8.itemIdField] === id;
-	      });
 	    }
 	  }]);
 	
@@ -73101,10 +73025,10 @@
 	
 	  /* @ngInject */
 	
-	  function jobService($http, $q, productService, jobTypeService, jobTaskService, utilityService, jobStatusService) {
+	  function jobService($http, $q, productService, jobTypeService, jobTaskService, utilityService, jobStatusService, $cacheFactory) {
 	    _classCallCheck(this, jobService);
 	
-	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(jobService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this._$q = $q;
 	    this.resourceUrl = '/api/jobs/';
 	    this._productService = productService;
@@ -73252,7 +73176,7 @@
 	        var _job$jobTasks;
 	
 	        (_job$jobTasks = job.jobTasks).push.apply(_job$jobTasks, _toConsumableArray(jobTasks.filter(function (jobTask) {
-	          return job.job_tasks.indexOf(jobTask.id) > -1 && job.id === jobTask.job;
+	          return job.id === jobTask.job;
 	        })));
 	      });
 	    }
@@ -73318,10 +73242,10 @@
 	
 	  /* @ngInject */
 	
-	  function taskService($http, $q) {
+	  function taskService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, taskService);
 	
-	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(taskService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/tasks/';
 	  }
 	
@@ -73360,10 +73284,10 @@
 	
 	  /* @ngInject */
 	
-	  function jobTaskService($http, $q) {
+	  function jobTaskService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, jobTaskService);
 	
-	    _get(Object.getPrototypeOf(jobTaskService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(jobTaskService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/job-tasks/';
 	    this.taskCompleteStatus = 3;
 	    this.taskIncompleteStatus = 1;
@@ -73420,10 +73344,10 @@
 	
 	  /* @ngInject */
 	
-	  function groupUserService($http, $q) {
+	  function groupUserService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, groupUserService);
 	
-	    _get(Object.getPrototypeOf(groupUserService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(groupUserService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/users/';
 	  }
 	
@@ -73503,10 +73427,10 @@
 	
 	  /* @ngInject */
 	
-	  function jobTypeService($http, $q, $state) {
+	  function jobTypeService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, jobTypeService);
 	
-	    _get(Object.getPrototypeOf(jobTypeService.prototype), 'constructor', this).call(this, $http, $q, $state);
+	    _get(Object.getPrototypeOf(jobTypeService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/job-types/';
 	  }
 	
@@ -73554,10 +73478,10 @@
 	
 	  /* @ngInject */
 	
-	  function jobStatusService($http, $q) {
+	  function jobStatusService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, jobStatusService);
 	
-	    _get(Object.getPrototypeOf(jobStatusService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(jobStatusService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/job-statuses/';
 	  }
 	
@@ -73607,10 +73531,10 @@
 	
 	  /* @ngInject */
 	
-	  function productTaskService($http, $q) {
+	  function productTaskService($http, $q, $cacheFactory) {
 	    _classCallCheck(this, productTaskService);
 	
-	    _get(Object.getPrototypeOf(productTaskService.prototype), 'constructor', this).call(this, $http, $q);
+	    _get(Object.getPrototypeOf(productTaskService.prototype), 'constructor', this).call(this, $http, $q, $cacheFactory);
 	    this.resourceUrl = '/api/product-tasks/';
 	  }
 	
@@ -74440,7 +74364,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.job.product_description }}</div> <div><b>Product Code:</b> {{ vm.job.product_code }} {{ vm.job.jobTasks }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.jobTasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
+	var v1="<div layout-margin layout=\"column\"> <h3>Job Product:</h3> <div layout-margin> <div><b>Product Name:</b> {{ vm.job.product_description }}</div> <div><b>Product Code:</b> {{ vm.job.product_code }}</div> </div> </div> <div layout-margin> <h3>Job Tasks</h3> <div ng-repeat=\"task in vm.job.jobTasks track by $index\"> <md-button class=\"md-raised\" ng-click=\"vm.toggleTask(task)\">{{ vm.taskToggleText(task) }}</md-button> <span ng-style=\"vm.getTaskStyle(task)\">{{ task.description }}</span> </div> </div> <div layout-margin layout=\"column\"> <h3 layout-margin>Job Details</h3> <md-input-container> <label>Job Description</label> <input ng-model=\"vm.job.description\" required> </md-input-container> <md-input-container> <label>Job Type</label> <md-select ng-model=\"vm.job.type\"> <md-option ng-repeat=\"type in vm.jobTypes\" value=\"{{ type.id }}\"> {{ type.description }} </md-option> </md-select> </md-input-container> <md-input-container> <label>Job Status</label> <md-select ng-model=\"vm.job.status\"> <md-option ng-repeat=\"status in vm.jobStatuses\" value=\"{{ status.id }}\"> {{ status.description }} </md-option> </md-select> </md-input-container> <md-checkbox ng-model=\"vm.job.rework\">Is Rework</md-checkbox> </div> <div layout=\"row\" layout-margin> <md-button class=\"md-raised md-primary\" ui-sref=\"root.home\">Cancel</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.updateJob()\">Update Job</md-button> <md-button class=\"md-raised md-primary\" ng-click=\"vm.deleteJob()\">Delete Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("edit-job.template.html",v1)}]);
 	module.exports=v1;
 

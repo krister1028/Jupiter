@@ -108,7 +108,7 @@ class Job(models.Model):
     description = models.CharField(max_length=255)
     started_timestamp = models.DateTimeField(null=True, blank=True)
     completed_timestamp = models.DateTimeField(null=True, blank=True)
-    job_tasks = models.ManyToManyField(ProductTask, through='JobTask')
+    product_tasks = models.ManyToManyField(ProductTask, through='JobTask')
     history = HistoricalRecords()
 
     def __unicode__(self):
@@ -134,7 +134,7 @@ class Job(models.Model):
 
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
-        if not self.job_tasks.all().count():
+        if not self.product_tasks.all().count():
             for product_task in ProductTask.objects.filter(product=self.product):
                 JobTask(job=self, product_task=product_task, group=self.group).save()
 
