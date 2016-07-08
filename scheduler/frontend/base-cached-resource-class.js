@@ -5,16 +5,16 @@ here is that the items are cached in memory and managed by the http verb methods
 There are cases (for example when working with data that's paginated on the backend) where the in memory caching
 provided here is undesirable, so use this class with caution.
 */
-import angular from 'angular';
 
 export default class baseResourceClass {
   /* @ngInject */
-  constructor($http, $q) {
-    this._initialized = false;
+  constructor($http, $q, $cacheFactory) {
     this._$q = $q;
     this._$http = $http;
+    this._cache = $cacheFactory(this.constructor.name);
 
     this.itemList = [];
+
     // must be overwritten in child class
     this.resourceUrl = null;
     // may be overwritten in child class as needed
@@ -26,32 +26,19 @@ export default class baseResourceClass {
   ///////////////////////////////////////////////////////////////////////////////////////////////////// */
 
   getList() {
-    const deferred = this._$q.defer();
-
-    if (!this._initialized) { // if successful get request has not yet resolved
-      this._$http.get(this.resourceUrl).then(
-        response => {
-          this._initialized = true;
-          this.itemList.push(...this.transformResponse(response));
-          deferred.resolve(this.itemList);
-        }
-      );
-    } else { // if items are in memory already, resolve without making request
-      deferred.resolve(this.itemList);
-    }
-    return deferred.promise;
+    return this._$http.get(this.resourceUrl, {cache: this._cache}).then(
+      response => {
+        this.itemList.length = 0;
+        this.itemList.push(...this.transformResponse(response));
+        return this.itemList;
+      }
+    );
   }
 
-  get(queryParams) {
-    return this.getList().then(() => this.itemList.filter(item => {
-      let isMatch = true;
-      Object.keys(queryParams).forEach(key => {
-        if (item[key] !== queryParams[key]) {
-          isMatch = false;
-        }
-      });
-      return isMatch;
-    }));
+  get(id) {
+    return this._$http.get(this._itemSpecificUrl(id), {cache: this._cache}).then(
+      response => this.transformItem(response.data)
+    );
   }
 
   deleteList(itemList) {
@@ -65,8 +52,7 @@ export default class baseResourceClass {
   delete(item) {
     return this._$http.delete(this._itemSpecificUrl(item[this.itemIdField])).then(
       () => {
-        const index = this.itemList.indexOf(item);
-        this.itemList.splice(index, 1); // remove item from cached list
+        this.clearCache();
       }
     );
   }
@@ -74,13 +60,8 @@ export default class baseResourceClass {
   post(item) {
     return this._$http.post(this.resourceUrl, item).then(
       response => {
-        const newJob = this.transformItem(response.data);
-        this.itemList.push(newJob);
-        return response.data;
-      },
-      response => {
-        this.itemList.pop();
-        return this._$q.reject(response.data);
+        this.clearCache();
+        return this.transformItem(response.data);
       }
     );
   }
@@ -88,10 +69,8 @@ export default class baseResourceClass {
   put(item) {
     return this._$http.put(this._itemSpecificUrl(item[this.itemIdField]), item).then(
       response => {
+        this.clearCache();
         return this.transformItem(response.data);
-      },
-      response => {
-        return this._$q.reject(response.data);
       }
     );
   }
@@ -114,9 +93,8 @@ export default class baseResourceClass {
   // Public Utility Methods
   ///////////////////////////////////////////////////////////////////////////////////////////////////// */
 
-  refreshCache() {
-    this._initialized = false;
-    return this.getList();
+  clearCache() {
+    this._cache.removeAll();
   }
 
   /* /////////////////////////////////////////////////////////////////////////////////////////////////////

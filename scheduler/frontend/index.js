@@ -127,8 +127,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
           controller: 'AddProductController as vm'
         }
       },
-      resolve: {product: (productService, $stateParams) => productService.get({id: $stateParams.productId})
-        .then(productList => productList[0])}
+      resolve: {product: (productService, $stateParams) => productService.get($stateParams.productId)}
     })
     .state('root.editJob', {
       url: '/job/{jobId:int}',
@@ -139,8 +138,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
           controller: 'EditJobController as vm'
         }
       },
-      resolve: {job: (jobService, $stateParams) => jobService.get({id: $stateParams.jobId})
-        .then(jobList => jobList[0])}
+      resolve: {job: (jobService, $stateParams) => jobService.get($stateParams.jobId)}
 
     })
     .state('root.addTask', {
