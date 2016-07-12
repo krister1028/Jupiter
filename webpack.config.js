@@ -5,7 +5,7 @@ module.exports = {
   devtool: 'source-map',
 
   entry: {
-    jupiter: ['./scheduler/frontend/index.js']
+    jupiter: ['./scheduler/frontend/jupiter.js']
   },
   output: {
     path: __dirname + '/static/compiled/',
