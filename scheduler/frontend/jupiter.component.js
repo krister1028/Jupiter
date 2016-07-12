@@ -1,3 +1,5 @@
-/**
- * Created by krister on 7/12/16.
- */
+const AppComponent = {
+  template: `<div ui-view></div>`
+};
+
+export default AppComponent;
