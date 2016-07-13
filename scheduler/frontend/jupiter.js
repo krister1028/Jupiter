@@ -1,14 +1,24 @@
+/* eslint no-shadow: 0 */
 import angular from 'angular';
-import uiRouter from 'angular-ui-router';
+import userService from './components/login/user.service';
 import AppComponent from './jupiter.component';
 import Components from './components/components';
 
 const jupiter = angular
   .module('jupiter', [
-    Components,
-    uiRouter
+    Components
   ])
-  .component('jupiter', AppComponent);
+  .service('userService', userService)
+  .config(($stateProvider, $urlRouterProvider) => {
+    $stateProvider
+      .state('root', {
+        abstract: true,
+        resolve: {user: userService => userService.getUser().then(user => user)}
+      });
+    $urlRouterProvider.otherwise('/');
+  })
+  .component('jupiter', AppComponent)
+  .name;
 
 export default jupiter;
 
