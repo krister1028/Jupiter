@@ -1,21 +1,15 @@
 /* eslint no-shadow: 0 */
-import Highcharts from 'highcharts';
-// kinda weird, but we need to define this explicitly: https://github.com/highcharts/highcharts/issues/4994
-window.Highcharts = Highcharts;
 
 import angular from 'angular';
 import angularMaterial from 'angular-material';
 import angularMessages from 'angular-messages';
 import uiRouter from 'angular-ui-router';
-import highChartsNg from 'highcharts-ng';
 import loginTemplate from './login/login.html';
 import headerTemplate from './header.template.html';
-import dateChartTemplate from './metrics/date-chart.template.html';
 import LoginController from './login/login.controller';
 import AddProductController from './products/add-product.controller';
 import AddTaskController from './tasks/add-task.controller';
 import MetricsController from './metrics/metrics.controller';
-import ChartController from './metrics/chart.controller';
 import userService from './login/user.service';
 import productService from './products/product.service';
 import jobService from './jobs/job.service';
@@ -26,7 +20,6 @@ import utilityService from './utility.service';
 import jobTypeService from './jobs/job-type.service';
 import jobStatusService from './jobs/job-status.service';
 import productTaskService from './products/product-task.service';
-import highchartService from './metrics/highchart.service.js';
 import metricsService from './metrics/metrics.service';
 import HomeController from './home.controller';
 import EditJobController from './jobs/edit-job.controller';
@@ -36,9 +29,10 @@ import addProductTemplate from './products/add-product.template.html';
 import addTaskTemplate from './tasks/add-task.template.html';
 import editJobTemplate from './jobs/edit-job.template.html';
 import metricsTemplate from './metrics/metrics.template.html';
+import Components from './components/components';
 
 const jupiter = angular
-  .module('jupiter', [angularMaterial, uiRouter, angularMessages, highChartsNg])
+  .module('jupiter', [angularMaterial, uiRouter, angularMessages, Components])
   .controller('LoginController', LoginController)
   .controller('AddProductController', AddProductController)
   .controller('AddTaskController', AddTaskController)
@@ -53,16 +47,7 @@ const jupiter = angular
   .service('jobTaskService', jobTaskService)
   .service('productTaskService', productTaskService)
   .service('metricsService', metricsService)
-  .service('highchartService', highchartService)
   .service('utilityService', utilityService)
-  .component('dateChart', {
-    bindings: {
-      config: '=',
-      refreshData: '&'
-    },
-    template: dateChartTemplate,
-    controller: ChartController
-  })
   .config(configuration)
 ;
 
