@@ -72102,10 +72102,15 @@
 	    this._jobStatusService = jobStatusService;
 	    this._jobTaskService = jobTaskService;
 	    this._utilityService = utilityService;
-	    this.dependantServicesLoading = this._productService.getList();
+	    this.dependantServicesLoading = this.loadDependantServices();
 	  }
 	
 	  _createClass(jobService, [{
+	    key: 'loadDependantServices',
+	    value: function loadDependantServices() {
+	      return this._$q.all([this._productService.getList(), this._jobStatusService.getList(), this._jobTypeService.getList(), this._jobTaskService.getList()]);
+	    }
+	  }, {
 	    key: 'getProgress',
 	    value: function getProgress(job) {
 	      var totalTime = this.getTotalJobTime(job);
@@ -74482,7 +74487,7 @@
 	  }, {
 	    key: "getSeries",
 	    value: function getSeries() {
-	      this._chartService.getCategoryCount(this.objectList, this.categoryNameKey, this.seriesNameKey);
+	      return this._chartService.getCategoryCount(this.objectList, this.categoryNameKey, this.seriesNameKey);
 	    }
 	  }]);
 	

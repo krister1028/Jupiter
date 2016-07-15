@@ -19,7 +19,7 @@ export default class AggregateGroupedChartController {
   }
 
   getSeries() {
-    this._chartService.getCategoryCount(
+    return this._chartService.getCategoryCount(
       this.objectList,
       this.categoryNameKey,
       this.seriesNameKey

@@ -11,7 +11,16 @@ export default class jobService extends baseResourceClass {
     this._jobStatusService = jobStatusService;
     this._jobTaskService = jobTaskService;
     this._utilityService = utilityService;
-    this.dependantServicesLoading = this._productService.getList();
+    this.dependantServicesLoading = this.loadDependantServices();
+  }
+
+  loadDependantServices() {
+    return this._$q.all([
+      this._productService.getList(),
+      this._jobStatusService.getList(),
+      this._jobTypeService.getList(),
+      this._jobTaskService.getList()
+    ]);
   }
 
   getProgress(job) {
