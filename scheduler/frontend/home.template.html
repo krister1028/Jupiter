@@ -6,7 +6,15 @@
 </div>
 
 <div layout-margin>
-    <jobs-by-product></jobs-by-product>
+    <aggregate-grouped-chart ng-if="vm.jobServicesLoaded"
+            chart-title="Jobs By Product"
+            aggregate-title="Job Count"
+            category-title="Products"
+            object-list="vm.jobs"
+            series-name-key="status.description"
+            category-name-key="product.description"
+            aggregate-on-key="id">
+    </aggregate-grouped-chart>
     <h2>
         Production Schedule
     </h2>

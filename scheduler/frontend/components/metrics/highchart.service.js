@@ -69,9 +69,7 @@ export default class highchartService {
     const config = highchartService._getBaseChartConfig();
     config.title.text = configDetail.title;
     config.xAxis.title.text = configDetail.xAxisLabel;
-    config.xAxis.categories = configDetail.categories;
     config.yAxis.title.text = configDetail.yAxisLabel;
-    config.series = [{data: []}];
     return config;
   }
 
@@ -92,7 +90,7 @@ export default class highchartService {
     return config;
   }
 
-  getCategoryCount(objectList, categories, groups, categoryAttr, groupAttr) {
+  getCategoryCount(objectList, categoryAttr, groupAttr) {
   /*
     example: (for jobs by product, grouped by job status)
       categories = [Product 1, Product 2, Product 3] // list of product names
@@ -113,6 +111,8 @@ export default class highchartService {
 
     let objectCategoryValue;
     let objectGroupValue;
+    const groups = objectList.map(obj => this._utilityService.getDotAttribute(groupAttr, obj));
+    const categories = objectList.map(obj => this._utilityService.getDotAttribute(categoryAttr, obj));
 
     // initialize series list w/o data.  For the example above, series = [{name: 'Active' data: [0, 0, 0]},
     //                                                                    {name: 'Inactive' data: [0, 0, 0]}]
@@ -132,6 +132,14 @@ export default class highchartService {
       });
     });
     return series;
+  }
+
+  buildCategories(categoryNameKey, objectList) {
+    const categories = new Set;
+    objectList.forEach(obj => {
+      categories.add(this._utilityService.getDotAttribute(categoryNameKey, obj));
+    });
+    return [...categories];
   }
 
   getDataForTimeLine(rawData) {

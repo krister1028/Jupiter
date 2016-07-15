@@ -72102,6 +72102,7 @@
 	    this._jobStatusService = jobStatusService;
 	    this._jobTaskService = jobTaskService;
 	    this._utilityService = utilityService;
+	    this.dependantServicesLoading = this._productService.getList();
 	  }
 	
 	  _createClass(jobService, [{
@@ -72774,8 +72775,10 @@
 	    jobService.getList().then(function (jobs) {
 	      return _this.jobs = jobs;
 	    });
-	
 	    this._jobService = jobService;
+	    jobService.dependantServicesLoading.then(function () {
+	      return _this.jobServicesLoaded = true;
+	    });
 	    this._$mdDialog = $mdDialog;
 	    this._state = $state;
 	
@@ -73159,7 +73162,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <jobs-by-product></jobs-by-product> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item flex layout=\"column\" ng-repeat=\"job in vm.jobs track by $index\"> <md-divider></md-divider> <div layout-margin style=\"width: 100%\" layout=\"row\" layout-align=\"start center\"> <div flex=\"30\" layout=\"column\"> <div layout=\"row\" layout-align=\"start center\" ng-click=\"vm.editJob(job)\"> <h3>{{ job.description }}</h3> </div> <h5>Job Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Job Status:</span> <p layout-margin>{{ job.status.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Is Rework:</span> <p layout-margin>{{ vm.isRework(job) }}</p> </div> <h5>Product Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Product Description:</span> <p layout-margin>{{ job.product.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Product Code:</span> <p layout-margin>{{ job.product.code }}</p> </div> </div> <div flex=\"60\" layout=\"column\"> <div layout-margin>Total Job Time: {{ vm.getTotalJobTime(job) }} (mins)</div> <div layout-margin>Remaining Job Time: {{ vm.getJobTimeRemaining(job) }} (mins)</div> <md-divider></md-divider> <h4 layout-margin>Overall Progress: {{ vm.getJobProgress(job) * 100 }}%</h4> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </div> </div> <md-divider></md-divider> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div>";
+	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <aggregate-grouped-chart ng-if=\"vm.jobServicesLoaded\" chart-title=\"Jobs By Product\" aggregate-title=\"Job Count\" category-title=\"Products\" object-list=\"vm.jobs\" series-name-key=\"status.description\" category-name-key=\"product.description\" aggregate-on-key=\"id\"> </aggregate-grouped-chart> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item flex layout=\"column\" ng-repeat=\"job in vm.jobs track by $index\"> <md-divider></md-divider> <div layout-margin style=\"width: 100%\" layout=\"row\" layout-align=\"start center\"> <div flex=\"30\" layout=\"column\"> <div layout=\"row\" layout-align=\"start center\" ng-click=\"vm.editJob(job)\"> <h3>{{ job.description }}</h3> </div> <h5>Job Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Job Status:</span> <p layout-margin>{{ job.status.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Is Rework:</span> <p layout-margin>{{ vm.isRework(job) }}</p> </div> <h5>Product Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Product Description:</span> <p layout-margin>{{ job.product.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Product Code:</span> <p layout-margin>{{ job.product.code }}</p> </div> </div> <div flex=\"60\" layout=\"column\"> <div layout-margin>Total Job Time: {{ vm.getTotalJobTime(job) }} (mins)</div> <div layout-margin>Remaining Job Time: {{ vm.getJobTimeRemaining(job) }} (mins)</div> <md-divider></md-divider> <h4 layout-margin>Overall Progress: {{ vm.getJobProgress(job) * 100 }}%</h4> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </div> </div> <md-divider></md-divider> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
@@ -73262,13 +73265,13 @@
 	
 	var _highchartServiceJs2 = _interopRequireDefault(_highchartServiceJs);
 	
-	var _jobsByProductJobsByProductComponent = __webpack_require__(52);
+	var _currentMetricsAggregateGroupedChartComponentJs = __webpack_require__(51);
 	
-	var _jobsByProductJobsByProductComponent2 = _interopRequireDefault(_jobsByProductJobsByProductComponent);
+	var _currentMetricsAggregateGroupedChartComponentJs2 = _interopRequireDefault(_currentMetricsAggregateGroupedChartComponentJs);
 	
 	window.Highcharts = _highcharts2['default'];
 	
-	var _module = _angular2['default'].module('jupiter.metrics', [_highchartsNg2['default']]).service('highChartService', _highchartServiceJs2['default']).component('jobsByProduct', _jobsByProductJobsByProductComponent2['default']);
+	var _module = _angular2['default'].module('jupiter.metrics', [_highchartsNg2['default']]).service('highChartService', _highchartServiceJs2['default']).component('aggregateGroupedChart', _currentMetricsAggregateGroupedChartComponentJs2['default']);
 	
 	exports['default'] = _module.name;
 	module.exports = exports['default'];
@@ -74140,6 +74143,8 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var highchartColors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
@@ -74208,9 +74213,7 @@
 	      var config = highchartService._getBaseChartConfig();
 	      config.title.text = configDetail.title;
 	      config.xAxis.title.text = configDetail.xAxisLabel;
-	      config.xAxis.categories = configDetail.categories;
 	      config.yAxis.title.text = configDetail.yAxisLabel;
-	      config.series = [{ data: [] }];
 	      return config;
 	    }
 	  }, {
@@ -74233,7 +74236,7 @@
 	    }
 	  }, {
 	    key: 'getCategoryCount',
-	    value: function getCategoryCount(objectList, categories, groups, categoryAttr, groupAttr) {
+	    value: function getCategoryCount(objectList, categoryAttr, groupAttr) {
 	      var _this = this;
 	
 	      /*
@@ -74255,6 +74258,12 @@
 	
 	      var objectCategoryValue = undefined;
 	      var objectGroupValue = undefined;
+	      var groups = objectList.map(function (obj) {
+	        return _this._utilityService.getDotAttribute(groupAttr, obj);
+	      });
+	      var categories = objectList.map(function (obj) {
+	        return _this._utilityService.getDotAttribute(categoryAttr, obj);
+	      });
 	
 	      // initialize series list w/o data.  For the example above, series = [{name: 'Active' data: [0, 0, 0]},
 	      //                                                                    {name: 'Inactive' data: [0, 0, 0]}]
@@ -74276,6 +74285,17 @@
 	        });
 	      });
 	      return series;
+	    }
+	  }, {
+	    key: 'buildCategories',
+	    value: function buildCategories(categoryNameKey, objectList) {
+	      var _this2 = this;
+	
+	      var categories = new Set();
+	      objectList.forEach(function (obj) {
+	        categories.add(_this2._utilityService.getDotAttribute(categoryNameKey, obj));
+	      });
+	      return [].concat(_toConsumableArray(categories));
 	    }
 	  }, {
 	    key: 'getDataForTimeLine',
@@ -74372,8 +74392,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 51 */,
-/* 52 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74384,28 +74403,94 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _jobsByProductTemplateHtml = __webpack_require__(53);
+	var _chartTemplateHtml = __webpack_require__(52);
 	
-	var _jobsByProductTemplateHtml2 = _interopRequireDefault(_jobsByProductTemplateHtml);
+	var _chartTemplateHtml2 = _interopRequireDefault(_chartTemplateHtml);
+	
+	var _aggregateGroupedChartControllerJs = __webpack_require__(53);
+	
+	var _aggregateGroupedChartControllerJs2 = _interopRequireDefault(_aggregateGroupedChartControllerJs);
 	
 	exports['default'] = {
 	  bindings: {
-	    jobs: '>'
+	    chartTitle: '@',
+	    categoryTitle: '@',
+	    aggregateTitle: '@',
+	    categoryNameKey: '@',
+	    seriesNameKey: '@',
+	    aggregateOnKey: '@',
+	    objectList: '<'
 	  },
-	  template: _jobsByProductTemplateHtml2['default']
+	  template: _chartTemplateHtml2['default'],
+	  controller: _aggregateGroupedChartControllerJs2['default']
 	};
 	module.exports = exports['default'];
 
 /***/ },
-/* 53 */
+/* 52 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div> <highchart></highchart> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("jobs-by-product.template.html",v1)}]);
+	var v1="<div> <highchart config=\"$ctrl.config\"></highchart> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("chart.template.html",v1)}]);
 	module.exports=v1;
+
+/***/ },
+/* 53 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var AggregateGroupedChartController = (function () {
+	  function AggregateGroupedChartController(highChartService) {
+	    _classCallCheck(this, AggregateGroupedChartController);
+	
+	    this._chartService = highChartService;
+	    this.config = highChartService.getColumnConfig({
+	      title: this.chartTitle,
+	      xAxisLabel: this.categoryTitle,
+	      yAxisLabel: this.aggregateTitle
+	    });
+	  }
+	
+	  _createClass(AggregateGroupedChartController, [{
+	    key: "$onChanges",
+	    value: function $onChanges() {
+	      var _config$series;
+	
+	      this.getCategories();
+	      this.config.series.length = 0;
+	      (_config$series = this.config.series).push.apply(_config$series, _toConsumableArray(this.getSeries()));
+	    }
+	  }, {
+	    key: "getCategories",
+	    value: function getCategories() {
+	      this.config.categories = this._chartService.buildCategories(this.categoryNameKey, this.objectList);
+	    }
+	  }, {
+	    key: "getSeries",
+	    value: function getSeries() {
+	      this._chartService.getCategoryCount(this.objectList, this.categoryNameKey, this.seriesNameKey);
+	    }
+	  }]);
+	
+	  return AggregateGroupedChartController;
+	})();
+	
+	exports["default"] = AggregateGroupedChartController;
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ]);

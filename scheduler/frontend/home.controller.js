@@ -8,8 +8,8 @@ export default class HomeController {
     // initialize services
     this.jobs = [];
     jobService.getList().then(jobs => this.jobs = jobs);
-
     this._jobService = jobService;
+    jobService.dependantServicesLoading.then(() => this.jobServicesLoaded = true);
     this._$mdDialog = $mdDialog;
     this._state = $state;
 

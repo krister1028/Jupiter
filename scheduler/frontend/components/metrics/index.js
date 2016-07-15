@@ -5,10 +5,10 @@ window.Highcharts = Highcharts;
 import angular from 'angular';
 import highChartsNg from 'highcharts-ng';
 import highchartService from './highchart.service.js';
-import jobsByProduct from './jobs-by-product/jobs-by-product.component';
+import AggregateGroupedChart from './current-metrics/aggregate-grouped-chart.component.js';
 
 const module = angular.module('jupiter.metrics', [highChartsNg])
   .service('highChartService', highchartService)
-  .component('jobsByProduct', jobsByProduct);
+  .component('aggregateGroupedChart', AggregateGroupedChart);
 
 export default module.name;
