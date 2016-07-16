@@ -93,14 +93,16 @@ export default class highchartService {
   getCategoryCount(objectList, categoryAttr, groupAttr) {
   /*
     example: (for jobs by product, grouped by job status)
-      categories = [Product 1, Product 2, Product 3] // list of product names
-      groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
-      categoryAttr = 'productDescription'
-      groupAttr = 'status'
+      Derived:
+        categories = [Product 1, Product 2, Product 3] // list of product names
+        groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
+
+      categoryAttr = 'product.description'
+      groupAttr = 'status.description'
       objectList = [ // jobs
-        {productDescription: Product 1, status: 'Active'},
-        {productDescription: Product 1, status: 'Active'},
-        {productDescription: Product 2, status: 'Inactive'},
+        {id: 1, product: {description: Product 1}, status: {description: 'Active'}},
+        {id: 2, product: {description: Product 1}, status: {description: 'Active'}},
+        {id: 3, product: {description: Product 2}, status: {description: 'Inactive'}},
       ]
 
       expected output = [
@@ -111,6 +113,7 @@ export default class highchartService {
 
     let objectCategoryValue;
     let objectGroupValue;
+
     const groups = objectList.map(obj => this._utilityService.getDotAttribute(groupAttr, obj));
     const categories = objectList.map(obj => this._utilityService.getDotAttribute(categoryAttr, obj));
 
