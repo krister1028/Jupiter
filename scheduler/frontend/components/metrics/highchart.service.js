@@ -91,29 +91,31 @@ export default class highchartService {
     return config;
   }
 
-  getCategoryCount(config, objectList, groupByAttr, categoryNameAttr) {
+  getCategoryCount(config, objectList, seriesNameAttr, categoryNameAttr) {
     /*
      example: (for jobs by product, grouped by job status)
      category = product
-     groupBy = job status
+     series = job status
      objectList = jobs
 
-     Derived:
+
      categories = [Product 1, Product 2, Product 3] // list of product names
-     groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
 
      categoryNameAttr = 'product.description'
-     groupValueAttr = 'status.description'
+     seriesNameAttr = 'status.description'
      objectList = [ // jobs
-     {id: 1, product: {description: Product 1}, status: {description: 'Active'}},
-     {id: 2, product: {description: Product 1}, status: {description: 'Active'}},
-     {id: 3, product: {description: Product 2}, status: {description: 'Inactive'}},
+      {id: 1, product: {description: Product 1}, status: {description: 'Active'}},
+      {id: 2, product: {description: Product 1}, status: {description: 'Active'}},
+      {id: 3, product: {description: Product 2}, status: {description: 'Inactive'}},
      ]
 
-     expected output = [
-     {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
-     {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
+     expected series = [
+      {name: Active, data: [2, 0]}, // 2 active jobs for Product 1, 0 for Product 2
+      {name: Inactive, data: [0, 1]} // 0 active jobs for Product 1, 1 for Product 2
      ]
+
+     expected categories = [Product 1, Product 2]
+     
      */
 
 
@@ -121,19 +123,12 @@ export default class highchartService {
     const dataMap = {};
 
     objectList.forEach((object) => {
-      const categoryName = this._utilityService.getDotAttribute(categoryNameAttr, object); // job status.description
-      const groupByValue = this._utilityService.getDotAttribute(groupByAttr, object);  // job product.description
+      const categoryName = this._utilityService.getDotAttribute(categoryNameAttr, object);
+      const seriesName = this._utilityService.getDotAttribute(seriesNameAttr, object);
 
       categories.add(categoryName);
-      if (!dataMap.hasOwnProperty(groupByValue)) {
-        dataMap[groupByValue] = {[categoryName]: 1};
-      } else {
-        if (dataMap[groupByValue].hasOwnProperty(categoryName)) {
-          dataMap[groupByValue][categoryName] += 1;
-        } else {
-          dataMap[groupByValue][categoryName] = 1;
-        }
-      }
+      highchartService._incrementDataMap(dataMap, categoryName, seriesName);
+
     });
 
     config.xAxis.categories = [...categories];
@@ -155,6 +150,21 @@ export default class highchartService {
       data[index] = dataMap[group][category] || 0;
     });
     return data;
+  }
+
+  static _incrementDataMap(dataMap, categoryName, seriesName) {
+
+    if (!dataMap.hasOwnProperty(seriesName)) { // if we're seeing this series for the first time, initialize count to 1
+      dataMap[seriesName] = {[categoryName]: 1};
+    } else {
+      // if the series exists, but this is the first instance of the category, initialize count to 1
+      if (!dataMap[seriesName].hasOwnProperty(categoryName)) {
+        dataMap[seriesName][categoryName] = 1;
+      } else {
+        // otherwise, if we've seen both before, increment the count
+        dataMap[seriesName][categoryName] += 1;
+      }
+    }
   }
 
   buildCategories(categoryNameKey, objectList) {

@@ -74244,47 +74244,39 @@
 	    }
 	  }, {
 	    key: 'getCategoryCount',
-	    value: function getCategoryCount(config, objectList, groupByAttr, categoryNameAttr) {
+	    value: function getCategoryCount(config, objectList, seriesNameAttr, categoryNameAttr) {
 	      var _this = this;
 	
 	      /*
 	       example: (for jobs by product, grouped by job status)
 	       category = product
-	       groupBy = job status
+	       series = job status
 	       objectList = jobs
-	        Derived:
-	       categories = [Product 1, Product 2, Product 3] // list of product names
-	       groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
+	         categories = [Product 1, Product 2, Product 3] // list of product names
 	        categoryNameAttr = 'product.description'
-	       groupValueAttr = 'status.description'
+	       seriesNameAttr = 'status.description'
 	       objectList = [ // jobs
-	       {id: 1, product: {description: Product 1}, status: {description: 'Active'}},
-	       {id: 2, product: {description: Product 1}, status: {description: 'Active'}},
-	       {id: 3, product: {description: Product 2}, status: {description: 'Inactive'}},
+	        {id: 1, product: {description: Product 1}, status: {description: 'Active'}},
+	        {id: 2, product: {description: Product 1}, status: {description: 'Active'}},
+	        {id: 3, product: {description: Product 2}, status: {description: 'Inactive'}},
 	       ]
-	        expected output = [
-	       {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
-	       {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
+	        expected series = [
+	        {name: Active, data: [2, 0]}, // 2 active jobs for Product 1, 0 for Product 2
+	        {name: Inactive, data: [0, 1]} // 0 active jobs for Product 1, 1 for Product 2
 	       ]
+	        expected categories = [Product 1, Product 2]
+	       
 	       */
 	
 	      var categories = new Set();
 	      var dataMap = {};
 	
 	      objectList.forEach(function (object) {
-	        var categoryName = _this._utilityService.getDotAttribute(categoryNameAttr, object); // job status.description
-	        var groupByValue = _this._utilityService.getDotAttribute(groupByAttr, object); // job product.description
+	        var categoryName = _this._utilityService.getDotAttribute(categoryNameAttr, object);
+	        var seriesName = _this._utilityService.getDotAttribute(seriesNameAttr, object);
 	
 	        categories.add(categoryName);
-	        if (!dataMap.hasOwnProperty(groupByValue)) {
-	          dataMap[groupByValue] = _defineProperty({}, categoryName, 1);
-	        } else {
-	          if (dataMap[groupByValue].hasOwnProperty(categoryName)) {
-	            dataMap[groupByValue][categoryName] += 1;
-	          } else {
-	            dataMap[groupByValue][categoryName] = 1;
-	          }
-	        }
+	        highchartService._incrementDataMap(dataMap, categoryName, seriesName);
 	      });
 	
 	      config.xAxis.categories = [].concat(_toConsumableArray(categories));
@@ -74403,6 +74395,23 @@
 	        data[index] = dataMap[group][category] || 0;
 	      });
 	      return data;
+	    }
+	  }, {
+	    key: '_incrementDataMap',
+	    value: function _incrementDataMap(dataMap, categoryName, seriesName) {
+	
+	      if (!dataMap.hasOwnProperty(seriesName)) {
+	        // if we're seeing this series for the first time, initialize count to 1
+	        dataMap[seriesName] = _defineProperty({}, categoryName, 1);
+	      } else {
+	        // if the series exists, but this is the first instance of the category, initialize count to 1
+	        if (!dataMap[seriesName].hasOwnProperty(categoryName)) {
+	          dataMap[seriesName][categoryName] = 1;
+	        } else {
+	          // otherwise, if we've seen both before, increment the count
+	          dataMap[seriesName][categoryName] += 1;
+	        }
+	      }
 	    }
 	  }]);
 	
