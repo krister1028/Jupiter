@@ -72037,6 +72037,7 @@
 	    key: 'clearCache',
 	    value: function clearCache() {
 	      this._cache.removeAll();
+	      this.getList();
 	    }
 	
 	    /* /////////////////////////////////////////////////////////////////////////////////////////////////////
