@@ -115,7 +115,7 @@ export default class highchartService {
      ]
 
      expected categories = [Product 1, Product 2]
-     
+
      */
 
 
