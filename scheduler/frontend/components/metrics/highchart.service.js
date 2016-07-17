@@ -1,4 +1,5 @@
 /* eslint no-trailing-spaces: 0 */
+/* eslint guard-for-in: 0 */
 
 const highchartColors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
 
@@ -90,51 +91,70 @@ export default class highchartService {
     return config;
   }
 
-  getCategoryCount(objectList, categoryAttr, groupAttr) {
-  /*
-    example: (for jobs by product, grouped by job status)
-      Derived:
-        categories = [Product 1, Product 2, Product 3] // list of product names
-        groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
+  getCategoryCount(config, objectList, groupByAttr, categoryNameAttr) {
+    /*
+     example: (for jobs by product, grouped by job status)
+     category = product
+     groupBy = job status
+     objectList = jobs
 
-      categoryAttr = 'product.description'
-      groupAttr = 'status.description'
-      objectList = [ // jobs
-        {id: 1, product: {description: Product 1}, status: {description: 'Active'}},
-        {id: 2, product: {description: Product 1}, status: {description: 'Active'}},
-        {id: 3, product: {description: Product 2}, status: {description: 'Inactive'}},
-      ]
+     Derived:
+     categories = [Product 1, Product 2, Product 3] // list of product names
+     groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
 
-      expected output = [
-        {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
-        {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
-      ]
-   */
+     categoryNameAttr = 'product.description'
+     groupValueAttr = 'status.description'
+     objectList = [ // jobs
+     {id: 1, product: {description: Product 1}, status: {description: 'Active'}},
+     {id: 2, product: {description: Product 1}, status: {description: 'Active'}},
+     {id: 3, product: {description: Product 2}, status: {description: 'Inactive'}},
+     ]
 
-    let objectCategoryValue;
-    let objectGroupValue;
+     expected output = [
+     {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
+     {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
+     ]
+     */
 
-    const groups = objectList.map(obj => this._utilityService.getDotAttribute(groupAttr, obj));
-    const categories = objectList.map(obj => this._utilityService.getDotAttribute(categoryAttr, obj));
 
-    // initialize series list w/o data.  For the example above, series = [{name: 'Active' data: [0, 0, 0]},
-    //                                                                    {name: 'Inactive' data: [0, 0, 0]}]
-    const series = groups.map(groupName => {
-      return {name: groupName, data: categories.map(() => 0), color: highchartColors[0]};
+    const categories = new Set;
+    const dataMap = {};
+
+    objectList.forEach((object) => {
+      const categoryName = this._utilityService.getDotAttribute(categoryNameAttr, object); // job status.description
+      const groupByValue = this._utilityService.getDotAttribute(groupByAttr, object);  // job product.description
+
+      categories.add(categoryName);
+      if (!dataMap.hasOwnProperty(groupByValue)) {
+        dataMap[groupByValue] = {[categoryName]: 1};
+      } else {
+        if (dataMap[groupByValue].hasOwnProperty(categoryName)) {
+          dataMap[groupByValue][categoryName] += 1;
+        } else {
+          dataMap[groupByValue][categoryName] = 1;
+        }
+      }
     });
 
-    series.forEach(group => {
-      categories.forEach((catName, index) => {
-        objectList.forEach(obj => {
-          objectCategoryValue = this._utilityService.getDotAttribute(categoryAttr, obj);
-          objectGroupValue = this._utilityService.getDotAttribute(groupAttr, obj);
-          if (objectCategoryValue === catName && objectGroupValue === group.name) {
-            group.data[index] += 1;
-          }
-        });
-      });
+    config.xAxis.categories = [...categories];
+
+    const series = [];
+
+    // populate empty data
+    for (const groupByName in dataMap) {
+      series.push({name: groupByName, data: highchartService._getCategoryData(dataMap, config.xAxis.categories, groupByName)});
+    }
+
+    config.series = series;
+
+  }
+
+  static _getCategoryData(dataMap, categories, group) {
+    const data = [];
+    categories.forEach((category, index) => {
+      data[index] = dataMap[group][category] || 0;
     });
-    return series;
+    return data;
   }
 
   buildCategories(categoryNameKey, objectList) {

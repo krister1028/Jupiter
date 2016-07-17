@@ -74139,6 +74139,7 @@
 /***/ function(module, exports) {
 
 	/* eslint no-trailing-spaces: 0 */
+	/* eslint guard-for-in: 0 */
 	
 	'use strict';
 	
@@ -74149,6 +74150,8 @@
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
@@ -74241,55 +74244,59 @@
 	    }
 	  }, {
 	    key: 'getCategoryCount',
-	    value: function getCategoryCount(objectList, categoryAttr, groupAttr) {
+	    value: function getCategoryCount(config, objectList, groupByAttr, categoryNameAttr) {
 	      var _this = this;
 	
 	      /*
-	        example: (for jobs by product, grouped by job status)
-	          categories = [Product 1, Product 2, Product 3] // list of product names
-	          groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
-	          categoryAttr = 'productDescription'
-	          groupAttr = 'status'
-	          objectList = [ // jobs
-	            {productDescription: Product 1, status: 'Active'},
-	            {productDescription: Product 1, status: 'Active'},
-	            {productDescription: Product 2, status: 'Inactive'},
-	          ]
-	           expected output = [
-	            {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
-	            {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
-	          ]
+	       example: (for jobs by product, grouped by job status)
+	       category = product
+	       groupBy = job status
+	       objectList = jobs
+	        Derived:
+	       categories = [Product 1, Product 2, Product 3] // list of product names
+	       groups = ['Active', 'Inactive'] // list of group columns for each xAxis value (product)
+	        categoryNameAttr = 'product.description'
+	       groupValueAttr = 'status.description'
+	       objectList = [ // jobs
+	       {id: 1, product: {description: Product 1}, status: {description: 'Active'}},
+	       {id: 2, product: {description: Product 1}, status: {description: 'Active'}},
+	       {id: 3, product: {description: Product 2}, status: {description: 'Inactive'}},
+	       ]
+	        expected output = [
+	       {name: Active, data: [2, 0, 0]}, // 2 active jobs for Product 1, 0 for Product 2, 0 for product 3
+	       {name: Inactive, data: [0, 1, 0]} // 0 inactive jobs for Product 1, 1 for Product 2, 0 for product 3
+	       ]
 	       */
 	
-	      var objectCategoryValue = undefined;
-	      var objectGroupValue = undefined;
-	      var groups = objectList.map(function (obj) {
-	        return _this._utilityService.getDotAttribute(groupAttr, obj);
-	      });
-	      var categories = objectList.map(function (obj) {
-	        return _this._utilityService.getDotAttribute(categoryAttr, obj);
+	      var categories = new Set();
+	      var dataMap = {};
+	
+	      objectList.forEach(function (object) {
+	        var categoryName = _this._utilityService.getDotAttribute(categoryNameAttr, object); // job status.description
+	        var groupByValue = _this._utilityService.getDotAttribute(groupByAttr, object); // job product.description
+	
+	        categories.add(categoryName);
+	        if (!dataMap.hasOwnProperty(groupByValue)) {
+	          dataMap[groupByValue] = _defineProperty({}, categoryName, 1);
+	        } else {
+	          if (dataMap[groupByValue].hasOwnProperty(categoryName)) {
+	            dataMap[groupByValue][categoryName] += 1;
+	          } else {
+	            dataMap[groupByValue][categoryName] = 1;
+	          }
+	        }
 	      });
 	
-	      // initialize series list w/o data.  For the example above, series = [{name: 'Active' data: [0, 0, 0]},
-	      //                                                                    {name: 'Inactive' data: [0, 0, 0]}]
-	      var series = groups.map(function (groupName) {
-	        return { name: groupName, data: categories.map(function () {
-	            return 0;
-	          }), color: highchartColors[0] };
-	      });
+	      config.xAxis.categories = [].concat(_toConsumableArray(categories));
 	
-	      series.forEach(function (group) {
-	        categories.forEach(function (catName, index) {
-	          objectList.forEach(function (obj) {
-	            objectCategoryValue = _this._utilityService.getDotAttribute(categoryAttr, obj);
-	            objectGroupValue = _this._utilityService.getDotAttribute(groupAttr, obj);
-	            if (objectCategoryValue === catName && objectGroupValue === group.name) {
-	              group.data[index] += 1;
-	            }
-	          });
-	        });
-	      });
-	      return series;
+	      var series = [];
+	
+	      // populate empty data
+	      for (var groupByName in dataMap) {
+	        series.push({ name: groupByName, data: highchartService._getCategoryData(dataMap, config.xAxis.categories, groupByName) });
+	      }
+	
+	      config.series = series;
 	    }
 	  }, {
 	    key: 'buildCategories',
@@ -74388,6 +74395,15 @@
 	      };
 	      return chartConfig;
 	    }
+	  }, {
+	    key: '_getCategoryData',
+	    value: function _getCategoryData(dataMap, categories, group) {
+	      var data = [];
+	      categories.forEach(function (category, index) {
+	        data[index] = dataMap[group][category] || 0;
+	      });
+	      return data;
+	    }
 	  }]);
 	
 	  return highchartService;
@@ -74454,8 +74470,6 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var AggregateGroupedChartController = (function () {
@@ -74473,21 +74487,12 @@
 	  _createClass(AggregateGroupedChartController, [{
 	    key: "$onChanges",
 	    value: function $onChanges() {
-	      var _config$series;
-	
-	      this.getCategories();
-	      this.config.series.length = 0;
-	      (_config$series = this.config.series).push.apply(_config$series, _toConsumableArray(this.getSeries()));
-	    }
-	  }, {
-	    key: "getCategories",
-	    value: function getCategories() {
-	      this.config.categories = this._chartService.buildCategories(this.categoryNameKey, this.objectList);
+	      this.getSeries();
 	    }
 	  }, {
 	    key: "getSeries",
 	    value: function getSeries() {
-	      return this._chartService.getCategoryCount(this.objectList, this.categoryNameKey, this.seriesNameKey);
+	      return this._chartService.getCategoryCount(this.config, this.objectList, this.seriesNameKey, this.categoryNameKey);
 	    }
 	  }]);
 	

@@ -9,20 +9,15 @@ export default class AggregateGroupedChartController {
   }
 
   $onChanges() {
-    this.getCategories();
-    this.config.series.length = 0;
-    this.config.series.push(...this.getSeries());
-  }
-
-  getCategories() {
-    this.config.categories = this._chartService.buildCategories(this.categoryNameKey, this.objectList);
+    this.getSeries();
   }
 
   getSeries() {
     return this._chartService.getCategoryCount(
+      this.config,
       this.objectList,
-      this.categoryNameKey,
-      this.seriesNameKey
+      this.seriesNameKey,
+      this.categoryNameKey
     );
   }
 }
