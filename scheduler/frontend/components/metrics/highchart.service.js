@@ -70,6 +70,7 @@ export default class highchartService {
     const config = highchartService._getBaseChartConfig();
     config.title.text = configDetail.title;
     config.xAxis.title.text = configDetail.xAxisLabel;
+    config.xAxis.categories = this.buildCategories(configDetail.categoryNameKey, configDetail.objectList);
     config.yAxis.title.text = configDetail.yAxisLabel;
     return config;
   }

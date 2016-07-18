@@ -74981,6 +74981,7 @@
 	      var config = highchartService._getBaseChartConfig();
 	      config.title.text = configDetail.title;
 	      config.xAxis.title.text = configDetail.xAxisLabel;
+	      config.xAxis.categories = this.buildCategories(configDetail.categoryNameKey, configDetail.objectList);
 	      config.yAxis.title.text = configDetail.yAxisLabel;
 	      return config;
 	    }
@@ -75257,27 +75258,34 @@
 	    _classCallCheck(this, AggregateGroupedChartController);
 	
 	    this._chartService = highChartService;
-	    this.config = highChartService.getColumnConfig({
-	      title: this.chartTitle,
-	      xAxisLabel: this.categoryTitle,
-	      yAxisLabel: this.aggregateTitle
-	    });
-	    $scope.$watch(function () {
-	      return _this.objectList.length;
-	    }, function () {
+	    this._$scope = $scope;
+	    this._$scope.$watchCollection(this.objectList, function () {
 	      return _this.getSeries();
 	    });
 	  }
 	
 	  _createClass(AggregateGroupedChartController, [{
-	    key: "$onChanges",
-	    value: function $onChanges() {
-	      this.getSeries();
+	    key: "$onInit",
+	    value: function $onInit() {
+	      var _this2 = this;
+	
+	      this.config = this._chartService.getColumnConfig({
+	        title: this.chartTitle,
+	        xAxisLabel: this.categoryTitle,
+	        yAxisLabel: this.aggregateTitle,
+	        categoryNameKey: this.categoryNameKey,
+	        objectList: this.objectList
+	      });
+	      this._$scope.$watch(function () {
+	        return _this2.objectList;
+	      }, function () {
+	        return _this2.getSeries();
+	      }, true);
 	    }
 	  }, {
 	    key: "getSeries",
 	    value: function getSeries() {
-	      return this._chartService.getCategoryCount(this.config, this.objectList, this.seriesNameKey, this.categoryNameKey);
+	      this._chartService.getCategoryCount(this.config, this.objectList, this.seriesNameKey, this.categoryNameKey);
 	    }
 	  }]);
 	
