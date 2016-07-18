@@ -74915,7 +74915,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var highchartColors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
+	var highchartColors = ['#3f51b5', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
 	
 	var highchartService = (function () {
 	  function highchartService(utilityService) {
@@ -75005,7 +75005,8 @@
 	  }, {
 	    key: 'getCategoryCount',
 	    value: function getCategoryCount(config, objectList, seriesNameAttr, categoryNameAttr) {
-	      var _config$series,
+	      var _config$xAxis$categories,
+	          _config$series,
 	          _this = this;
 	
 	      /*
@@ -75039,14 +75040,20 @@
 	        highchartService._incrementDataMap(dataMap, categoryName, seriesName);
 	      });
 	
-	      config.xAxis.categories = [].concat(_toConsumableArray(categories));
+	      config.xAxis.categories.length = 0;
+	      (_config$xAxis$categories = config.xAxis.categories).push.apply(_config$xAxis$categories, _toConsumableArray(categories));
 	
 	      var series = [];
 	
 	      // populate empty data
-	      for (var groupByName in dataMap) {
-	        series.push({ name: groupByName, data: highchartService._getCategoryData(dataMap, config.xAxis.categories, groupByName) });
-	      }
+	      Object.keys(dataMap).forEach(function (groupByName, index) {
+	        series.push({
+	          name: groupByName,
+	          color: highchartColors[index],
+	          data: highchartService._getCategoryData(dataMap, config.xAxis.categories, groupByName)
+	        });
+	      });
+	
 	      config.series.length = 0;
 	      (_config$series = config.series).push.apply(_config$series, series);
 	
@@ -75101,7 +75108,6 @@
 	          chart: {
 	            type: 'column'
 	          },
-	
 	          tooltip: {
 	            style: {
 	              padding: 10,
@@ -75134,6 +75140,7 @@
 	        xAxis: {
 	          currentMin: undefined,
 	          currentMax: undefined,
+	          categories: [],
 	          title: {
 	            text: ''
 	          },
@@ -75233,36 +75240,42 @@
 /* 53 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var AggregateGroupedChartController = (function () {
-	  function AggregateGroupedChartController(highChartService) {
+	  function AggregateGroupedChartController(highChartService, $scope) {
+	    var _this = this;
+	
 	    _classCallCheck(this, AggregateGroupedChartController);
 	
-	    console.log('making' + this.chartTitle);
 	    this._chartService = highChartService;
 	    this.config = highChartService.getColumnConfig({
 	      title: this.chartTitle,
 	      xAxisLabel: this.categoryTitle,
 	      yAxisLabel: this.aggregateTitle
 	    });
+	    $scope.$watch(function () {
+	      return _this.objectList.length;
+	    }, function () {
+	      return _this.getSeries();
+	    });
 	  }
 	
 	  _createClass(AggregateGroupedChartController, [{
-	    key: '$onInit',
-	    value: function $onInit() {
+	    key: "$onChanges",
+	    value: function $onChanges() {
 	      this.getSeries();
 	    }
 	  }, {
-	    key: 'getSeries',
+	    key: "getSeries",
 	    value: function getSeries() {
 	      return this._chartService.getCategoryCount(this.config, this.objectList, this.seriesNameKey, this.categoryNameKey);
 	    }
@@ -75271,8 +75284,8 @@
 	  return AggregateGroupedChartController;
 	})();
 	
-	exports['default'] = AggregateGroupedChartController;
-	module.exports = exports['default'];
+	exports["default"] = AggregateGroupedChartController;
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ]);

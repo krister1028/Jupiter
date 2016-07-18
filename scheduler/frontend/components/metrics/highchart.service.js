@@ -1,7 +1,7 @@
 /* eslint no-trailing-spaces: 0 */
 /* eslint guard-for-in: 0 */
 
-const highchartColors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
+const highchartColors = ['#3f51b5', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
 
 export default class highchartService {
   constructor(utilityService) {
@@ -16,8 +16,7 @@ export default class highchartService {
       options: {
         chart: {
           type: 'column'
-        }
-        ,
+        },
         tooltip: {
           style: {
             padding: 10,
@@ -50,6 +49,7 @@ export default class highchartService {
       xAxis: {
         currentMin: undefined,
         currentMax: undefined,
+        categories: [],
         title: {
           text: ''
         },
@@ -131,14 +131,20 @@ export default class highchartService {
 
     });
 
-    config.xAxis.categories = [...categories];
+    config.xAxis.categories.length = 0;
+    config.xAxis.categories.push(...categories);
 
     const series = [];
 
     // populate empty data
-    for (const groupByName in dataMap) {
-      series.push({name: groupByName, data: highchartService._getCategoryData(dataMap, config.xAxis.categories, groupByName)});
-    }
+    Object.keys(dataMap).forEach((groupByName, index) => {
+      series.push({
+        name: groupByName,
+        color: highchartColors[index],
+        data: highchartService._getCategoryData(dataMap, config.xAxis.categories, groupByName)
+      });
+    });
+
     config.series.length = 0;
     config.series.push(...series);
 
