@@ -139,8 +139,10 @@ export default class highchartService {
     for (const groupByName in dataMap) {
       series.push({name: groupByName, data: highchartService._getCategoryData(dataMap, config.xAxis.categories, groupByName)});
     }
+    config.series.length = 0;
+    config.series.push(...series);
 
-    config.series = series;
+    return config;
 
   }
 

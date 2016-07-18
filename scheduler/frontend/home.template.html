@@ -6,7 +6,7 @@
 </div>
 
 <div layout-margin>
-    <div ng-if="vm.jobServicesLoaded">
+    <div ng-if="vm.jobServicesLoaded && vm.jobs.length">
         <aggregate-grouped-chart
                 chart-title="Jobs By Product"
                 aggregate-title="Job Count"

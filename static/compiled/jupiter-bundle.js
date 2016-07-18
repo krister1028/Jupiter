@@ -75005,7 +75005,8 @@
 	  }, {
 	    key: 'getCategoryCount',
 	    value: function getCategoryCount(config, objectList, seriesNameAttr, categoryNameAttr) {
-	      var _this = this;
+	      var _config$series,
+	          _this = this;
 	
 	      /*
 	       example: (for jobs by product, grouped by job status)
@@ -75046,8 +75047,10 @@
 	      for (var groupByName in dataMap) {
 	        series.push({ name: groupByName, data: highchartService._getCategoryData(dataMap, config.xAxis.categories, groupByName) });
 	      }
+	      config.series.length = 0;
+	      (_config$series = config.series).push.apply(_config$series, series);
 	
-	      config.series = series;
+	      return config;
 	    }
 	  }, {
 	    key: 'buildCategories',
@@ -75208,7 +75211,7 @@
 	    categoryNameKey: '@',
 	    seriesNameKey: '@',
 	    aggregateOnKey: '@',
-	    objectList: '='
+	    objectList: '<'
 	  },
 	  template: _chartTemplateHtml2['default'],
 	  controller: _aggregateGroupedChartControllerJs2['default']
@@ -75230,20 +75233,21 @@
 /* 53 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var AggregateGroupedChartController = (function () {
 	  function AggregateGroupedChartController(highChartService) {
 	    _classCallCheck(this, AggregateGroupedChartController);
 	
+	    console.log('making' + this.chartTitle);
 	    this._chartService = highChartService;
 	    this.config = highChartService.getColumnConfig({
 	      title: this.chartTitle,
@@ -75253,17 +75257,12 @@
 	  }
 	
 	  _createClass(AggregateGroupedChartController, [{
-	    key: "$onInit",
+	    key: '$onInit',
 	    value: function $onInit() {
 	      this.getSeries();
 	    }
 	  }, {
-	    key: "$onChanges",
-	    value: function $onChanges() {
-	      this.getSeries();
-	    }
-	  }, {
-	    key: "getSeries",
+	    key: 'getSeries',
 	    value: function getSeries() {
 	      return this._chartService.getCategoryCount(this.config, this.objectList, this.seriesNameKey, this.categoryNameKey);
 	    }
@@ -75272,8 +75271,8 @@
 	  return AggregateGroupedChartController;
 	})();
 	
-	exports["default"] = AggregateGroupedChartController;
-	module.exports = exports["default"];
+	exports['default'] = AggregateGroupedChartController;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
