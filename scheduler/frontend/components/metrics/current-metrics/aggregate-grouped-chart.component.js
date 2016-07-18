@@ -8,7 +8,6 @@ export default {
     aggregateTitle: '@',
     categoryNameKey: '@',
     seriesNameKey: '@',
-    aggregateOnKey: '@',
     objectList: '<'
   },
   template,
