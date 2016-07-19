@@ -6,6 +6,7 @@ export default class HistoricalResourceChartController {
   }
 
   $onInit() {
+    this.chart.getConfig();
     this.applyDates();
   }
 

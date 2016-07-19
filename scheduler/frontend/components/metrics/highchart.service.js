@@ -89,16 +89,16 @@ export default class highchartService {
       });
   }
 
-  getTimeLineConfig(configDetail) {
+  getTimeLineConfig(title, yAxisLabel) {
     const config = highchartService._getBaseChartConfig();
     config.options.chart.type = 'spline';
-    config.title.text = configDetail.title;
+    config.title.text = title;
     config.xAxis.title.text = 'Date';
     config.xAxis.dateTimeLabelFormats = {
       day: '%e of %b'
     };
     // config.xAxis.minTickInterval = 86400000;
-    config.yAxis.title.text = configDetail.yAxisLabel;
+    config.yAxis.title.text = yAxisLabel;
     config.xAxis.labels.format = '{value:%m-%d-%Y}';
     config.xAxis.labels.align = 'left';
     config.xAxis.type = 'datetime';

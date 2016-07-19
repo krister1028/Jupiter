@@ -74823,16 +74823,16 @@
 	    }
 	  }, {
 	    key: 'getTimeLineConfig',
-	    value: function getTimeLineConfig(configDetail) {
+	    value: function getTimeLineConfig(title, yAxisLabel) {
 	      var config = highchartService._getBaseChartConfig();
 	      config.options.chart.type = 'spline';
-	      config.title.text = configDetail.title;
+	      config.title.text = title;
 	      config.xAxis.title.text = 'Date';
 	      config.xAxis.dateTimeLabelFormats = {
 	        day: '%e of %b'
 	      };
 	      // config.xAxis.minTickInterval = 86400000;
-	      config.yAxis.title.text = configDetail.yAxisLabel;
+	      config.yAxis.title.text = yAxisLabel;
 	      config.xAxis.labels.format = '{value:%m-%d-%Y}';
 	      config.xAxis.labels.align = 'left';
 	      config.xAxis.type = 'datetime';
@@ -75162,7 +75162,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <div ng-repeat=\"chart in $ctrl.charts\"> <historical-resource-chart chart=\"chart\"></historical-resource-chart> </div> </div>";
+	var v1="<div layout-margin> <div ng-repeat=\"chart in $ctrl.charts\"> <historical-resource-chart chart=\"chart\"></historical-resource-chart> <md-divider layout-margin></md-divider> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
 
@@ -75180,61 +75180,21 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _historicalMetricsHistoricalChartFactoriesBaseHistoricalDateChart = __webpack_require__(54);
+	var _historicalMetricsHistoricalChartFactoriesHistoricalDateChart = __webpack_require__(59);
 	
-	var _historicalMetricsHistoricalChartFactoriesBaseHistoricalDateChart2 = _interopRequireDefault(_historicalMetricsHistoricalChartFactoriesBaseHistoricalDateChart);
+	var _historicalMetricsHistoricalChartFactoriesHistoricalDateChart2 = _interopRequireDefault(_historicalMetricsHistoricalChartFactoriesHistoricalDateChart);
 	
 	var MetricsController = function MetricsController(highChartService, $http) {
 	  _classCallCheck(this, MetricsController);
 	
-	  this.charts = [new _historicalMetricsHistoricalChartFactoriesBaseHistoricalDateChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes')];
+	  this.charts = [new _historicalMetricsHistoricalChartFactoriesHistoricalDateChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours')];
 	};
 	
 	exports['default'] = MetricsController;
 	module.exports = exports['default'];
 
 /***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _baseHistoricalChartFactory = __webpack_require__(55);
-	
-	var _baseHistoricalChartFactory2 = _interopRequireDefault(_baseHistoricalChartFactory);
-	
-	var historicalDateChart = (function (_baseHistoricalChart) {
-	  _inherits(historicalDateChart, _baseHistoricalChart);
-	
-	  function historicalDateChart(highchartService, $http, title, xAxisLabel) {
-	    _classCallCheck(this, historicalDateChart);
-	
-	    _get(Object.getPrototypeOf(historicalDateChart.prototype), 'constructor', this).call(this, highchartService, $http);
-	    this.title = title;
-	    this.xAxisLabel = xAxisLabel;
-	    this.series = [];
-	    this.chart = {};
-	  }
-	
-	  return historicalDateChart;
-	})(_baseHistoricalChartFactory2['default']);
-	
-	exports['default'] = historicalDateChart;
-	module.exports = exports['default'];
-
-/***/ },
+/* 54 */,
 /* 55 */
 /***/ function(module, exports) {
 
@@ -75246,6 +75206,8 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var historicalChartFactory = (function () {
@@ -75254,18 +75216,26 @@
 	
 	    this._chartService = highChartService;
 	    this._$http = $http;
-	    this._chartType = null; // to be overwritten
+	    this.series = [];
+	    this.config = {};
 	  }
 	
 	  _createClass(historicalChartFactory, [{
-	    key: 'getChart',
-	    value: function getChart() {
+	    key: 'getConfig',
+	    value: function getConfig() {
 	      throw new ReferenceError('Method Not Implemented');
 	    }
 	  }, {
 	    key: 'getSeries',
-	    value: function getSeries() {
-	      throw new ReferenceError('Method Not Implemented');
+	    value: function getSeries(startDate, endDate) {
+	      var _this = this;
+	
+	      return this._$http.get(this.resourceUrl, { params: { start_date: startDate, end_date: endDate } }).then(function (response) {
+	        var _series;
+	
+	        _this.series.length = 0;
+	        (_series = _this.series).push.apply(_series, _toConsumableArray(response.data));
+	      });
 	    }
 	  }]);
 	
@@ -75287,11 +75257,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _historicalResourceChartTemplateHtml = __webpack_require__(58);
+	var _historicalResourceChartTemplateHtml = __webpack_require__(57);
 	
 	var _historicalResourceChartTemplateHtml2 = _interopRequireDefault(_historicalResourceChartTemplateHtml);
 	
-	var _historicalResourceChartController = __webpack_require__(57);
+	var _historicalResourceChartController = __webpack_require__(58);
 	
 	var _historicalResourceChartController2 = _interopRequireDefault(_historicalResourceChartController);
 	
@@ -75306,6 +75276,17 @@
 
 /***/ },
 /* 57 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div layout=\"row\"> <div flex=\"20\" layout=\"column\" layout-align=\"center start\"> <h4>{{ $ctrl.chart.title }} Dates</h4> <div> <h5>Start Date</h5> <md-datepicker ng-model=\"$ctrl.startDate\"></md-datepicker> </div> <div> <h5>End Date</h5> <md-datepicker ng-model=\"$ctrl.endDate\"></md-datepicker> </div> <md-button ng-click=\"$ctrl.applyDates()\">Apply Dates</md-button> </div> <md-divider></md-divider> <highchart flex config=\"$ctrl.chart.config\" ng-if=\"$ctrl.chart.series.length\"></highchart> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("historical-resource-chart.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 58 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -75330,6 +75311,7 @@
 	  _createClass(HistoricalResourceChartController, [{
 	    key: "$onInit",
 	    value: function $onInit() {
+	      this.chart.getConfig();
 	      this.applyDates();
 	    }
 	  }, {
@@ -75356,15 +75338,54 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 58 */
-/***/ function(module, exports) {
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
 
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout=\"row\"> <div> <h5>Start Date</h5> <md-datepicker ng-model=\"$ctrl.startDate\"></md-datepicker> </div> <div> <h5>End Date</h5> <md-datepicker ng-model=\"$ctrl.endDate\"></md-datepicker> </div> </div> <md-button ng-click=\"$ctrl.applyDates()\">Apply Dates</md-button> <md-divider></md-divider>";
-	ngModule.run(["$templateCache",function(c){c.put("historical-resource-chart.template.html",v1)}]);
-	module.exports=v1;
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseHistoricalChartFactory = __webpack_require__(55);
+	
+	var _baseHistoricalChartFactory2 = _interopRequireDefault(_baseHistoricalChartFactory);
+	
+	var historicalDateChart = (function (_baseHistoricalChart) {
+	  _inherits(historicalDateChart, _baseHistoricalChart);
+	
+	  function historicalDateChart(highchartService, $http, title, yAxisLabel, resourceUrl) {
+	    _classCallCheck(this, historicalDateChart);
+	
+	    _get(Object.getPrototypeOf(historicalDateChart.prototype), 'constructor', this).call(this, highchartService, $http);
+	    this.resourceUrl = resourceUrl;
+	    this.title = title;
+	    this.yAxisLabel = yAxisLabel;
+	  }
+	
+	  _createClass(historicalDateChart, [{
+	    key: 'getConfig',
+	    value: function getConfig() {
+	      this.config = this._chartService.getTimeLineConfig(this.title, this.yAxisLabel);
+	      this.config.series = this.series;
+	    }
+	  }]);
+	
+	  return historicalDateChart;
+	})(_baseHistoricalChartFactory2['default']);
+	
+	exports['default'] = historicalDateChart;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
