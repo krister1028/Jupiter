@@ -9,7 +9,6 @@ import headerTemplate from './header.template.html';
 import LoginController from './login/login.controller';
 import AddProductController from './products/add-product.controller';
 import AddTaskController from './tasks/add-task.controller';
-import MetricsController from './metrics/metrics.controller';
 import userService from './login/user.service';
 import productService from './products/product.service';
 import jobService from './jobs/job.service';
@@ -20,7 +19,6 @@ import utilityService from './utility.service';
 import jobTypeService from './jobs/job-type.service';
 import jobStatusService from './jobs/job-status.service';
 import productTaskService from './products/product-task.service';
-import metricsService from './metrics/metrics.service';
 import HomeController from './home.controller';
 import EditJobController from './jobs/edit-job.controller';
 import HeaderController from './header.controller';
@@ -28,7 +26,6 @@ import homeTemplate from './home.template.html';
 import addProductTemplate from './products/add-product.template.html';
 import addTaskTemplate from './tasks/add-task.template.html';
 import editJobTemplate from './jobs/edit-job.template.html';
-import metricsTemplate from './metrics/metrics.template.html';
 import Components from './components/components';
 
 const jupiter = angular
@@ -46,7 +43,6 @@ const jupiter = angular
   .service('jobStatusService', jobStatusService)
   .service('jobTaskService', jobTaskService)
   .service('productTaskService', productTaskService)
-  .service('metricsService', metricsService)
   .service('utilityService', utilityService)
   .config(configuration)
 ;
@@ -130,18 +126,7 @@ function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
           controller: 'AddTaskController as vm'
         }
       }
-    })
-    .state('root.metrics', {
-      url: '/metrics',
-      data: {pageTitle: 'Metrics'},
-      views: {
-        'body@': {
-          template: metricsTemplate,
-          controller: MetricsController
-        }
-      }
-    })
-  ;
+    });
 
   $urlRouterProvider.otherwise('/');
 

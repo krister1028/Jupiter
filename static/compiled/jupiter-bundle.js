@@ -97,10 +97,6 @@
 	
 	var _tasksAddTaskController2 = _interopRequireDefault(_tasksAddTaskController);
 	
-	var _metricsMetricsController = __webpack_require__(21);
-	
-	var _metricsMetricsController2 = _interopRequireDefault(_metricsMetricsController);
-	
 	var _loginUserService = __webpack_require__(22);
 	
 	var _loginUserService2 = _interopRequireDefault(_loginUserService);
@@ -141,10 +137,6 @@
 	
 	var _productsProductTaskService2 = _interopRequireDefault(_productsProductTaskService);
 	
-	var _metricsMetricsService = __webpack_require__(33);
-	
-	var _metricsMetricsService2 = _interopRequireDefault(_metricsMetricsService);
-	
 	var _homeController = __webpack_require__(34);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
@@ -173,15 +165,11 @@
 	
 	var _jobsEditJobTemplateHtml2 = _interopRequireDefault(_jobsEditJobTemplateHtml);
 	
-	var _metricsMetricsTemplateHtml = __webpack_require__(45);
-	
-	var _metricsMetricsTemplateHtml2 = _interopRequireDefault(_metricsMetricsTemplateHtml);
-	
 	var _componentsComponents = __webpack_require__(46);
 	
 	var _componentsComponents2 = _interopRequireDefault(_componentsComponents);
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _componentsComponents2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('productTaskService', _productsProductTaskService2['default']).service('metricsService', _metricsMetricsService2['default']).service('utilityService', _utilityService2['default']).config(configuration);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _componentsComponents2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('productTaskService', _productsProductTaskService2['default']).service('utilityService', _utilityService2['default']).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -263,15 +251,6 @@
 	      'body@': {
 	        template: _tasksAddTaskTemplateHtml2['default'],
 	        controller: 'AddTaskController as vm'
-	      }
-	    }
-	  }).state('root.metrics', {
-	    url: '/metrics',
-	    data: { pageTitle: 'Metrics' },
-	    views: {
-	      'body@': {
-	        template: _metricsMetricsTemplateHtml2['default'],
-	        controller: _metricsMetricsController2['default']
 	      }
 	    }
 	  });
@@ -72428,81 +72407,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 21 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var MetricsController = (function () {
-	  function MetricsController(highchartService, jobService, productService, jobStatusService, jobTypeService, metricsService) {
-	    _classCallCheck(this, MetricsController);
-	
-	    this._jobService = jobService;
-	    this._jobStatusService = jobStatusService;
-	    this._highchartService = highchartService;
-	    this._metricService = metricsService;
-	
-	    this.jobsByProduct = highchartService.getColumnConfig({
-	      categories: productService.getDescriptionList(),
-	      title: 'Jobs By Product',
-	      xAxisLabel: 'Product',
-	      yAxisLabel: 'Job Count' });
-	    this.jobsByType = highchartService.getColumnConfig({
-	      categories: jobTypeService.getDescriptionList(),
-	      title: 'Jobs By Type',
-	      xAxisLabel: 'Type',
-	      yAxisLabel: 'Job Count' });
-	    this.taskBacklog = highchartService.getTimeLineConfig({
-	      title: 'Task By Expertise Backlog',
-	      yAxisLabel: 'Backlog (minutes)' });
-	  }
-	
-	  _createClass(MetricsController, [{
-	    key: 'getJobsByProductData',
-	    value: function getJobsByProductData() {
-	      var _this = this;
-	
-	      this._jobService.getJobsCreatedByDateRange(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(function (jobs) {
-	        _this.jobsByProduct.series = _this._highchartService.getCategoryCount(jobs, _this.jobsByProduct.xAxis.categories, _this._jobStatusService.getDescriptionList(), 'productItem.description', 'jobStatus.description');
-	      });
-	    }
-	  }, {
-	    key: 'getJobsByTypeData',
-	    value: function getJobsByTypeData() {
-	      var _this2 = this;
-	
-	      this._jobService.getJobsCreatedByDateRange(this.jobsByType.startDate, this.jobsByType.endDate).then(function (jobs) {
-	        _this2.jobsByType.series = _this2._highchartService.getCategoryCount(jobs, _this2.jobsByType.xAxis.categories, _this2._jobStatusService.getDescriptionList(), 'jobType.description', 'jobStatus.description');
-	      });
-	    }
-	  }, {
-	    key: 'getTaskBackLogData',
-	    value: function getTaskBackLogData() {
-	      var _this3 = this;
-	
-	      this._metricService.getBacklog(this.taskBacklog.startDate, this.taskBacklog.endDate).then(function (backlog) {
-	        _this3.taskBacklog.xAxis.min = _this3.taskBacklog.startDate.valueOf();
-	        _this3.taskBacklog.xAxis.max = _this3.taskBacklog.endDate.valueOf();
-	        _this3.taskBacklog.series = _this3._highchartService.getDataForTimeLine(backlog, ['High', 'Medium', 'Low', 'CP']);
-	      });
-	    }
-	  }]);
-	
-	  return MetricsController;
-	})();
-	
-	exports['default'] = MetricsController;
-	module.exports = exports['default'];
-
-/***/ },
+/* 21 */,
 /* 22 */
 /***/ function(module, exports) {
 
@@ -73459,47 +73364,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var metricsService = (function () {
-	  function metricsService($http) {
-	    _classCallCheck(this, metricsService);
-	
-	    this._backLogUrl = '/backlog-hours/';
-	    this._$http = $http;
-	  }
-	
-	  _createClass(metricsService, [{
-	    key: 'getBacklog',
-	    value: function getBacklog(startDate, endDate) {
-	      return this._$http.get(this._backLogUrl, { params: { startDate: startDate, endDate: endDate } }).then(function (response) {
-	        var data = response.data;
-	        data.forEach(function (point) {
-	          return point.date = new Date(point.date).valueOf();
-	        });
-	        return data;
-	      });
-	    }
-	  }]);
-	
-	  return metricsService;
-	})();
-	
-	exports['default'] = metricsService;
-	module.exports = exports['default'];
-
-/***/ },
+/* 33 */,
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -73927,7 +73792,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <div ng-if=\"vm.jobServicesLoaded && vm.jobs.length\"> <aggregate-grouped-chart chart-title=\"Jobs By Product\" aggregate-title=\"Job Count\" category-title=\"Products\" object-list=\"vm.jobs\" series-name-key=\"status.description\" category-name-key=\"product.description\"> </aggregate-grouped-chart> <aggregate-grouped-chart chart-title=\"Jobs By Type\" aggregate-title=\"Job Count\" category-title=\"Type\" object-list=\"vm.jobs\" series-name-key=\"status.description\" category-name-key=\"type.description\"> </aggregate-grouped-chart> </div> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item flex layout=\"column\" ng-repeat=\"job in vm.jobs track by $index\"> <md-divider></md-divider> <div layout-margin style=\"width: 100%\" layout=\"row\" layout-align=\"start center\"> <div flex=\"30\" layout=\"column\"> <div layout=\"row\" layout-align=\"start center\" ng-click=\"vm.editJob(job)\"> <h3>{{ job.description }}</h3> </div> <h5>Job Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Job Status:</span> <p layout-margin>{{ job.status.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Is Rework:</span> <p layout-margin>{{ vm.isRework(job) }}</p> </div> <h5>Product Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Product Description:</span> <p layout-margin>{{ job.product.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Product Code:</span> <p layout-margin>{{ job.product.code }}</p> </div> </div> <div flex=\"60\" layout=\"column\"> <div layout-margin>Total Job Time: {{ vm.getTotalJobTime(job) }} (mins)</div> <div layout-margin>Remaining Job Time: {{ vm.getJobTimeRemaining(job) }} (mins)</div> <md-divider></md-divider> <h4 layout-margin>Overall Progress: {{ vm.getJobProgress(job) * 100 }}%</h4> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </div> </div> <md-divider></md-divider> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div>";
+	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <div ng-if=\"vm.jobServicesLoaded && vm.jobs.length\"> <aggregate-grouped-chart chart-title=\"Job Count By Product\" aggregate-title=\"Job Count\" category-title=\"Job Status\" object-list=\"vm.jobs\" series-name-key=\"product.description\" category-name-key=\"status.description\"> </aggregate-grouped-chart> <aggregate-grouped-chart chart-title=\"Job Count By Type\" aggregate-title=\"Job Count\" category-title=\"Job Status\" object-list=\"vm.jobs\" series-name-key=\"type.description\" category-name-key=\"status.description\"> </aggregate-grouped-chart> </div> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item flex layout=\"column\" ng-repeat=\"job in vm.jobs track by $index\"> <md-divider></md-divider> <div layout-margin style=\"width: 100%\" layout=\"row\" layout-align=\"start center\"> <div flex=\"30\" layout=\"column\"> <div layout=\"row\" layout-align=\"start center\" ng-click=\"vm.editJob(job)\"> <h3>{{ job.description }}</h3> </div> <h5>Job Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Job Status:</span> <p layout-margin>{{ job.status.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Is Rework:</span> <p layout-margin>{{ vm.isRework(job) }}</p> </div> <h5>Product Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Product Description:</span> <p layout-margin>{{ job.product.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Product Code:</span> <p layout-margin>{{ job.product.code }}</p> </div> </div> <div flex=\"60\" layout=\"column\"> <div layout-margin>Total Job Time: {{ vm.getTotalJobTime(job) }} (mins)</div> <div layout-margin>Remaining Job Time: {{ vm.getJobTimeRemaining(job) }} (mins)</div> <md-divider></md-divider> <h4 layout-margin>Overall Progress: {{ vm.getJobProgress(job) * 100 }}%</h4> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </div> </div> <md-divider></md-divider> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
@@ -73965,17 +73830,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 45 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart config=\"vm.jobsByProduct\" refresh-data=\"vm.getJobsByProductData()\"> </date-chart> <date-chart config=\"vm.jobsByType\" refresh-data=\"vm.getJobsByTypeData()\"> </date-chart> <date-chart config=\"vm.taskBacklog\" refresh-data=\"vm.getTaskBackLogData()\"> </date-chart> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
+/* 45 */,
 /* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -74034,9 +73889,24 @@
 	
 	var _currentMetricsAggregateGroupedChartComponentJs2 = _interopRequireDefault(_currentMetricsAggregateGroupedChartComponentJs);
 	
+	var _pagesMetricsPageComponet = __webpack_require__(54);
+	
+	var _pagesMetricsPageComponet2 = _interopRequireDefault(_pagesMetricsPageComponet);
+	
 	window.Highcharts = _highcharts2['default'];
 	
-	var _module = _angular2['default'].module('jupiter.metrics', [_highchartsNg2['default']]).service('highChartService', _highchartServiceJs2['default']).component('aggregateGroupedChart', _currentMetricsAggregateGroupedChartComponentJs2['default']);
+	var _module = _angular2['default'].module('jupiter.metrics', [_highchartsNg2['default']]).service('highChartService', _highchartServiceJs2['default']).component('metricsPage', _pagesMetricsPageComponet2['default']).component('aggregateGroupedChart', _currentMetricsAggregateGroupedChartComponentJs2['default']).config(function ($stateProvider, $urlRouterProvider) {
+	  $stateProvider.state('root.metrics', {
+	    url: '/metrics',
+	    data: { pageTitle: 'Metrics' },
+	    views: {
+	      'body@': {
+	        component: 'metricsPage'
+	      }
+	    }
+	  });
+	  $urlRouterProvider.otherwise('/');
+	});
 	
 	exports['default'] = _module.name;
 	module.exports = exports['default'];
@@ -75293,6 +75163,85 @@
 	
 	exports["default"] = AggregateGroupedChartController;
 	module.exports = exports["default"];
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _metricsTemplateHtml = __webpack_require__(55);
+	
+	var _metricsTemplateHtml2 = _interopRequireDefault(_metricsTemplateHtml);
+	
+	var _metricsController = __webpack_require__(56);
+	
+	var _metricsController2 = _interopRequireDefault(_metricsController);
+	
+	exports['default'] = {
+	  template: _metricsTemplateHtml2['default'],
+	  controller: _metricsController2['default']
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 55 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <div> <md-datepicker ng-model=\"vm.startDate\"></md-datepicker> <md-datepicker ng-model=\"vm.endDate\"></md-datepicker> </div> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 56 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var MetricsController = (function () {
+	  function MetricsController() {
+	    _classCallCheck(this, MetricsController);
+	
+	    this.chartUrls = ['/abc/'];
+	    this.defaultHistoryDays = 7;
+	    this.endDate = this.getDefaultEndDate();
+	    this.startDate = this.getDefaultStartDate();
+	  }
+	
+	  _createClass(MetricsController, [{
+	    key: 'getDefaultEndDate',
+	    value: function getDefaultEndDate() {
+	      return new Date();
+	    }
+	  }, {
+	    key: 'getDefaultStartDate',
+	    value: function getDefaultStartDate() {
+	      return new Date(new Date().setDate(new Date().getDate() - this.defaultHistoryDays));
+	    }
+	  }]);
+	
+	  return MetricsController;
+	})();
+	
+	exports['default'] = MetricsController;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
