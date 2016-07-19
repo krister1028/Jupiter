@@ -79,7 +79,14 @@ export default class highchartService {
   }
 
   createResourceChart(chartObj) {
-    console.log(chartObj.url);
+    if (Object.keys(chartObj.config).length === 0) {  // if this is initial pass
+      chartObj.config = this.getTimeLineConfig(chartObj.configParams);
+    }
+    this._$http.get(chartObj.url, {params: {start_date: chartObj.startDate, end_date: chartObj.endDate}})
+      .then(response => {
+        chartObj.config.series.length = 0;
+        chartObj.config.series.push(...response.data);
+      });
   }
 
   getTimeLineConfig(configDetail) {
@@ -90,12 +97,11 @@ export default class highchartService {
     config.xAxis.dateTimeLabelFormats = {
       day: '%e of %b'
     };
-    config.xAxis.minTickInterval = 86400000;
+    // config.xAxis.minTickInterval = 86400000;
     config.yAxis.title.text = configDetail.yAxisLabel;
     config.xAxis.labels.format = '{value:%m-%d-%Y}';
     config.xAxis.labels.align = 'left';
     config.xAxis.type = 'datetime';
-    config.series = [{data: []}];
     return config;
   }
 

@@ -9,10 +9,10 @@
             <h5>End Date</h5>
             <md-datepicker ng-model="$ctrl.endDate"></md-datepicker>
         </div>
-        <md-button ng-click="$ctrl.applyDates()">Apply Dates</md-button>
     </div>
+    <md-button ng-click="$ctrl.applyDates()">Apply Dates</md-button>
     <md-divider></md-divider>
     <div ng-repeat="chart in $ctrl.charts">
-        <highchart config="chart.config"></highchart>
+        <highchart config="chart.config" ng-if="chart.config.series.length"></highchart>
     </div>
 </div>

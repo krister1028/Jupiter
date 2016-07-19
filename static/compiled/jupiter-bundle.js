@@ -74809,7 +74809,16 @@
 	  }, {
 	    key: 'createResourceChart',
 	    value: function createResourceChart(chartObj) {
-	      console.log(chartObj.url);
+	      if (Object.keys(chartObj.config).length === 0) {
+	        // if this is initial pass
+	        chartObj.config = this.getTimeLineConfig(chartObj.configParams);
+	      }
+	      this._$http.get(chartObj.url, { params: { start_date: chartObj.startDate, end_date: chartObj.endDate } }).then(function (response) {
+	        var _chartObj$config$series;
+	
+	        chartObj.config.series.length = 0;
+	        (_chartObj$config$series = chartObj.config.series).push.apply(_chartObj$config$series, _toConsumableArray(response.data));
+	      });
 	    }
 	  }, {
 	    key: 'getTimeLineConfig',
@@ -74821,12 +74830,11 @@
 	      config.xAxis.dateTimeLabelFormats = {
 	        day: '%e of %b'
 	      };
-	      config.xAxis.minTickInterval = 86400000;
+	      // config.xAxis.minTickInterval = 86400000;
 	      config.yAxis.title.text = configDetail.yAxisLabel;
 	      config.xAxis.labels.format = '{value:%m-%d-%Y}';
 	      config.xAxis.labels.align = 'left';
 	      config.xAxis.type = 'datetime';
-	      config.series = [{ data: [] }];
 	      return config;
 	    }
 	  }, {
@@ -75153,7 +75161,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <div layout=\"row\"> <div> <h5>Start Date</h5> <md-datepicker ng-model=\"$ctrl.startDate\"></md-datepicker> </div> <div> <h5>End Date</h5> <md-datepicker ng-model=\"$ctrl.endDate\"></md-datepicker> </div> <md-button ng-click=\"$ctrl.applyDates()\">Apply Dates</md-button> </div> <md-divider></md-divider> <div ng-repeat=\"chart in $ctrl.charts\"> <highchart config=\"chart.config\"></highchart> </div> </div>";
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <div layout=\"row\"> <div> <h5>Start Date</h5> <md-datepicker ng-model=\"$ctrl.startDate\"></md-datepicker> </div> <div> <h5>End Date</h5> <md-datepicker ng-model=\"$ctrl.endDate\"></md-datepicker> </div> </div> <md-button ng-click=\"$ctrl.applyDates()\">Apply Dates</md-button> <md-divider></md-divider> <div ng-repeat=\"chart in $ctrl.charts\"> <highchart config=\"chart.config\" ng-if=\"chart.config.series.length\"></highchart> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
 
@@ -75175,7 +75183,7 @@
 	  function MetricsController(highChartService) {
 	    _classCallCheck(this, MetricsController);
 	
-	    this.charts = [{ url: '/abc/', config: {}, type: highChartService.historicalChart }];
+	    this.charts = [{ url: '/backlog-hours/', config: {}, configParams: { title: 'Backlog Minutes By Expertise Level', yAxisLabel: 'Minutes' } }];
 	    this.defaultHistoryDays = 7;
 	    this._chartService = highChartService;
 	    this.endDate = this.getDefaultEndDate();
@@ -75208,7 +75216,9 @@
 	      var _this = this;
 	
 	      this.charts.forEach(function (chart) {
-	        return _this._chartService.createResourceChart(chart);
+	        chart.startDate = _this.startDate;
+	        chart.endDate = _this.endDate;
+	        _this._chartService.createResourceChart(chart);
 	      });
 	    }
 	  }]);

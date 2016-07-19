@@ -1,6 +1,8 @@
 export default class MetricsController {
   constructor(highChartService) {
-    this.charts = [{url: '/abc/', config: {}, type: highChartService.historicalChart}];
+    this.charts = [
+      {url: '/backlog-hours/', config: {}, configParams: {title: 'Backlog Minutes By Expertise Level', yAxisLabel: 'Minutes'}}
+    ];
     this.defaultHistoryDays = 7;
     this._chartService = highChartService;
     this.endDate = this.getDefaultEndDate();
@@ -24,6 +26,10 @@ export default class MetricsController {
   }
 
   fetchConfigs() {
-    this.charts.forEach(chart => this._chartService.createResourceChart(chart));
+    this.charts.forEach(chart => {
+      chart.startDate = this.startDate;
+      chart.endDate = this.endDate;
+      this._chartService.createResourceChart(chart);
+    });
   }
 }
