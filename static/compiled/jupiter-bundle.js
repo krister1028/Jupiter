@@ -75180,14 +75180,14 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _historicalMetricsHistoricalChartFactoriesHistoricalDateChart = __webpack_require__(59);
+	var _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart = __webpack_require__(61);
 	
-	var _historicalMetricsHistoricalChartFactoriesHistoricalDateChart2 = _interopRequireDefault(_historicalMetricsHistoricalChartFactoriesHistoricalDateChart);
+	var _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart2 = _interopRequireDefault(_historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart);
 	
 	var MetricsController = function MetricsController(highChartService, $http) {
 	  _classCallCheck(this, MetricsController);
 	
-	  this.charts = [new _historicalMetricsHistoricalChartFactoriesHistoricalDateChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours')];
+	  this.charts = [new _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours')];
 	};
 	
 	exports['default'] = MetricsController;
@@ -75338,7 +75338,9 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 59 */
+/* 59 */,
+/* 60 */,
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75361,19 +75363,19 @@
 	
 	var _baseHistoricalChartFactory2 = _interopRequireDefault(_baseHistoricalChartFactory);
 	
-	var historicalDateChart = (function (_baseHistoricalChart) {
-	  _inherits(historicalDateChart, _baseHistoricalChart);
+	var historicalTimeLineChart = (function (_baseHistoricalChart) {
+	  _inherits(historicalTimeLineChart, _baseHistoricalChart);
 	
-	  function historicalDateChart(highchartService, $http, title, yAxisLabel, resourceUrl) {
-	    _classCallCheck(this, historicalDateChart);
+	  function historicalTimeLineChart(highchartService, $http, title, yAxisLabel, resourceUrl) {
+	    _classCallCheck(this, historicalTimeLineChart);
 	
-	    _get(Object.getPrototypeOf(historicalDateChart.prototype), 'constructor', this).call(this, highchartService, $http);
+	    _get(Object.getPrototypeOf(historicalTimeLineChart.prototype), 'constructor', this).call(this, highchartService, $http);
 	    this.resourceUrl = resourceUrl;
 	    this.title = title;
 	    this.yAxisLabel = yAxisLabel;
 	  }
 	
-	  _createClass(historicalDateChart, [{
+	  _createClass(historicalTimeLineChart, [{
 	    key: 'getConfig',
 	    value: function getConfig() {
 	      this.config = this._chartService.getTimeLineConfig(this.title, this.yAxisLabel);
@@ -75381,10 +75383,10 @@
 	    }
 	  }]);
 	
-	  return historicalDateChart;
+	  return historicalTimeLineChart;
 	})(_baseHistoricalChartFactory2['default']);
 	
-	exports['default'] = historicalDateChart;
+	exports['default'] = historicalTimeLineChart;
 	module.exports = exports['default'];
 
 /***/ }

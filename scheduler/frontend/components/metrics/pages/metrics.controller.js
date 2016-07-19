@@ -1,9 +1,9 @@
-import HistoricalDateChart from '../historical-metrics/historical-chart-factories/historical-date-chart';
+import HistoricalTimeLineChart from '../historical-metrics/historical-chart-factories/historical-time-line-chart';
 
 export default class MetricsController {
   constructor(highChartService, $http) {
     this.charts = [
-      new HistoricalDateChart(highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours')
+      new HistoricalTimeLineChart(highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours')
     ];
   }
 }

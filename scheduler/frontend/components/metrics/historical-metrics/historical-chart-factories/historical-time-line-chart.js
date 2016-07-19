@@ -1,6 +1,6 @@
 import baseHistoricalChart from './base-historical-chart-factory';
 
-export default class historicalDateChart extends baseHistoricalChart {
+export default class historicalTimeLineChart extends baseHistoricalChart {
   constructor(highchartService, $http, title, yAxisLabel, resourceUrl) {
     super(highchartService, $http);
     this.resourceUrl = resourceUrl;
