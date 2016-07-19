@@ -1,7 +1,18 @@
 <div layout-margin>
     <h3>Metrics Dashboard</h3>
-    <div>
-        <md-datepicker ng-model="vm.startDate"></md-datepicker>
-        <md-datepicker ng-model="vm.endDate"></md-datepicker>
+    <div layout="row">
+        <div>
+            <h5>Start Date</h5>
+            <md-datepicker ng-model="$ctrl.startDate"></md-datepicker>
+        </div>
+        <div>
+            <h5>End Date</h5>
+            <md-datepicker ng-model="$ctrl.endDate"></md-datepicker>
+        </div>
+        <md-button ng-click="$ctrl.applyDates()">Apply Dates</md-button>
+    </div>
+    <md-divider></md-divider>
+    <div ng-repeat="chart in $ctrl.charts">
+        <highchart config="chart.config"></highchart>
     </div>
 </div>

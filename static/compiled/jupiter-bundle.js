@@ -74788,62 +74788,13 @@
 	var highchartColors = ['#3f51b5', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
 	
 	var highchartService = (function () {
-	  function highchartService(utilityService) {
+	  function highchartService(utilityService, $http) {
 	    _classCallCheck(this, highchartService);
 	
+	    this.historicalChart = 'historicalChart';
 	    this._utilityService = utilityService;
+	    this._$http = $http;
 	  }
-	
-	  /*
-	   var chartConfig = {
-	   for reference:
-	   options: {
-	   //This is the Main Highcharts chart config. Any Highchart options are valid here.
-	   //will be overriden by values specified below.
-	   chart: {
-	   type: 'bar'
-	   },
-	   tooltip: {
-	   style: {
-	   padding: 10,
-	   fontWeight: 'bold'
-	   }
-	   }
-	   },
-	   //The below properties are watched separately for changes.
-	  
-	   //Series object (optional) - a list of series using normal Highcharts series options.
-	   series: [{
-	   data: [10, 15, 12, 8, 7]
-	   }],
-	   //Title configuration (optional)
-	   title: {
-	   text: 'Hello'
-	   },
-	   //Boolean to control showing loading status on chart (optional)
-	   //Could be a string if you want to show specific loading text.
-	   loading: false,
-	   //Configuration for the xAxis (optional). Currently only one x axis can be dynamically controlled.
-	   //properties currentMin and currentMax provided 2-way binding to the chart's maximum and minimum
-	   xAxis: {
-	   currentMin: 0,
-	   currentMax: 20,
-	   title: {text: 'values'}
-	   },
-	   //Whether to use Highstocks instead of Highcharts (optional). Defaults to false.
-	   useHighStocks: false,
-	   //size (optional) if left out the chart will default to size of the div or something sensible.
-	   size: {
-	   width: 400,
-	   height: 300
-	   },
-	   //function (optional)
-	   func: function (chart) {
-	   //setup some logic for the chart
-	   }
-	   };
-	  
-	   */
 	
 	  _createClass(highchartService, [{
 	    key: 'getColumnConfig',
@@ -74854,6 +74805,11 @@
 	      config.xAxis.categories = this.buildCategories(configDetail.categoryNameKey, configDetail.objectList);
 	      config.yAxis.title.text = configDetail.yAxisLabel;
 	      return config;
+	    }
+	  }, {
+	    key: 'createResourceChart',
+	    value: function createResourceChart(chartObj) {
+	      console.log(chartObj.url);
 	    }
 	  }, {
 	    key: 'getTimeLineConfig',
@@ -75197,7 +75153,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <div> <md-datepicker ng-model=\"vm.startDate\"></md-datepicker> <md-datepicker ng-model=\"vm.endDate\"></md-datepicker> </div> </div>";
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <div layout=\"row\"> <div> <h5>Start Date</h5> <md-datepicker ng-model=\"$ctrl.startDate\"></md-datepicker> </div> <div> <h5>End Date</h5> <md-datepicker ng-model=\"$ctrl.endDate\"></md-datepicker> </div> <md-button ng-click=\"$ctrl.applyDates()\">Apply Dates</md-button> </div> <md-divider></md-divider> <div ng-repeat=\"chart in $ctrl.charts\"> <highchart config=\"chart.config\"></highchart> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
 
@@ -75216,16 +75172,22 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var MetricsController = (function () {
-	  function MetricsController() {
+	  function MetricsController(highChartService) {
 	    _classCallCheck(this, MetricsController);
 	
-	    this.chartUrls = ['/abc/'];
+	    this.charts = [{ url: '/abc/', config: {}, type: highChartService.historicalChart }];
 	    this.defaultHistoryDays = 7;
+	    this._chartService = highChartService;
 	    this.endDate = this.getDefaultEndDate();
 	    this.startDate = this.getDefaultStartDate();
 	  }
 	
 	  _createClass(MetricsController, [{
+	    key: '$onInit',
+	    value: function $onInit() {
+	      this.fetchConfigs();
+	    }
+	  }, {
 	    key: 'getDefaultEndDate',
 	    value: function getDefaultEndDate() {
 	      return new Date();
@@ -75234,6 +75196,20 @@
 	    key: 'getDefaultStartDate',
 	    value: function getDefaultStartDate() {
 	      return new Date(new Date().setDate(new Date().getDate() - this.defaultHistoryDays));
+	    }
+	  }, {
+	    key: 'applyDates',
+	    value: function applyDates() {
+	      this.fetchConfigs();
+	    }
+	  }, {
+	    key: 'fetchConfigs',
+	    value: function fetchConfigs() {
+	      var _this = this;
+	
+	      this.charts.forEach(function (chart) {
+	        return _this._chartService.createResourceChart(chart);
+	      });
 	    }
 	  }]);
 	
