@@ -1,5 +1,6 @@
 from copy import copy
 
+import time
 from dateutil.parser import parse
 
 from django.contrib.auth.models import User
@@ -97,7 +98,10 @@ class BackLogHours(APIView):
             last_aggregation = backlog[-1]
             backlog.append(add_task_backlog_aggregate(last_aggregation, record))
 
-        return Response(backlog)
+        return Response([
+            {'name': 'CP', 'data': [[int(round(time.time() * 1000)), 10], [int(round(time.time() * 1000)) + 20000, 20]]},
+            {'name': 'Medium', 'data': [[int(round(time.time() * 1000)), 20], [int(round(time.time() * 1000)) + 30000, 15]]},
+        ])
 
 
 class JobsCompleted(APIView):

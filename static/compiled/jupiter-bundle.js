@@ -97,75 +97,75 @@
 	
 	var _tasksAddTaskController2 = _interopRequireDefault(_tasksAddTaskController);
 	
-	var _loginUserService = __webpack_require__(22);
+	var _loginUserService = __webpack_require__(21);
 	
 	var _loginUserService2 = _interopRequireDefault(_loginUserService);
 	
-	var _productsProductService = __webpack_require__(23);
+	var _productsProductService = __webpack_require__(22);
 	
 	var _productsProductService2 = _interopRequireDefault(_productsProductService);
 	
-	var _jobsJobService = __webpack_require__(25);
+	var _jobsJobService = __webpack_require__(24);
 	
 	var _jobsJobService2 = _interopRequireDefault(_jobsJobService);
 	
-	var _tasksTaskService = __webpack_require__(26);
+	var _tasksTaskService = __webpack_require__(25);
 	
 	var _tasksTaskService2 = _interopRequireDefault(_tasksTaskService);
 	
-	var _jobsJobTaskService = __webpack_require__(27);
+	var _jobsJobTaskService = __webpack_require__(26);
 	
 	var _jobsJobTaskService2 = _interopRequireDefault(_jobsJobTaskService);
 	
-	var _jobsGroupUserService = __webpack_require__(28);
+	var _jobsGroupUserService = __webpack_require__(27);
 	
 	var _jobsGroupUserService2 = _interopRequireDefault(_jobsGroupUserService);
 	
-	var _utilityService = __webpack_require__(29);
+	var _utilityService = __webpack_require__(28);
 	
 	var _utilityService2 = _interopRequireDefault(_utilityService);
 	
-	var _jobsJobTypeService = __webpack_require__(30);
+	var _jobsJobTypeService = __webpack_require__(29);
 	
 	var _jobsJobTypeService2 = _interopRequireDefault(_jobsJobTypeService);
 	
-	var _jobsJobStatusService = __webpack_require__(31);
+	var _jobsJobStatusService = __webpack_require__(30);
 	
 	var _jobsJobStatusService2 = _interopRequireDefault(_jobsJobStatusService);
 	
-	var _productsProductTaskService = __webpack_require__(32);
+	var _productsProductTaskService = __webpack_require__(31);
 	
 	var _productsProductTaskService2 = _interopRequireDefault(_productsProductTaskService);
 	
-	var _homeController = __webpack_require__(34);
+	var _homeController = __webpack_require__(32);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _jobsEditJobController = __webpack_require__(37);
+	var _jobsEditJobController = __webpack_require__(35);
 	
 	var _jobsEditJobController2 = _interopRequireDefault(_jobsEditJobController);
 	
-	var _headerController = __webpack_require__(40);
+	var _headerController = __webpack_require__(38);
 	
 	var _headerController2 = _interopRequireDefault(_headerController);
 	
-	var _homeTemplateHtml = __webpack_require__(41);
+	var _homeTemplateHtml = __webpack_require__(39);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _productsAddProductTemplateHtml = __webpack_require__(42);
+	var _productsAddProductTemplateHtml = __webpack_require__(40);
 	
 	var _productsAddProductTemplateHtml2 = _interopRequireDefault(_productsAddProductTemplateHtml);
 	
-	var _tasksAddTaskTemplateHtml = __webpack_require__(43);
+	var _tasksAddTaskTemplateHtml = __webpack_require__(41);
 	
 	var _tasksAddTaskTemplateHtml2 = _interopRequireDefault(_tasksAddTaskTemplateHtml);
 	
-	var _jobsEditJobTemplateHtml = __webpack_require__(44);
+	var _jobsEditJobTemplateHtml = __webpack_require__(42);
 	
 	var _jobsEditJobTemplateHtml2 = _interopRequireDefault(_jobsEditJobTemplateHtml);
 	
-	var _componentsComponents = __webpack_require__(46);
+	var _componentsComponents = __webpack_require__(43);
 	
 	var _componentsComponents2 = _interopRequireDefault(_componentsComponents);
 	
@@ -72407,8 +72407,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 21 */,
-/* 22 */
+/* 21 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -72478,7 +72477,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -72497,7 +72496,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -72563,7 +72562,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/*
@@ -72726,7 +72725,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -72747,7 +72746,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -72967,7 +72966,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -72984,7 +72983,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73007,7 +73006,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73026,7 +73025,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73069,7 +73068,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73086,7 +73085,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73109,7 +73108,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -73150,7 +73149,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73169,7 +73168,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73201,7 +73200,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73220,7 +73219,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73252,7 +73251,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73273,7 +73272,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73364,8 +73363,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 33 */,
-/* 34 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73380,11 +73378,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _jobsAddJobModalTemplateHtml = __webpack_require__(35);
+	var _jobsAddJobModalTemplateHtml = __webpack_require__(33);
 	
 	var _jobsAddJobModalTemplateHtml2 = _interopRequireDefault(_jobsAddJobModalTemplateHtml);
 	
-	var _jobsAddJobModalController = __webpack_require__(36);
+	var _jobsAddJobModalController = __webpack_require__(34);
 	
 	var _jobsAddJobModalController2 = _interopRequireDefault(_jobsAddJobModalController);
 	
@@ -73465,7 +73463,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 35 */
+/* 33 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73476,7 +73474,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 36 */
+/* 34 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -73553,7 +73551,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 37 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73572,11 +73570,11 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _selectUserTemplateHtml = __webpack_require__(38);
+	var _selectUserTemplateHtml = __webpack_require__(36);
 	
 	var _selectUserTemplateHtml2 = _interopRequireDefault(_selectUserTemplateHtml);
 	
-	var _selectUserController = __webpack_require__(39);
+	var _selectUserController = __webpack_require__(37);
 	
 	var _selectUserController2 = _interopRequireDefault(_selectUserController);
 	
@@ -73676,7 +73674,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 38 */
+/* 36 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73687,7 +73685,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 39 */
+/* 37 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -73736,7 +73734,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 40 */
+/* 38 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -73786,7 +73784,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 41 */
+/* 39 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73797,7 +73795,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 42 */
+/* 40 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73808,7 +73806,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 43 */
+/* 41 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73819,7 +73817,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 44 */
+/* 42 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73830,8 +73828,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 45 */,
-/* 46 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73846,7 +73843,7 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _metricsIndex = __webpack_require__(47);
+	var _metricsIndex = __webpack_require__(44);
 	
 	var _metricsIndex2 = _interopRequireDefault(_metricsIndex);
 	
@@ -73856,7 +73853,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 47 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73867,7 +73864,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _highcharts = __webpack_require__(48);
+	var _highcharts = __webpack_require__(45);
 	
 	var _highcharts2 = _interopRequireDefault(_highcharts);
 	
@@ -73877,25 +73874,29 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _highchartsNg = __webpack_require__(49);
+	var _highchartsNg = __webpack_require__(46);
 	
 	var _highchartsNg2 = _interopRequireDefault(_highchartsNg);
 	
-	var _highchartServiceJs = __webpack_require__(50);
+	var _highchartServiceJs = __webpack_require__(47);
 	
 	var _highchartServiceJs2 = _interopRequireDefault(_highchartServiceJs);
 	
-	var _currentMetricsAggregateGroupedChartComponentJs = __webpack_require__(51);
+	var _currentMetricsAggregateGroupedChartComponentJs = __webpack_require__(48);
 	
 	var _currentMetricsAggregateGroupedChartComponentJs2 = _interopRequireDefault(_currentMetricsAggregateGroupedChartComponentJs);
 	
-	var _pagesMetricsPageComponet = __webpack_require__(54);
+	var _pagesMetricsPageComponet = __webpack_require__(51);
 	
 	var _pagesMetricsPageComponet2 = _interopRequireDefault(_pagesMetricsPageComponet);
 	
+	var _historicalMetricsHistoricalResourceChartComponent = __webpack_require__(56);
+	
+	var _historicalMetricsHistoricalResourceChartComponent2 = _interopRequireDefault(_historicalMetricsHistoricalResourceChartComponent);
+	
 	window.Highcharts = _highcharts2['default'];
 	
-	var _module = _angular2['default'].module('jupiter.metrics', [_highchartsNg2['default']]).service('highChartService', _highchartServiceJs2['default']).component('metricsPage', _pagesMetricsPageComponet2['default']).component('aggregateGroupedChart', _currentMetricsAggregateGroupedChartComponentJs2['default']).config(function ($stateProvider, $urlRouterProvider) {
+	var _module = _angular2['default'].module('jupiter.metrics', [_highchartsNg2['default']]).service('highChartService', _highchartServiceJs2['default']).component('metricsPage', _pagesMetricsPageComponet2['default']).component('aggregateGroupedChart', _currentMetricsAggregateGroupedChartComponentJs2['default']).component('historicalResourceChart', _historicalMetricsHistoricalResourceChartComponent2['default']).config(function ($stateProvider, $urlRouterProvider) {
 	  $stateProvider.state('root.metrics', {
 	    url: '/metrics',
 	    data: { pageTitle: 'Metrics' },
@@ -73912,7 +73913,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 48 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/*
@@ -74261,7 +74262,7 @@
 
 
 /***/ },
-/* 49 */
+/* 46 */
 /***/ function(module, exports) {
 
 	if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports){
@@ -74765,7 +74766,7 @@
 
 
 /***/ },
-/* 50 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/* eslint no-trailing-spaces: 0 */
@@ -75026,7 +75027,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 51 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75037,11 +75038,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _chartTemplateHtml = __webpack_require__(52);
+	var _chartTemplateHtml = __webpack_require__(49);
 	
 	var _chartTemplateHtml2 = _interopRequireDefault(_chartTemplateHtml);
 	
-	var _aggregateGroupedChartControllerJs = __webpack_require__(53);
+	var _aggregateGroupedChartControllerJs = __webpack_require__(50);
 	
 	var _aggregateGroupedChartControllerJs2 = _interopRequireDefault(_aggregateGroupedChartControllerJs);
 	
@@ -75060,7 +75061,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 52 */
+/* 49 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -75071,7 +75072,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 53 */
+/* 50 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -75129,7 +75130,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 54 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75140,11 +75141,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _metricsTemplateHtml = __webpack_require__(55);
+	var _metricsTemplateHtml = __webpack_require__(52);
 	
 	var _metricsTemplateHtml2 = _interopRequireDefault(_metricsTemplateHtml);
 	
-	var _metricsController = __webpack_require__(56);
+	var _metricsController = __webpack_require__(53);
 	
 	var _metricsController2 = _interopRequireDefault(_metricsController);
 	
@@ -75155,18 +75156,86 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 55 */
+/* 52 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <div layout=\"row\"> <div> <h5>Start Date</h5> <md-datepicker ng-model=\"$ctrl.startDate\"></md-datepicker> </div> <div> <h5>End Date</h5> <md-datepicker ng-model=\"$ctrl.endDate\"></md-datepicker> </div> </div> <md-button ng-click=\"$ctrl.applyDates()\">Apply Dates</md-button> <md-divider></md-divider> <div ng-repeat=\"chart in $ctrl.charts\"> <highchart config=\"chart.config\" ng-if=\"chart.config.series.length\"></highchart> </div> </div>";
+	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <div ng-repeat=\"chart in $ctrl.charts\"> <historical-resource-chart chart=\"chart\"></historical-resource-chart> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 56 */
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _historicalMetricsHistoricalChartFactoriesBaseHistoricalDateChart = __webpack_require__(54);
+	
+	var _historicalMetricsHistoricalChartFactoriesBaseHistoricalDateChart2 = _interopRequireDefault(_historicalMetricsHistoricalChartFactoriesBaseHistoricalDateChart);
+	
+	var MetricsController = function MetricsController(highChartService, $http) {
+	  _classCallCheck(this, MetricsController);
+	
+	  this.charts = [new _historicalMetricsHistoricalChartFactoriesBaseHistoricalDateChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes')];
+	};
+	
+	exports['default'] = MetricsController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseHistoricalChartFactory = __webpack_require__(55);
+	
+	var _baseHistoricalChartFactory2 = _interopRequireDefault(_baseHistoricalChartFactory);
+	
+	var historicalDateChart = (function (_baseHistoricalChart) {
+	  _inherits(historicalDateChart, _baseHistoricalChart);
+	
+	  function historicalDateChart(highchartService, $http, title, xAxisLabel) {
+	    _classCallCheck(this, historicalDateChart);
+	
+	    _get(Object.getPrototypeOf(historicalDateChart.prototype), 'constructor', this).call(this, highchartService, $http);
+	    this.title = title;
+	    this.xAxisLabel = xAxisLabel;
+	    this.series = [];
+	    this.chart = {};
+	  }
+	
+	  return historicalDateChart;
+	})(_baseHistoricalChartFactory2['default']);
+	
+	exports['default'] = historicalDateChart;
+	module.exports = exports['default'];
+
+/***/ },
+/* 55 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -75179,55 +75248,123 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var MetricsController = (function () {
-	  function MetricsController(highChartService) {
-	    _classCallCheck(this, MetricsController);
+	var historicalChartFactory = (function () {
+	  function historicalChartFactory(highChartService, $http) {
+	    _classCallCheck(this, historicalChartFactory);
 	
-	    this.charts = [{ url: '/backlog-hours/', config: {}, configParams: { title: 'Backlog Minutes By Expertise Level', yAxisLabel: 'Minutes' } }];
-	    this.defaultHistoryDays = 7;
 	    this._chartService = highChartService;
+	    this._$http = $http;
+	    this._chartType = null; // to be overwritten
+	  }
+	
+	  _createClass(historicalChartFactory, [{
+	    key: 'getChart',
+	    value: function getChart() {
+	      throw new ReferenceError('Method Not Implemented');
+	    }
+	  }, {
+	    key: 'getSeries',
+	    value: function getSeries() {
+	      throw new ReferenceError('Method Not Implemented');
+	    }
+	  }]);
+	
+	  return historicalChartFactory;
+	})();
+	
+	exports['default'] = historicalChartFactory;
+	module.exports = exports['default'];
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _historicalResourceChartTemplateHtml = __webpack_require__(58);
+	
+	var _historicalResourceChartTemplateHtml2 = _interopRequireDefault(_historicalResourceChartTemplateHtml);
+	
+	var _historicalResourceChartController = __webpack_require__(57);
+	
+	var _historicalResourceChartController2 = _interopRequireDefault(_historicalResourceChartController);
+	
+	exports['default'] = {
+	  bindings: {
+	    chart: '='
+	  },
+	  template: _historicalResourceChartTemplateHtml2['default'],
+	  controller: _historicalResourceChartController2['default']
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 57 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var HistoricalResourceChartController = (function () {
+	  function HistoricalResourceChartController() {
+	    _classCallCheck(this, HistoricalResourceChartController);
+	
+	    this.defaultHistoryDays = 7;
 	    this.endDate = this.getDefaultEndDate();
 	    this.startDate = this.getDefaultStartDate();
 	  }
 	
-	  _createClass(MetricsController, [{
-	    key: '$onInit',
+	  _createClass(HistoricalResourceChartController, [{
+	    key: "$onInit",
 	    value: function $onInit() {
-	      this.fetchConfigs();
+	      this.applyDates();
 	    }
 	  }, {
-	    key: 'getDefaultEndDate',
+	    key: "getDefaultEndDate",
 	    value: function getDefaultEndDate() {
 	      return new Date();
 	    }
 	  }, {
-	    key: 'getDefaultStartDate',
+	    key: "getDefaultStartDate",
 	    value: function getDefaultStartDate() {
 	      return new Date(new Date().setDate(new Date().getDate() - this.defaultHistoryDays));
 	    }
 	  }, {
-	    key: 'applyDates',
+	    key: "applyDates",
 	    value: function applyDates() {
-	      this.fetchConfigs();
-	    }
-	  }, {
-	    key: 'fetchConfigs',
-	    value: function fetchConfigs() {
-	      var _this = this;
-	
-	      this.charts.forEach(function (chart) {
-	        chart.startDate = _this.startDate;
-	        chart.endDate = _this.endDate;
-	        _this._chartService.createResourceChart(chart);
-	      });
+	      return this.chart.getSeries(this.startDate, this.endDate);
 	    }
 	  }]);
 	
-	  return MetricsController;
+	  return HistoricalResourceChartController;
 	})();
 	
-	exports['default'] = MetricsController;
-	module.exports = exports['default'];
+	exports["default"] = HistoricalResourceChartController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 58 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div layout=\"row\"> <div> <h5>Start Date</h5> <md-datepicker ng-model=\"$ctrl.startDate\"></md-datepicker> </div> <div> <h5>End Date</h5> <md-datepicker ng-model=\"$ctrl.endDate\"></md-datepicker> </div> </div> <md-button ng-click=\"$ctrl.applyDates()\">Apply Dates</md-button> <md-divider></md-divider>";
+	ngModule.run(["$templateCache",function(c){c.put("historical-resource-chart.template.html",v1)}]);
+	module.exports=v1;
 
 /***/ }
 /******/ ]);
