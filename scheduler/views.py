@@ -83,8 +83,8 @@ class BackLogHours(APIView):
     def get(self, request, *args, **kwargs):
         primary_group = request.user.groups.all()[0]
         # start/end dates are required - not checking for a possible KeyError is ok here
-        start_time = parse(request.query_params['startDate'])
-        end_time = parse(request.query_params['endDate'])
+        start_time = parse(request.query_params['start_date'])
+        end_time = parse(request.query_params['end_date'])
 
         backlog = [get_initial_task_backlog(start_time, primary_group)]
 
@@ -105,8 +105,8 @@ class JobsCompleted(APIView):
     def get(self, request, *args, **kwargs):
         primary_group = request.user.groups.all()[0]
         # start/end dates are required - not checking for a possible KeyError is ok here
-        start_time = parse(request.query_params['startDate'])
-        end_time = parse(request.query_params['endDate'])
+        start_time = parse(request.query_params['start_date'])
+        end_time = parse(request.query_params['end_date'])
 
         data = HistoricalJob.objects.filter(group=primary_group, completed_timestamp__range=(start_time, end_time)).values(
             'started_timestamp', 'completed_timestamp', 'product__description', 'type__description', 'created')
@@ -119,8 +119,8 @@ class JobTaskCompletionByTechnician(APIView):
     def get(self, request, *args, **kwargs):
         primary_group = request.user.groups.all()[0]
         # start/end dates are required - not checking for a possible KeyError is ok here
-        start_time = parse(request.query_params['startDate'])
-        end_time = parse(request.query_params['endDate'])
+        start_time = parse(request.query_params['start_date'])
+        end_time = parse(request.query_params['end_date'])
 
         completion_data = JobTask.history.filter(
             group=primary_group, history_date__range=(start_time, end_time), completed_by__isnull=False).values(
