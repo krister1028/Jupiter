@@ -78,6 +78,14 @@ export default class highchartService {
     return config;
   }
 
+  getHistoricalAggregateConfig(title, xAxisLabel, yAxisLabel) {
+    const config = highchartService._getBaseChartConfig();
+    config.title.text = title;
+    config.xAxis.title.text = xAxisLabel;
+    config.yAxis.title.text = yAxisLabel;
+    return config;
+  }
+
   createResourceChart(chartObj) {
     if (Object.keys(chartObj.config).length === 0) {  // if this is initial pass
       chartObj.config = this.getTimeLineConfig(chartObj.configParams);
