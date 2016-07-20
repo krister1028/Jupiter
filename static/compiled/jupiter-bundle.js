@@ -74822,10 +74822,12 @@
 	      var config = highchartService._getBaseChartConfig();
 	      config.options.chart.type = 'line';
 	      config.title.text = title;
+	      config.subtitle.text = 'Click and Drag to Zoom';
 	      config.xAxis.title.text = 'Date';
 	      config.xAxis.dateTimeLabelFormats = {
 	        day: '%e of %b'
 	      };
+	      config.options.chart.zoomType = 'x';
 	      config.xAxis.minTickInterval = 86400000;
 	      config.yAxis.title.text = yAxisLabel;
 	      config.xAxis.labels.format = '{value:%m-%d-%Y}';
@@ -74948,6 +74950,9 @@
 	        },
 	        series: [],
 	        title: {
+	          text: ''
+	        },
+	        subtitle: {
 	          text: ''
 	        },
 	        size: {
