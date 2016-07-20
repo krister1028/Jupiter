@@ -131,12 +131,4 @@ class JobTaskCompletionByTechnician(APIView):
             'completed_by'
         ).annotate(Sum('task_minutes')).order_by()
 
-        users = HistoricalUser.filter(group=primary_group, id__in=[x['completed_by'] for x in completion_data]).values(
-            'id', 'first_name', 'last_name'
-        ).annotate(Max('history_date')).order_by()
-
-        for completion_fact in completion_data:
-            user = filter(lambda u: u['id'] == completion_fact['completed_by'], users)[0]
-            completion_fact['username'] = user['first_name'] + user['last_name']
-
-        return Response(completion_data)
+        return Response({'categories': ['CP', 'Low'], 'series': [{'name': 'KDriz', 'data': [1, 7]}, {'name': 'Joe', 'data': [2, 4]}]})

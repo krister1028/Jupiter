@@ -75200,7 +75200,7 @@
 	var MetricsController = function MetricsController(highChartService, $http) {
 	  _classCallCheck(this, MetricsController);
 	
-	  this.charts = [new _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours'), new _historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart2['default'](highChartService, $http, 'Task Completion Minutes By Technician', 'Minutes', 'Technician Name', '/task-completion-by-tech')];
+	  this.charts = [new _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours'), new _historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart2['default'](highChartService, $http, 'Task Completion Minutes By Technician', 'Expertise Level', 'Minutes', '/task-completion-by-tech')];
 	};
 	
 	exports['default'] = MetricsController;
@@ -75241,14 +75241,29 @@
 	  }, {
 	    key: 'getSeries',
 	    value: function getSeries(startDate, endDate) {
+	      return this.getResourceData(startDate, endDate);
+	    }
+	  }, {
+	    key: 'getResourceData',
+	    value: function getResourceData(startDate, endDate) {
 	      var _this = this;
 	
 	      return this._$http.get(this.resourceUrl, { params: { start_date: startDate, end_date: endDate } }).then(function (response) {
-	        var _series;
-	
-	        _this.series.length = 0;
-	        (_series = _this.series).push.apply(_series, _toConsumableArray(response.data));
+	        return _this.transformResponse(response);
 	      });
+	    }
+	  }, {
+	    key: 'transformResponse',
+	    value: function transformResponse(response) {
+	      this.refreshSeries(response.data);
+	    }
+	  }, {
+	    key: 'refreshSeries',
+	    value: function refreshSeries(series) {
+	      var _series;
+	
+	      this.series.length = 0;
+	      (_series = this.series).push.apply(_series, _toConsumableArray(series));
 	    }
 	  }]);
 	
@@ -75418,6 +75433,8 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
@@ -75444,6 +75461,15 @@
 	    value: function getConfig() {
 	      this.config = this._chartService.getHistoricalAggregateConfig(this.title, this.xAxisLabel, this.yAxisLabel);
 	      this.config.series = this.series;
+	    }
+	  }, {
+	    key: 'transformResponse',
+	    value: function transformResponse(response) {
+	      var _config$xAxis$categories;
+	
+	      this.refreshSeries(response.data.series);
+	      this.config.xAxis.categories.length = 0;
+	      (_config$xAxis$categories = this.config.xAxis.categories).push.apply(_config$xAxis$categories, _toConsumableArray(response.data.categories));
 	    }
 	  }]);
 	

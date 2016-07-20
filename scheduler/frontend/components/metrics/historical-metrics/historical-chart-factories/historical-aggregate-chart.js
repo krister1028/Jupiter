@@ -13,4 +13,10 @@ export default class historicalTimeLineChart extends baseHistoricalChart {
     this.config = this._chartService.getHistoricalAggregateConfig(this.title, this.xAxisLabel, this.yAxisLabel);
     this.config.series = this.series;
   }
+
+  transformResponse(response) {
+    this.refreshSeries(response.data.series);
+    this.config.xAxis.categories.length = 0;
+    this.config.xAxis.categories.push(...response.data.categories);
+  }
 }

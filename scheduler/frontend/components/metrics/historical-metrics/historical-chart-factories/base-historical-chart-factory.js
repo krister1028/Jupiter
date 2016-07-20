@@ -11,9 +11,20 @@ export default class historicalChartFactory {
   }
 
   getSeries(startDate, endDate) {
-    return this._$http.get(this.resourceUrl, {params: {start_date: startDate, end_date: endDate}}).then(response => {
-      this.series.length = 0;
-      this.series.push(...response.data);
-    });
+    return this.getResourceData(startDate, endDate);
+  }
+
+  getResourceData(startDate, endDate) {
+    return this._$http.get(this.resourceUrl, {params: {start_date: startDate, end_date: endDate}})
+      .then(response => this.transformResponse(response));
+  }
+
+  transformResponse(response) {
+    this.refreshSeries(response.data);
+  }
+
+  refreshSeries(series) {
+    this.series.length = 0;
+    this.series.push(...series);
   }
 }
