@@ -6,6 +6,7 @@
 </div>
 
 <div layout-margin>
+    <md-button class="md-raised md-primary" ng-click="vm.addJob()">Add Job</md-button>
     <div ng-if="vm.jobServicesLoaded && vm.jobs.length">
         <aggregate-grouped-chart
                 chart-title="Job Count By Product"
@@ -29,7 +30,7 @@
         Production Schedule
     </h2>
     <md-list ng-show="vm.jobs.length">
-        <md-list-item flex layout="column"  ng-repeat="job in vm.jobs track by $index">
+        <md-list-item flex layout="column" ng-repeat="job in vm.jobs track by $index">
             <md-divider></md-divider>
             <div layout-margin style="width: 100%" layout="row" layout-align="start center">
                 <div flex="30" layout="column">
@@ -63,11 +64,12 @@
                     <md-progress-linear md-mode="determinate" value="{{ vm.getJobProgress(job) * 100 }}"></md-progress-linear>
                 </div>
             </div>
-            <md-divider></md-divider>
+            <div layout="row">
+                <md-button ng-click="vm.editJob(job)">Edit Job</md-button>
+            </div>
         </md-list-item>
     </md-list>
     <div ng-show="vm.jobs.length == 0" layout-margin>
         You don't currently have any scheduled Jobs
     </div>
-    <md-button class="md-raised md-primary" ng-click="vm.addJob()">Add Job</md-button>
 </div>

@@ -155,7 +155,7 @@ class CustomHistoricalJobTask(models.Model):
         self.task_minutes = self.instance.product_task.completion_time
         self.job_status_description = self.job.status.description
         if self.completed_by:
-            self.completed_by_name = self.completed_by__first_name + self.completed_by__last_name
+            self.completed_by_name = self.completed_by.first_name + self.completed_by.last_name
         super(CustomHistoricalJobTask, self).save(*args, **kwargs)
 
     def _is_completion_status_change(self):
