@@ -1,0 +1,17 @@
+<div layout="row">
+    <div flex="20" layout="column" layout-align="center start">
+        <h4>{{ $ctrl.chart.title }} Dates</h4>
+        <div>
+            <h5>Start Date</h5>
+            <md-datepicker ng-model="$ctrl.startDate"></md-datepicker>
+        </div>
+        <div>
+            <h5>End Date</h5>
+            <md-datepicker ng-model="$ctrl.endDate"></md-datepicker>
+        </div>
+        <md-button ng-click="$ctrl.applyDates()">Apply Dates</md-button>
+    </div>
+    <md-divider></md-divider>
+    <highchart flex config="$ctrl.chart.config" ng-if="$ctrl.chart.series.length"></highchart>
+</div>
+

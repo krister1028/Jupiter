@@ -97,91 +97,79 @@
 	
 	var _tasksAddTaskController2 = _interopRequireDefault(_tasksAddTaskController);
 	
-	var _metricsMetricsController = __webpack_require__(21);
-	
-	var _metricsMetricsController2 = _interopRequireDefault(_metricsMetricsController);
-	
-	var _loginUserService = __webpack_require__(22);
+	var _loginUserService = __webpack_require__(21);
 	
 	var _loginUserService2 = _interopRequireDefault(_loginUserService);
 	
-	var _productsProductService = __webpack_require__(23);
+	var _productsProductService = __webpack_require__(22);
 	
 	var _productsProductService2 = _interopRequireDefault(_productsProductService);
 	
-	var _jobsJobService = __webpack_require__(25);
+	var _jobsJobService = __webpack_require__(24);
 	
 	var _jobsJobService2 = _interopRequireDefault(_jobsJobService);
 	
-	var _tasksTaskService = __webpack_require__(26);
+	var _tasksTaskService = __webpack_require__(25);
 	
 	var _tasksTaskService2 = _interopRequireDefault(_tasksTaskService);
 	
-	var _jobsJobTaskService = __webpack_require__(27);
+	var _jobsJobTaskService = __webpack_require__(26);
 	
 	var _jobsJobTaskService2 = _interopRequireDefault(_jobsJobTaskService);
 	
-	var _jobsGroupUserService = __webpack_require__(28);
+	var _jobsGroupUserService = __webpack_require__(27);
 	
 	var _jobsGroupUserService2 = _interopRequireDefault(_jobsGroupUserService);
 	
-	var _utilityService = __webpack_require__(29);
+	var _utilityService = __webpack_require__(28);
 	
 	var _utilityService2 = _interopRequireDefault(_utilityService);
 	
-	var _jobsJobTypeService = __webpack_require__(30);
+	var _jobsJobTypeService = __webpack_require__(29);
 	
 	var _jobsJobTypeService2 = _interopRequireDefault(_jobsJobTypeService);
 	
-	var _jobsJobStatusService = __webpack_require__(31);
+	var _jobsJobStatusService = __webpack_require__(30);
 	
 	var _jobsJobStatusService2 = _interopRequireDefault(_jobsJobStatusService);
 	
-	var _productsProductTaskService = __webpack_require__(32);
+	var _productsProductTaskService = __webpack_require__(31);
 	
 	var _productsProductTaskService2 = _interopRequireDefault(_productsProductTaskService);
 	
-	var _metricsMetricsService = __webpack_require__(33);
-	
-	var _metricsMetricsService2 = _interopRequireDefault(_metricsMetricsService);
-	
-	var _homeController = __webpack_require__(34);
+	var _homeController = __webpack_require__(32);
 	
 	var _homeController2 = _interopRequireDefault(_homeController);
 	
-	var _jobsEditJobController = __webpack_require__(37);
+	var _jobsEditJobController = __webpack_require__(35);
 	
 	var _jobsEditJobController2 = _interopRequireDefault(_jobsEditJobController);
 	
-	var _headerController = __webpack_require__(40);
+	var _headerController = __webpack_require__(38);
 	
 	var _headerController2 = _interopRequireDefault(_headerController);
 	
-	var _homeTemplateHtml = __webpack_require__(41);
+	var _homeTemplateHtml = __webpack_require__(39);
 	
 	var _homeTemplateHtml2 = _interopRequireDefault(_homeTemplateHtml);
 	
-	var _productsAddProductTemplateHtml = __webpack_require__(42);
+	var _productsAddProductTemplateHtml = __webpack_require__(40);
 	
 	var _productsAddProductTemplateHtml2 = _interopRequireDefault(_productsAddProductTemplateHtml);
 	
-	var _tasksAddTaskTemplateHtml = __webpack_require__(43);
+	var _tasksAddTaskTemplateHtml = __webpack_require__(41);
 	
 	var _tasksAddTaskTemplateHtml2 = _interopRequireDefault(_tasksAddTaskTemplateHtml);
 	
-	var _jobsEditJobTemplateHtml = __webpack_require__(44);
+	var _jobsEditJobTemplateHtml = __webpack_require__(42);
 	
 	var _jobsEditJobTemplateHtml2 = _interopRequireDefault(_jobsEditJobTemplateHtml);
 	
-	var _metricsMetricsTemplateHtml = __webpack_require__(45);
-	
-	var _metricsMetricsTemplateHtml2 = _interopRequireDefault(_metricsMetricsTemplateHtml);
-	
-	var _componentsComponents = __webpack_require__(46);
+	var _componentsComponents = __webpack_require__(43);
 	
 	var _componentsComponents2 = _interopRequireDefault(_componentsComponents);
 	
-	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _componentsComponents2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('productTaskService', _productsProductTaskService2['default']).service('metricsService', _metricsMetricsService2['default']).service('utilityService', _utilityService2['default']).config(configuration);
+	var jupiter = _angular2['default'].module('jupiter', [_angularMaterial2['default'], _angularUiRouter2['default'], _angularMessages2['default'], _componentsComponents2['default']]).controller('LoginController', _loginLoginController2['default']).controller('AddProductController', _productsAddProductController2['default']).controller('AddTaskController', _tasksAddTaskController2['default']).controller('EditJobController', _jobsEditJobController2['default']).service('userService', _loginUserService2['default']).service('productService', _productsProductService2['default']).service('jobService', _jobsJobService2['default']).service('taskService', _tasksTaskService2['default']).service('groupUserService', _jobsGroupUserService2['default']).service('jobTypeService', _jobsJobTypeService2['default']).service('jobStatusService', _jobsJobStatusService2['default']).service('jobTaskService', _jobsJobTaskService2['default']).service('productTaskService', _productsProductTaskService2['default']).service('utilityService', _utilityService2['default']).config(configuration);
 	
 	/* @ngInject */
 	function configuration($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -263,15 +251,6 @@
 	      'body@': {
 	        template: _tasksAddTaskTemplateHtml2['default'],
 	        controller: 'AddTaskController as vm'
-	      }
-	    }
-	  }).state('root.metrics', {
-	    url: '/metrics',
-	    data: { pageTitle: 'Metrics' },
-	    views: {
-	      'body@': {
-	        template: _metricsMetricsTemplateHtml2['default'],
-	        controller: _metricsMetricsController2['default']
 	      }
 	    }
 	  });
@@ -72441,81 +72420,6 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var MetricsController = (function () {
-	  function MetricsController(highchartService, jobService, productService, jobStatusService, jobTypeService, metricsService) {
-	    _classCallCheck(this, MetricsController);
-	
-	    this._jobService = jobService;
-	    this._jobStatusService = jobStatusService;
-	    this._highchartService = highchartService;
-	    this._metricService = metricsService;
-	
-	    this.jobsByProduct = highchartService.getColumnConfig({
-	      categories: productService.getDescriptionList(),
-	      title: 'Jobs By Product',
-	      xAxisLabel: 'Product',
-	      yAxisLabel: 'Job Count' });
-	    this.jobsByType = highchartService.getColumnConfig({
-	      categories: jobTypeService.getDescriptionList(),
-	      title: 'Jobs By Type',
-	      xAxisLabel: 'Type',
-	      yAxisLabel: 'Job Count' });
-	    this.taskBacklog = highchartService.getTimeLineConfig({
-	      title: 'Task By Expertise Backlog',
-	      yAxisLabel: 'Backlog (minutes)' });
-	  }
-	
-	  _createClass(MetricsController, [{
-	    key: 'getJobsByProductData',
-	    value: function getJobsByProductData() {
-	      var _this = this;
-	
-	      this._jobService.getJobsCreatedByDateRange(this.jobsByProduct.startDate, this.jobsByProduct.endDate).then(function (jobs) {
-	        _this.jobsByProduct.series = _this._highchartService.getCategoryCount(jobs, _this.jobsByProduct.xAxis.categories, _this._jobStatusService.getDescriptionList(), 'productItem.description', 'jobStatus.description');
-	      });
-	    }
-	  }, {
-	    key: 'getJobsByTypeData',
-	    value: function getJobsByTypeData() {
-	      var _this2 = this;
-	
-	      this._jobService.getJobsCreatedByDateRange(this.jobsByType.startDate, this.jobsByType.endDate).then(function (jobs) {
-	        _this2.jobsByType.series = _this2._highchartService.getCategoryCount(jobs, _this2.jobsByType.xAxis.categories, _this2._jobStatusService.getDescriptionList(), 'jobType.description', 'jobStatus.description');
-	      });
-	    }
-	  }, {
-	    key: 'getTaskBackLogData',
-	    value: function getTaskBackLogData() {
-	      var _this3 = this;
-	
-	      this._metricService.getBacklog(this.taskBacklog.startDate, this.taskBacklog.endDate).then(function (backlog) {
-	        _this3.taskBacklog.xAxis.min = _this3.taskBacklog.startDate.valueOf();
-	        _this3.taskBacklog.xAxis.max = _this3.taskBacklog.endDate.valueOf();
-	        _this3.taskBacklog.series = _this3._highchartService.getDataForTimeLine(backlog, ['High', 'Medium', 'Low', 'CP']);
-	      });
-	    }
-	  }]);
-	
-	  return MetricsController;
-	})();
-	
-	exports['default'] = MetricsController;
-	module.exports = exports['default'];
-
-/***/ },
-/* 22 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
 	var userService = (function () {
 	  /* @ngInject */
 	
@@ -72573,7 +72477,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -72592,7 +72496,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -72658,7 +72562,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/*
@@ -72821,7 +72725,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -72842,7 +72746,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73062,7 +72966,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73079,7 +72983,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73102,7 +73006,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73121,7 +73025,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73164,7 +73068,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73181,7 +73085,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73204,7 +73108,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -73245,7 +73149,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73264,7 +73168,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73296,7 +73200,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73315,7 +73219,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73347,7 +73251,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73368,7 +73272,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _baseCachedResourceClass = __webpack_require__(24);
+	var _baseCachedResourceClass = __webpack_require__(23);
 	
 	var _baseCachedResourceClass2 = _interopRequireDefault(_baseCachedResourceClass);
 	
@@ -73459,48 +73363,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	var metricsService = (function () {
-	  function metricsService($http) {
-	    _classCallCheck(this, metricsService);
-	
-	    this._backLogUrl = '/backlog-hours/';
-	    this._$http = $http;
-	  }
-	
-	  _createClass(metricsService, [{
-	    key: 'getBacklog',
-	    value: function getBacklog(startDate, endDate) {
-	      return this._$http.get(this._backLogUrl, { params: { startDate: startDate, endDate: endDate } }).then(function (response) {
-	        var data = response.data;
-	        data.forEach(function (point) {
-	          return point.date = new Date(point.date).valueOf();
-	        });
-	        return data;
-	      });
-	    }
-	  }]);
-	
-	  return metricsService;
-	})();
-	
-	exports['default'] = metricsService;
-	module.exports = exports['default'];
-
-/***/ },
-/* 34 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73515,11 +73378,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _jobsAddJobModalTemplateHtml = __webpack_require__(35);
+	var _jobsAddJobModalTemplateHtml = __webpack_require__(33);
 	
 	var _jobsAddJobModalTemplateHtml2 = _interopRequireDefault(_jobsAddJobModalTemplateHtml);
 	
-	var _jobsAddJobModalController = __webpack_require__(36);
+	var _jobsAddJobModalController = __webpack_require__(34);
 	
 	var _jobsAddJobModalController2 = _interopRequireDefault(_jobsAddJobModalController);
 	
@@ -73600,7 +73463,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 35 */
+/* 33 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73611,7 +73474,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 36 */
+/* 34 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -73688,7 +73551,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 37 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73707,11 +73570,11 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _selectUserTemplateHtml = __webpack_require__(38);
+	var _selectUserTemplateHtml = __webpack_require__(36);
 	
 	var _selectUserTemplateHtml2 = _interopRequireDefault(_selectUserTemplateHtml);
 	
-	var _selectUserController = __webpack_require__(39);
+	var _selectUserController = __webpack_require__(37);
 	
 	var _selectUserController2 = _interopRequireDefault(_selectUserController);
 	
@@ -73811,7 +73674,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 38 */
+/* 36 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73822,7 +73685,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 39 */
+/* 37 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -73871,7 +73734,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 40 */
+/* 38 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -73921,18 +73784,18 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 41 */
+/* 39 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <div ng-if=\"vm.jobServicesLoaded && vm.jobs.length\"> <aggregate-grouped-chart chart-title=\"Jobs By Product\" aggregate-title=\"Job Count\" category-title=\"Products\" object-list=\"vm.jobs\" series-name-key=\"status.description\" category-name-key=\"product.description\"> </aggregate-grouped-chart> <aggregate-grouped-chart chart-title=\"Jobs By Type\" aggregate-title=\"Job Count\" category-title=\"Type\" object-list=\"vm.jobs\" series-name-key=\"status.description\" category-name-key=\"type.description\"> </aggregate-grouped-chart> </div> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item flex layout=\"column\" ng-repeat=\"job in vm.jobs track by $index\"> <md-divider></md-divider> <div layout-margin style=\"width: 100%\" layout=\"row\" layout-align=\"start center\"> <div flex=\"30\" layout=\"column\"> <div layout=\"row\" layout-align=\"start center\" ng-click=\"vm.editJob(job)\"> <h3>{{ job.description }}</h3> </div> <h5>Job Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Job Status:</span> <p layout-margin>{{ job.status.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Is Rework:</span> <p layout-margin>{{ vm.isRework(job) }}</p> </div> <h5>Product Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Product Description:</span> <p layout-margin>{{ job.product.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Product Code:</span> <p layout-margin>{{ job.product.code }}</p> </div> </div> <div flex=\"60\" layout=\"column\"> <div layout-margin>Total Job Time: {{ vm.getTotalJobTime(job) }} (mins)</div> <div layout-margin>Remaining Job Time: {{ vm.getJobTimeRemaining(job) }} (mins)</div> <md-divider></md-divider> <h4 layout-margin>Overall Progress: {{ vm.getJobProgress(job) * 100 }}%</h4> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </div> </div> <md-divider></md-divider> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div>";
+	var v1="<div layout-margin> <div> Welcome {{ vm.user.name }} </div> <md-divider></md-divider> </div> <div layout-margin> <div ng-if=\"vm.jobServicesLoaded && vm.jobs.length\"> <aggregate-grouped-chart chart-title=\"Job Count By Product\" aggregate-title=\"Job Count\" category-title=\"Job Status\" object-list=\"vm.jobs\" series-name-key=\"product.description\" category-name-key=\"status.description\"> </aggregate-grouped-chart> <aggregate-grouped-chart chart-title=\"Job Count By Type\" aggregate-title=\"Job Count\" category-title=\"Job Status\" object-list=\"vm.jobs\" series-name-key=\"type.description\" category-name-key=\"status.description\"> </aggregate-grouped-chart> </div> <h2> Production Schedule </h2> <md-list ng-show=\"vm.jobs.length\"> <md-list-item flex layout=\"column\" ng-repeat=\"job in vm.jobs track by $index\"> <md-divider></md-divider> <div layout-margin style=\"width: 100%\" layout=\"row\" layout-align=\"start center\"> <div flex=\"30\" layout=\"column\"> <div layout=\"row\" layout-align=\"start center\" ng-click=\"vm.editJob(job)\"> <h3>{{ job.description }}</h3> </div> <h5>Job Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Job Status:</span> <p layout-margin>{{ job.status.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Is Rework:</span> <p layout-margin>{{ vm.isRework(job) }}</p> </div> <h5>Product Details</h5> <div layout=\"row\" layout-align=\"start center\"> <span>Product Description:</span> <p layout-margin>{{ job.product.description }}</p> </div> <div layout=\"row\" layout-align=\"start center\"> <span>Product Code:</span> <p layout-margin>{{ job.product.code }}</p> </div> </div> <div flex=\"60\" layout=\"column\"> <div layout-margin>Total Job Time: {{ vm.getTotalJobTime(job) }} (mins)</div> <div layout-margin>Remaining Job Time: {{ vm.getJobTimeRemaining(job) }} (mins)</div> <md-divider></md-divider> <h4 layout-margin>Overall Progress: {{ vm.getJobProgress(job) * 100 }}%</h4> <md-progress-linear md-mode=\"determinate\" value=\"{{ vm.getJobProgress(job) * 100 }}\"></md-progress-linear> </div> </div> <md-divider></md-divider> </md-list-item> </md-list> <div ng-show=\"vm.jobs.length == 0\" layout-margin> You don't currently have any scheduled Jobs </div> <md-button class=\"md-raised md-primary\" ng-click=\"vm.addJob()\">Add Job</md-button> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("home.template.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
-/* 42 */
+/* 40 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73943,7 +73806,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 43 */
+/* 41 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73954,7 +73817,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 44 */
+/* 42 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -73965,18 +73828,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 45 */
-/***/ function(module, exports) {
-
-	var angular=window.angular,ngModule;
-	try {ngModule=angular.module(["ng"])}
-	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div layout-margin> <h3>Metrics Dashboard</h3> <date-chart config=\"vm.jobsByProduct\" refresh-data=\"vm.getJobsByProductData()\"> </date-chart> <date-chart config=\"vm.jobsByType\" refresh-data=\"vm.getJobsByTypeData()\"> </date-chart> <date-chart config=\"vm.taskBacklog\" refresh-data=\"vm.getTaskBackLogData()\"> </date-chart> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
-	module.exports=v1;
-
-/***/ },
-/* 46 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73991,7 +73843,7 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _metricsIndex = __webpack_require__(47);
+	var _metricsIndex = __webpack_require__(44);
 	
 	var _metricsIndex2 = _interopRequireDefault(_metricsIndex);
 	
@@ -74001,7 +73853,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 47 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74012,7 +73864,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _highcharts = __webpack_require__(48);
+	var _highcharts = __webpack_require__(45);
 	
 	var _highcharts2 = _interopRequireDefault(_highcharts);
 	
@@ -74022,27 +73874,46 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _highchartsNg = __webpack_require__(49);
+	var _highchartsNg = __webpack_require__(46);
 	
 	var _highchartsNg2 = _interopRequireDefault(_highchartsNg);
 	
-	var _highchartServiceJs = __webpack_require__(50);
+	var _highchartServiceJs = __webpack_require__(47);
 	
 	var _highchartServiceJs2 = _interopRequireDefault(_highchartServiceJs);
 	
-	var _currentMetricsAggregateGroupedChartComponentJs = __webpack_require__(51);
+	var _currentMetricsAggregateGroupedChartComponentJs = __webpack_require__(48);
 	
 	var _currentMetricsAggregateGroupedChartComponentJs2 = _interopRequireDefault(_currentMetricsAggregateGroupedChartComponentJs);
 	
+	var _pagesMetricsPageComponet = __webpack_require__(51);
+	
+	var _pagesMetricsPageComponet2 = _interopRequireDefault(_pagesMetricsPageComponet);
+	
+	var _historicalMetricsHistoricalResourceChartComponent = __webpack_require__(57);
+	
+	var _historicalMetricsHistoricalResourceChartComponent2 = _interopRequireDefault(_historicalMetricsHistoricalResourceChartComponent);
+	
 	window.Highcharts = _highcharts2['default'];
 	
-	var _module = _angular2['default'].module('jupiter.metrics', [_highchartsNg2['default']]).service('highChartService', _highchartServiceJs2['default']).component('aggregateGroupedChart', _currentMetricsAggregateGroupedChartComponentJs2['default']);
+	var _module = _angular2['default'].module('jupiter.metrics', [_highchartsNg2['default']]).service('highChartService', _highchartServiceJs2['default']).component('metricsPage', _pagesMetricsPageComponet2['default']).component('aggregateGroupedChart', _currentMetricsAggregateGroupedChartComponentJs2['default']).component('historicalResourceChart', _historicalMetricsHistoricalResourceChartComponent2['default']).config(function ($stateProvider, $urlRouterProvider) {
+	  $stateProvider.state('root.metrics', {
+	    url: '/metrics',
+	    data: { pageTitle: 'Metrics' },
+	    views: {
+	      'body@': {
+	        component: 'metricsPage'
+	      }
+	    }
+	  });
+	  $urlRouterProvider.otherwise('/');
+	});
 	
 	exports['default'] = _module.name;
 	module.exports = exports['default'];
 
 /***/ },
-/* 48 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/*
@@ -74391,7 +74262,7 @@
 
 
 /***/ },
-/* 49 */
+/* 46 */
 /***/ function(module, exports) {
 
 	if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports){
@@ -74895,7 +74766,7 @@
 
 
 /***/ },
-/* 50 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/* eslint no-trailing-spaces: 0 */
@@ -74918,62 +74789,13 @@
 	var highchartColors = ['#3f51b5', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
 	
 	var highchartService = (function () {
-	  function highchartService(utilityService) {
+	  function highchartService(utilityService, $http) {
 	    _classCallCheck(this, highchartService);
 	
+	    this.historicalChart = 'historicalChart';
 	    this._utilityService = utilityService;
+	    this._$http = $http;
 	  }
-	
-	  /*
-	   var chartConfig = {
-	   for reference:
-	   options: {
-	   //This is the Main Highcharts chart config. Any Highchart options are valid here.
-	   //will be overriden by values specified below.
-	   chart: {
-	   type: 'bar'
-	   },
-	   tooltip: {
-	   style: {
-	   padding: 10,
-	   fontWeight: 'bold'
-	   }
-	   }
-	   },
-	   //The below properties are watched separately for changes.
-	  
-	   //Series object (optional) - a list of series using normal Highcharts series options.
-	   series: [{
-	   data: [10, 15, 12, 8, 7]
-	   }],
-	   //Title configuration (optional)
-	   title: {
-	   text: 'Hello'
-	   },
-	   //Boolean to control showing loading status on chart (optional)
-	   //Could be a string if you want to show specific loading text.
-	   loading: false,
-	   //Configuration for the xAxis (optional). Currently only one x axis can be dynamically controlled.
-	   //properties currentMin and currentMax provided 2-way binding to the chart's maximum and minimum
-	   xAxis: {
-	   currentMin: 0,
-	   currentMax: 20,
-	   title: {text: 'values'}
-	   },
-	   //Whether to use Highstocks instead of Highcharts (optional). Defaults to false.
-	   useHighStocks: false,
-	   //size (optional) if left out the chart will default to size of the div or something sensible.
-	   size: {
-	   width: 400,
-	   height: 300
-	   },
-	   //function (optional)
-	   func: function (chart) {
-	   //setup some logic for the chart
-	   }
-	   };
-	  
-	   */
 	
 	  _createClass(highchartService, [{
 	    key: 'getColumnConfig',
@@ -74986,21 +74808,31 @@
 	      return config;
 	    }
 	  }, {
-	    key: 'getTimeLineConfig',
-	    value: function getTimeLineConfig(configDetail) {
+	    key: 'getHistoricalAggregateConfig',
+	    value: function getHistoricalAggregateConfig(title, xAxisLabel, yAxisLabel) {
 	      var config = highchartService._getBaseChartConfig();
-	      config.options.chart.type = 'spline';
-	      config.title.text = configDetail.title;
+	      config.title.text = title;
+	      config.xAxis.title.text = xAxisLabel;
+	      config.yAxis.title.text = yAxisLabel;
+	      return config;
+	    }
+	  }, {
+	    key: 'getTimeLineConfig',
+	    value: function getTimeLineConfig(title, yAxisLabel) {
+	      var config = highchartService._getBaseChartConfig();
+	      config.options.chart.type = 'line';
+	      config.title.text = title;
+	      config.subtitle.text = 'Click and Drag to Zoom';
 	      config.xAxis.title.text = 'Date';
 	      config.xAxis.dateTimeLabelFormats = {
 	        day: '%e of %b'
 	      };
+	      config.options.chart.zoomType = 'x';
 	      config.xAxis.minTickInterval = 86400000;
-	      config.yAxis.title.text = configDetail.yAxisLabel;
+	      config.yAxis.title.text = yAxisLabel;
 	      config.xAxis.labels.format = '{value:%m-%d-%Y}';
 	      config.xAxis.labels.align = 'left';
 	      config.xAxis.type = 'datetime';
-	      config.series = [{ data: [] }];
 	      return config;
 	    }
 	  }, {
@@ -75120,6 +74952,9 @@
 	        title: {
 	          text: ''
 	        },
+	        subtitle: {
+	          text: ''
+	        },
 	        size: {
 	          height: 400
 	        },
@@ -75192,7 +75027,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 51 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75203,11 +75038,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _chartTemplateHtml = __webpack_require__(52);
+	var _chartTemplateHtml = __webpack_require__(49);
 	
 	var _chartTemplateHtml2 = _interopRequireDefault(_chartTemplateHtml);
 	
-	var _aggregateGroupedChartControllerJs = __webpack_require__(53);
+	var _aggregateGroupedChartControllerJs = __webpack_require__(50);
 	
 	var _aggregateGroupedChartControllerJs2 = _interopRequireDefault(_aggregateGroupedChartControllerJs);
 	
@@ -75226,7 +75061,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 52 */
+/* 49 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -75237,7 +75072,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 53 */
+/* 50 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -75292,6 +75127,356 @@
 	})();
 	
 	exports["default"] = AggregateGroupedChartController;
+	module.exports = exports["default"];
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _metricsTemplateHtml = __webpack_require__(52);
+	
+	var _metricsTemplateHtml2 = _interopRequireDefault(_metricsTemplateHtml);
+	
+	var _metricsController = __webpack_require__(53);
+	
+	var _metricsController2 = _interopRequireDefault(_metricsController);
+	
+	exports['default'] = {
+	  template: _metricsTemplateHtml2['default'],
+	  controller: _metricsController2['default']
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 52 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div layout-margin> <div ng-repeat=\"chart in $ctrl.charts\"> <historical-resource-chart chart=\"chart\"></historical-resource-chart> <md-divider layout-margin></md-divider> </div> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("metrics.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart = __webpack_require__(54);
+	
+	var _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart2 = _interopRequireDefault(_historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart);
+	
+	var _historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart = __webpack_require__(56);
+	
+	var _historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart2 = _interopRequireDefault(_historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart);
+	
+	var MetricsController = function MetricsController(highChartService, $http) {
+	  _classCallCheck(this, MetricsController);
+	
+	  this.charts = [new _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours'), new _historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart2['default'](highChartService, $http, 'Task Completion Minutes By Technician', 'Expertise Level', 'Minutes', '/task-completion-by-tech')];
+	};
+	
+	exports['default'] = MetricsController;
+	module.exports = exports['default'];
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseHistoricalChartFactory = __webpack_require__(55);
+	
+	var _baseHistoricalChartFactory2 = _interopRequireDefault(_baseHistoricalChartFactory);
+	
+	var historicalTimeLineChart = (function (_baseHistoricalChart) {
+	  _inherits(historicalTimeLineChart, _baseHistoricalChart);
+	
+	  function historicalTimeLineChart(highchartService, $http, title, yAxisLabel, resourceUrl) {
+	    _classCallCheck(this, historicalTimeLineChart);
+	
+	    _get(Object.getPrototypeOf(historicalTimeLineChart.prototype), 'constructor', this).call(this, highchartService, $http);
+	    this.resourceUrl = resourceUrl;
+	    this.title = title;
+	    this.yAxisLabel = yAxisLabel;
+	  }
+	
+	  _createClass(historicalTimeLineChart, [{
+	    key: 'getConfig',
+	    value: function getConfig() {
+	      this.config = this._chartService.getTimeLineConfig(this.title, this.yAxisLabel);
+	      this.config.series = this.series;
+	    }
+	  }, {
+	    key: 'refreshSeries',
+	    value: function refreshSeries(series) {
+	      series.forEach(function (s) {
+	        s.data.map(function (seriesDataPoint) {
+	          seriesDataPoint[0] = new Date(seriesDataPoint[0]).getTime();
+	        });
+	      });
+	      _get(Object.getPrototypeOf(historicalTimeLineChart.prototype), 'refreshSeries', this).call(this, series);
+	    }
+	  }]);
+	
+	  return historicalTimeLineChart;
+	})(_baseHistoricalChartFactory2['default']);
+	
+	exports['default'] = historicalTimeLineChart;
+	module.exports = exports['default'];
+
+/***/ },
+/* 55 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var historicalChartFactory = (function () {
+	  function historicalChartFactory(highChartService, $http) {
+	    _classCallCheck(this, historicalChartFactory);
+	
+	    this._chartService = highChartService;
+	    this._$http = $http;
+	    this.series = [];
+	    this.config = {};
+	  }
+	
+	  _createClass(historicalChartFactory, [{
+	    key: 'getConfig',
+	    value: function getConfig() {
+	      throw new ReferenceError('Method Not Implemented');
+	    }
+	  }, {
+	    key: 'getSeries',
+	    value: function getSeries(startDate, endDate) {
+	      return this.getResourceData(startDate, endDate);
+	    }
+	  }, {
+	    key: 'getResourceData',
+	    value: function getResourceData(startDate, endDate) {
+	      var _this = this;
+	
+	      return this._$http.get(this.resourceUrl, { params: { start_date: startDate, end_date: endDate } }).then(function (response) {
+	        _this.transformResponse(response);
+	        _this.config.xAxis.min = startDate.getTime();
+	        _this.config.xAxis.max = endDate.getTime();
+	      });
+	    }
+	  }, {
+	    key: 'transformResponse',
+	    value: function transformResponse(response) {
+	      this.refreshSeries(response.data);
+	    }
+	  }, {
+	    key: 'refreshSeries',
+	    value: function refreshSeries(series) {
+	      var _series;
+	
+	      this.series.length = 0;
+	      (_series = this.series).push.apply(_series, _toConsumableArray(series));
+	    }
+	  }]);
+	
+	  return historicalChartFactory;
+	})();
+	
+	exports['default'] = historicalChartFactory;
+	module.exports = exports['default'];
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseHistoricalChartFactory = __webpack_require__(55);
+	
+	var _baseHistoricalChartFactory2 = _interopRequireDefault(_baseHistoricalChartFactory);
+	
+	var historicalTimeLineChart = (function (_baseHistoricalChart) {
+	  _inherits(historicalTimeLineChart, _baseHistoricalChart);
+	
+	  function historicalTimeLineChart(highchartService, $http, title, xAxisLabel, yAxisLabel, resourceUrl) {
+	    _classCallCheck(this, historicalTimeLineChart);
+	
+	    _get(Object.getPrototypeOf(historicalTimeLineChart.prototype), 'constructor', this).call(this, highchartService, $http);
+	    this.resourceUrl = resourceUrl;
+	    this.title = title;
+	    this.xAxisLabel = xAxisLabel;
+	    this.yAxisLabel = yAxisLabel;
+	  }
+	
+	  _createClass(historicalTimeLineChart, [{
+	    key: 'getConfig',
+	    value: function getConfig() {
+	      this.config = this._chartService.getHistoricalAggregateConfig(this.title, this.xAxisLabel, this.yAxisLabel);
+	      this.config.series = this.series;
+	    }
+	  }, {
+	    key: 'transformResponse',
+	    value: function transformResponse(response) {
+	      var _config$xAxis$categories;
+	
+	      this.refreshSeries(response.data.series);
+	      this.config.xAxis.categories.length = 0;
+	      (_config$xAxis$categories = this.config.xAxis.categories).push.apply(_config$xAxis$categories, _toConsumableArray(response.data.categories));
+	    }
+	  }]);
+	
+	  return historicalTimeLineChart;
+	})(_baseHistoricalChartFactory2['default']);
+	
+	exports['default'] = historicalTimeLineChart;
+	module.exports = exports['default'];
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _historicalResourceChartTemplateHtml = __webpack_require__(58);
+	
+	var _historicalResourceChartTemplateHtml2 = _interopRequireDefault(_historicalResourceChartTemplateHtml);
+	
+	var _historicalResourceChartController = __webpack_require__(59);
+	
+	var _historicalResourceChartController2 = _interopRequireDefault(_historicalResourceChartController);
+	
+	exports['default'] = {
+	  bindings: {
+	    chart: '='
+	  },
+	  template: _historicalResourceChartTemplateHtml2['default'],
+	  controller: _historicalResourceChartController2['default']
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 58 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div layout=\"row\"> <div flex=\"20\" layout=\"column\" layout-align=\"center start\"> <h4>{{ $ctrl.chart.title }} Dates</h4> <div> <h5>Start Date</h5> <md-datepicker ng-model=\"$ctrl.startDate\"></md-datepicker> </div> <div> <h5>End Date</h5> <md-datepicker ng-model=\"$ctrl.endDate\"></md-datepicker> </div> <md-button ng-click=\"$ctrl.applyDates()\">Apply Dates</md-button> </div> <md-divider></md-divider> <highchart flex config=\"$ctrl.chart.config\" ng-if=\"$ctrl.chart.series.length\"></highchart> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("historical-resource-chart.template.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 59 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var HistoricalResourceChartController = (function () {
+	  function HistoricalResourceChartController() {
+	    _classCallCheck(this, HistoricalResourceChartController);
+	
+	    this.defaultHistoryDays = 7;
+	    this.endDate = this.getDefaultEndDate();
+	    this.startDate = this.getDefaultStartDate();
+	  }
+	
+	  _createClass(HistoricalResourceChartController, [{
+	    key: "$onInit",
+	    value: function $onInit() {
+	      this.chart.getConfig();
+	      this.applyDates();
+	    }
+	  }, {
+	    key: "getDefaultEndDate",
+	    value: function getDefaultEndDate() {
+	      return new Date();
+	    }
+	  }, {
+	    key: "getDefaultStartDate",
+	    value: function getDefaultStartDate() {
+	      return new Date(new Date().setDate(new Date().getDate() - this.defaultHistoryDays));
+	    }
+	  }, {
+	    key: "applyDates",
+	    value: function applyDates() {
+	      return this.chart.getSeries(this.startDate, this.endDate);
+	    }
+	  }]);
+	
+	  return HistoricalResourceChartController;
+	})();
+	
+	exports["default"] = HistoricalResourceChartController;
 	module.exports = exports["default"];
 
 /***/ }

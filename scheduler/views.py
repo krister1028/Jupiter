@@ -1,5 +1,6 @@
 from copy import copy
 
+import time
 from dateutil.parser import parse
 
 from django.contrib.auth.models import User
@@ -9,7 +10,7 @@ from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 from rest_framework.views import APIView
 
-from scheduler.metric_helpers import get_initial_task_backlog, add_task_backlog_aggregate
+from scheduler.metric_helpers import get_initial_task_backlog, update_backlog_series, series_dict_to_series
 from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, HistoricalJob
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
     JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
@@ -83,21 +84,20 @@ class BackLogHours(APIView):
     def get(self, request, *args, **kwargs):
         primary_group = request.user.groups.all()[0]
         # start/end dates are required - not checking for a possible KeyError is ok here
-        start_time = parse(request.query_params['startDate'])
-        end_time = parse(request.query_params['endDate'])
+        start_time = parse(request.query_params['start_date'])
+        end_time = parse(request.query_params['end_date'])
 
-        backlog = [get_initial_task_backlog(start_time, primary_group)]
+        series_dict = get_initial_task_backlog(start_time, primary_group)
 
         data = JobTask.history.filter(
-            Q(completion_status_change=True) | Q(history_type='+'),
+            completion_status_change=True,
             group=primary_group, history_date__gt=start_time, history_date__lte=end_time
         ).order_by('history_date')
 
         for record in data:
-            last_aggregation = backlog[-1]
-            backlog.append(add_task_backlog_aggregate(last_aggregation, record))
+            update_backlog_series(series_dict, record)
 
-        return Response(backlog)
+        return Response(series_dict_to_series(series_dict))
 
 
 class JobsCompleted(APIView):
@@ -105,8 +105,8 @@ class JobsCompleted(APIView):
     def get(self, request, *args, **kwargs):
         primary_group = request.user.groups.all()[0]
         # start/end dates are required - not checking for a possible KeyError is ok here
-        start_time = parse(request.query_params['startDate'])
-        end_time = parse(request.query_params['endDate'])
+        start_time = parse(request.query_params['start_date'])
+        end_time = parse(request.query_params['end_date'])
 
         data = HistoricalJob.objects.filter(group=primary_group, completed_timestamp__range=(start_time, end_time)).values(
             'started_timestamp', 'completed_timestamp', 'product__description', 'type__description', 'created')
@@ -119,20 +119,12 @@ class JobTaskCompletionByTechnician(APIView):
     def get(self, request, *args, **kwargs):
         primary_group = request.user.groups.all()[0]
         # start/end dates are required - not checking for a possible KeyError is ok here
-        start_time = parse(request.query_params['startDate'])
-        end_time = parse(request.query_params['endDate'])
+        start_time = parse(request.query_params['start_date'])
+        end_time = parse(request.query_params['end_date'])
 
         completion_data = JobTask.history.filter(
             group=primary_group, history_date__range=(start_time, end_time), completed_by__isnull=False).values(
             'completed_by'
         ).annotate(Sum('task_minutes')).order_by()
 
-        users = HistoricalUser.filter(group=primary_group, id__in=[x['completed_by'] for x in completion_data]).values(
-            'id', 'first_name', 'last_name'
-        ).annotate(Max('history_date')).order_by()
-
-        for completion_fact in completion_data:
-            user = filter(lambda u: u['id'] == completion_fact['completed_by'], users)[0]
-            completion_fact['username'] = user['first_name'] + user['last_name']
-
-        return Response(completion_data)
+        return Response({'categories': ['CP', 'Low'], 'series': [{'name': 'KDriz', 'data': [1, 7]}, {'name': 'Joe', 'data': [2, 4]}]})

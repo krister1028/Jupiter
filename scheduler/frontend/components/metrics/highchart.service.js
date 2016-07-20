@@ -4,8 +4,11 @@
 const highchartColors = ['#3f51b5', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'];
 
 export default class highchartService {
-  constructor(utilityService) {
+
+  constructor(utilityService, $http) {
+    this.historicalChart = 'historicalChart';
     this._utilityService = utilityService;
+    this._$http = $http;
   }
 
   static _getBaseChartConfig() {
@@ -26,6 +29,9 @@ export default class highchartService {
       },
       series: [],
       title: {
+        text: ''
+      },
+      subtitle: {
         text: ''
       },
       size: {
@@ -75,20 +81,29 @@ export default class highchartService {
     return config;
   }
 
-  getTimeLineConfig(configDetail) {
+  getHistoricalAggregateConfig(title, xAxisLabel, yAxisLabel) {
     const config = highchartService._getBaseChartConfig();
-    config.options.chart.type = 'spline';
-    config.title.text = configDetail.title;
+    config.title.text = title;
+    config.xAxis.title.text = xAxisLabel;
+    config.yAxis.title.text = yAxisLabel;
+    return config;
+  }
+
+  getTimeLineConfig(title, yAxisLabel) {
+    const config = highchartService._getBaseChartConfig();
+    config.options.chart.type = 'line';
+    config.title.text = title;
+    config.subtitle.text = 'Click and Drag to Zoom';
     config.xAxis.title.text = 'Date';
     config.xAxis.dateTimeLabelFormats = {
       day: '%e of %b'
     };
+    config.options.chart.zoomType = 'x';
     config.xAxis.minTickInterval = 86400000;
-    config.yAxis.title.text = configDetail.yAxisLabel;
+    config.yAxis.title.text = yAxisLabel;
     config.xAxis.labels.format = '{value:%m-%d-%Y}';
     config.xAxis.labels.align = 'left';
     config.xAxis.type = 'datetime';
-    config.series = [{data: []}];
     return config;
   }
 
@@ -208,54 +223,3 @@ export default class highchartService {
   }
 
 }
-
-/*
- var chartConfig = {
- for reference:
- options: {
- //This is the Main Highcharts chart config. Any Highchart options are valid here.
- //will be overriden by values specified below.
- chart: {
- type: 'bar'
- },
- tooltip: {
- style: {
- padding: 10,
- fontWeight: 'bold'
- }
- }
- },
- //The below properties are watched separately for changes.
-
- //Series object (optional) - a list of series using normal Highcharts series options.
- series: [{
- data: [10, 15, 12, 8, 7]
- }],
- //Title configuration (optional)
- title: {
- text: 'Hello'
- },
- //Boolean to control showing loading status on chart (optional)
- //Could be a string if you want to show specific loading text.
- loading: false,
- //Configuration for the xAxis (optional). Currently only one x axis can be dynamically controlled.
- //properties currentMin and currentMax provided 2-way binding to the chart's maximum and minimum
- xAxis: {
- currentMin: 0,
- currentMax: 20,
- title: {text: 'values'}
- },
- //Whether to use Highstocks instead of Highcharts (optional). Defaults to false.
- useHighStocks: false,
- //size (optional) if left out the chart will default to size of the div or something sensible.
- size: {
- width: 400,
- height: 300
- },
- //function (optional)
- func: function (chart) {
- //setup some logic for the chart
- }
- };
-
- */

@@ -6,9 +6,26 @@ import angular from 'angular';
 import highChartsNg from 'highcharts-ng';
 import highchartService from './highchart.service.js';
 import AggregateGroupedChart from './current-metrics/aggregate-grouped-chart.component.js';
+import MetricsPageComponent from './pages/metrics-page.componet';
+import HistoricalResourceChart from './historical-metrics/historical-resource-chart.component';
 
 const module = angular.module('jupiter.metrics', [highChartsNg])
   .service('highChartService', highchartService)
-  .component('aggregateGroupedChart', AggregateGroupedChart);
+  .component('metricsPage', MetricsPageComponent)
+  .component('aggregateGroupedChart', AggregateGroupedChart)
+  .component('historicalResourceChart', HistoricalResourceChart)
+  .config(($stateProvider, $urlRouterProvider) => {
+    $stateProvider
+      .state('root.metrics', {
+        url: '/metrics',
+        data: {pageTitle: 'Metrics'},
+        views: {
+          'body@': {
+            component: 'metricsPage'
+          }
+        }
+      });
+    $urlRouterProvider.otherwise('/');
+  });
 
 export default module.name;
