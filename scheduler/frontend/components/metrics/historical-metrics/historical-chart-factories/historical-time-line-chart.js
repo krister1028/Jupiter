@@ -16,7 +16,7 @@ export default class historicalTimeLineChart extends baseHistoricalChart {
   refreshSeries(series) {
     series.forEach(s => {
       s.data.map(seriesDataPoint => {
-        seriesDataPoint[0] = new Date(seriesDataPoint[0]).valueOf();
+        seriesDataPoint[0] = new Date(seriesDataPoint[0]).getTime();
       });
     });
     super.refreshSeries(series);

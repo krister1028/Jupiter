@@ -35,4 +35,4 @@ def series_dict_to_series(series_dict):
 def get_record_key(historic_job_task):
     expertise_description = historic_job_task.task_expertise_description
     job_status = historic_job_task.job_status_description
-    return '{}__{}'.format(expertise_description, job_status)
+    return '{} ({})'.format(expertise_description, job_status)

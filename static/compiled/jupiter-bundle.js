@@ -74817,30 +74817,16 @@
 	      return config;
 	    }
 	  }, {
-	    key: 'createResourceChart',
-	    value: function createResourceChart(chartObj) {
-	      if (Object.keys(chartObj.config).length === 0) {
-	        // if this is initial pass
-	        chartObj.config = this.getTimeLineConfig(chartObj.configParams);
-	      }
-	      this._$http.get(chartObj.url, { params: { start_date: chartObj.startDate, end_date: chartObj.endDate } }).then(function (response) {
-	        var _chartObj$config$series;
-	
-	        chartObj.config.series.length = 0;
-	        (_chartObj$config$series = chartObj.config.series).push.apply(_chartObj$config$series, _toConsumableArray(response.data));
-	      });
-	    }
-	  }, {
 	    key: 'getTimeLineConfig',
 	    value: function getTimeLineConfig(title, yAxisLabel) {
 	      var config = highchartService._getBaseChartConfig();
-	      config.options.chart.type = 'spline';
+	      config.options.chart.type = 'line';
 	      config.title.text = title;
 	      config.xAxis.title.text = 'Date';
 	      config.xAxis.dateTimeLabelFormats = {
 	        day: '%e of %b'
 	      };
-	      // config.xAxis.minTickInterval = 86400000;
+	      config.xAxis.minTickInterval = 86400000;
 	      config.yAxis.title.text = yAxisLabel;
 	      config.xAxis.labels.format = '{value:%m-%d-%Y}';
 	      config.xAxis.labels.align = 'left';
@@ -75253,7 +75239,7 @@
 	    value: function refreshSeries(series) {
 	      series.forEach(function (s) {
 	        s.data.map(function (seriesDataPoint) {
-	          seriesDataPoint[0] = new Date(seriesDataPoint[0]).valueOf();
+	          seriesDataPoint[0] = new Date(seriesDataPoint[0]).getTime();
 	        });
 	      });
 	      _get(Object.getPrototypeOf(historicalTimeLineChart.prototype), 'refreshSeries', this).call(this, series);
@@ -75308,7 +75294,9 @@
 	      var _this = this;
 	
 	      return this._$http.get(this.resourceUrl, { params: { start_date: startDate, end_date: endDate } }).then(function (response) {
-	        return _this.transformResponse(response);
+	        _this.transformResponse(response);
+	        _this.config.xAxis.min = startDate.getTime();
+	        _this.config.xAxis.max = endDate.getTime();
 	      });
 	    }
 	  }, {

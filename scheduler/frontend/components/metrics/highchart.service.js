@@ -86,26 +86,15 @@ export default class highchartService {
     return config;
   }
 
-  createResourceChart(chartObj) {
-    if (Object.keys(chartObj.config).length === 0) {  // if this is initial pass
-      chartObj.config = this.getTimeLineConfig(chartObj.configParams);
-    }
-    this._$http.get(chartObj.url, {params: {start_date: chartObj.startDate, end_date: chartObj.endDate}})
-      .then(response => {
-        chartObj.config.series.length = 0;
-        chartObj.config.series.push(...response.data);
-      });
-  }
-
   getTimeLineConfig(title, yAxisLabel) {
     const config = highchartService._getBaseChartConfig();
-    config.options.chart.type = 'spline';
+    config.options.chart.type = 'line';
     config.title.text = title;
     config.xAxis.title.text = 'Date';
     config.xAxis.dateTimeLabelFormats = {
       day: '%e of %b'
     };
-    // config.xAxis.minTickInterval = 86400000;
+    config.xAxis.minTickInterval = 86400000;
     config.yAxis.title.text = yAxisLabel;
     config.xAxis.labels.format = '{value:%m-%d-%Y}';
     config.xAxis.labels.align = 'left';
