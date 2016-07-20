@@ -17,10 +17,10 @@ def update_backlog_series(series_dict, record):
     series_key = get_record_key(record)
     last_result = series_dict[series_key][-1][1]
 
-    if not record.completed_by or record.history_type == '+':
+    if not record.completed_by and record.history_type != record.DELETED:
         series_dict[series_key].append([record.history_date, last_result + record.task_minutes])
     else:
-        if last_result != 0:
+        if last_result != 0:  # edge case to cover history not starting from the beginning of time (though it should)
             series_dict[series_key].append([record.history_date, last_result - record.task_minutes])
     return series_dict
 

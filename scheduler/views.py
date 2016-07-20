@@ -90,7 +90,7 @@ class BackLogHours(APIView):
         series_dict = get_initial_task_backlog(start_time, primary_group)
 
         data = JobTask.history.filter(
-            Q(completion_status_change=True) | Q(history_type='+'),
+            completion_status_change=True,
             group=primary_group, history_date__gt=start_time, history_date__lte=end_time
         ).order_by('history_date')
 

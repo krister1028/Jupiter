@@ -141,6 +141,7 @@ class Job(models.Model):
 
 class CustomHistoricalJobTask(models.Model):
     DELETED = '-'
+    ADDED = '+'
 
     completion_status_change = models.BooleanField(default=False)
     completed_by_name = models.CharField(max_length=255, null=True)
@@ -161,9 +162,9 @@ class CustomHistoricalJobTask(models.Model):
         try:
             last_completed_by = self.instance.history.most_recent().completed_by
         except JobTask.DoesNotExist:
-            return bool(self.completed_by)
+            return True  # if this is a new record, it's always a status change
         # compare presence of timestamp, not timestamp value
-        return bool(self.completed_by) != bool(last_completed_by)
+        return bool(self.completed_by) != bool(last_completed_by) or self.history_type == self.DELETED
 
     @classmethod
     def historical_records_as_of(cls, time, group):
