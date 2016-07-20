@@ -10,7 +10,7 @@ from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 from rest_framework.views import APIView
 
-from scheduler.metric_helpers import get_initial_task_backlog, add_task_backlog_aggregate
+from scheduler.metric_helpers import get_initial_task_backlog, update_backlog_series, series_dict_to_series
 from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, HistoricalJob
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
     JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
@@ -87,7 +87,7 @@ class BackLogHours(APIView):
         start_time = parse(request.query_params['start_date'])
         end_time = parse(request.query_params['end_date'])
 
-        backlog = [get_initial_task_backlog(start_time, primary_group)]
+        series_dict = get_initial_task_backlog(start_time, primary_group)
 
         data = JobTask.history.filter(
             Q(completion_status_change=True) | Q(history_type='+'),
@@ -95,13 +95,9 @@ class BackLogHours(APIView):
         ).order_by('history_date')
 
         for record in data:
-            last_aggregation = backlog[-1]
-            backlog.append(add_task_backlog_aggregate(last_aggregation, record))
+            update_backlog_series(series_dict, record)
 
-        return Response([
-            {'name': 'CP', 'data': [[int(round(time.time() * 1000)), 10], [int(round(time.time() * 1000)) + 20000, 20]]},
-            {'name': 'Medium', 'data': [[int(round(time.time() * 1000)), 20], [int(round(time.time() * 1000)) + 30000, 15]]},
-        ])
+        return Response(series_dict_to_series(series_dict))
 
 
 class JobsCompleted(APIView):

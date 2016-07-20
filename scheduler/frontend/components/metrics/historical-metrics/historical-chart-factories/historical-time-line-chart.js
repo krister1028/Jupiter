@@ -12,4 +12,13 @@ export default class historicalTimeLineChart extends baseHistoricalChart {
     this.config = this._chartService.getTimeLineConfig(this.title, this.yAxisLabel);
     this.config.series = this.series;
   }
+
+  refreshSeries(series) {
+    series.forEach(s => {
+      s.data.map(seriesDataPoint => {
+        seriesDataPoint[0] = new Date(seriesDataPoint[0]).valueOf();
+      });
+    });
+    super.refreshSeries(series);
+  }
 }
