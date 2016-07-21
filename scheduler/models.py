@@ -147,6 +147,7 @@ class CustomHistoricalJobTask(models.Model):
     completed_by_name = models.CharField(max_length=255, null=True)
     task_expertise_description = models.CharField(max_length=255)
     task_minutes = models.IntegerField()
+    completion_minutes = models.IntegerField(null=True)
     job_status_description = models.CharField(max_length=255)
 
     def save(self, *args, **kwargs):
@@ -155,7 +156,8 @@ class CustomHistoricalJobTask(models.Model):
         self.task_minutes = self.instance.product_task.completion_time
         self.job_status_description = self.job.status.description
         if self.completed_by:
-            self.completed_by_name = self.completed_by.first_name + self.completed_by.last_name
+            self.completed_by_name = self.completed_by.first_name + ' ' + self.completed_by.last_name
+        self.completion_minutes = self._get_completion_minutes()
         super(CustomHistoricalJobTask, self).save(*args, **kwargs)
 
     def _is_completion_status_change(self):
@@ -165,6 +167,13 @@ class CustomHistoricalJobTask(models.Model):
             return True  # if this is a new record, it's always a status change
         # compare presence of timestamp, not timestamp value
         return bool(self.completed_by) != bool(last_completed_by) or self.history_type == self.DELETED
+
+    def _get_completion_minutes(self):
+        if self.completion_status_change:
+            if self.completed_by:
+                return self.task_minutes
+            else:
+                return -self.task_minutes
 
     @classmethod
     def historical_records_as_of(cls, time, group):

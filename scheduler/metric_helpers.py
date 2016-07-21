@@ -36,3 +36,28 @@ def get_record_key(historic_job_task):
     expertise_description = historic_job_task.task_expertise_description
     job_status = historic_job_task.job_status_description
     return '{} ({})'.format(expertise_description, job_status)
+
+
+def aggregate_task_completion(completion_data):
+    categories = set()
+    names = set()
+    data_map = {}
+    series = []
+
+    for record in completion_data:
+        category = record['task_expertise_description']
+        name = record['completed_by_name']
+        categories.add(category)
+        names.add(name)
+        data_map['{}__{}'.format(name, category)] = record['completion_minutes__sum']
+
+    categories = list(categories)
+    names = list(names)
+
+    for name in names:
+        data = []
+        series.append({'name': name, 'data': data})
+        for category in categories:
+            data.append(data_map.get('{}__{}'.format(name, category), 0))
+
+    return categories, series

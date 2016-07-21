@@ -10,7 +10,8 @@ from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
 from rest_framework.views import APIView
 
-from scheduler.metric_helpers import get_initial_task_backlog, update_backlog_series, series_dict_to_series
+from scheduler.metric_helpers import get_initial_task_backlog, update_backlog_series, series_dict_to_series, \
+    aggregate_task_completion
 from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, HistoricalJob
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
     JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
@@ -123,8 +124,10 @@ class JobTaskCompletionByTechnician(APIView):
         end_time = parse(request.query_params['end_date'])
 
         completion_data = JobTask.history.filter(
-            group=primary_group, history_date__range=(start_time, end_time), completed_by__isnull=False).values(
-            'completed_by'
-        ).annotate(Sum('task_minutes')).order_by()
+            completion_minutes__isnull=False, group=primary_group, history_date__range=(start_time, end_time)).values(
+            'completed_by_name', 'completed_by', 'task_expertise_description'
+        ).annotate(Sum('completion_minutes')).order_by()
 
-        return Response({'categories': ['CP', 'Low'], 'series': [{'name': 'KDriz', 'data': [1, 7]}, {'name': 'Joe', 'data': [2, 4]}]})
+        categories, series = aggregate_task_completion(completion_data)
+
+        return Response({'categories': categories, 'series': series})

@@ -75240,6 +75240,17 @@
 	      this.config.series = this.series;
 	    }
 	  }, {
+	    key: 'getResourceData',
+	    value: function getResourceData(startDate, endDate) {
+	      var _this = this;
+	
+	      return this._$http.get(this.resourceUrl, { params: { start_date: startDate, end_date: endDate } }).then(function (response) {
+	        _this.transformResponse(response);
+	        _this.config.xAxis.min = startDate.getTime();
+	        _this.config.xAxis.max = endDate.getTime();
+	      });
+	    }
+	  }, {
 	    key: 'refreshSeries',
 	    value: function refreshSeries(series) {
 	      series.forEach(function (s) {
@@ -75300,8 +75311,6 @@
 	
 	      return this._$http.get(this.resourceUrl, { params: { start_date: startDate, end_date: endDate } }).then(function (response) {
 	        _this.transformResponse(response);
-	        _this.config.xAxis.min = startDate.getTime();
-	        _this.config.xAxis.max = endDate.getTime();
 	      });
 	    }
 	  }, {
