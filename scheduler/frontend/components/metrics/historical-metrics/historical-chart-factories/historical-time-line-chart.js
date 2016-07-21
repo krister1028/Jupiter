@@ -13,6 +13,15 @@ export default class historicalTimeLineChart extends baseHistoricalChart {
     this.config.series = this.series;
   }
 
+  getResourceData(startDate, endDate) {
+    return this._$http.get(this.resourceUrl, {params: {start_date: startDate, end_date: endDate}})
+      .then(response => {
+        this.transformResponse(response);
+        this.config.xAxis.min = startDate.getTime();
+        this.config.xAxis.max = endDate.getTime();
+      });
+  }
+
   refreshSeries(series) {
     series.forEach(s => {
       s.data.map(seriesDataPoint => {

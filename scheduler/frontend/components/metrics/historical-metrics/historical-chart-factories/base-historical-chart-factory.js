@@ -18,8 +18,6 @@ export default class historicalChartFactory {
     return this._$http.get(this.resourceUrl, {params: {start_date: startDate, end_date: endDate}})
       .then(response => {
         this.transformResponse(response);
-        this.config.xAxis.min = startDate.getTime();
-        this.config.xAxis.max = endDate.getTime();
       });
   }
 
