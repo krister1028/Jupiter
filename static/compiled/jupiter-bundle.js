@@ -73890,7 +73890,7 @@
 	
 	var _pagesMetricsPageComponet2 = _interopRequireDefault(_pagesMetricsPageComponet);
 	
-	var _historicalMetricsHistoricalResourceChartComponent = __webpack_require__(57);
+	var _historicalMetricsHistoricalResourceChartComponent = __webpack_require__(58);
 	
 	var _historicalMetricsHistoricalResourceChartComponent2 = _interopRequireDefault(_historicalMetricsHistoricalResourceChartComponent);
 	
@@ -75188,10 +75188,14 @@
 	
 	var _historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart2 = _interopRequireDefault(_historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart);
 	
+	var _historicalMetricsHistoricalChartFactoriesHistoricalCategoryChart = __webpack_require__(57);
+	
+	var _historicalMetricsHistoricalChartFactoriesHistoricalCategoryChart2 = _interopRequireDefault(_historicalMetricsHistoricalChartFactoriesHistoricalCategoryChart);
+	
 	var MetricsController = function MetricsController(highChartService, $http) {
 	  _classCallCheck(this, MetricsController);
 	
-	  this.charts = [new _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours'), new _historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart2['default'](highChartService, $http, 'Task Completion Minutes By Technician', 'Expertise Level', 'Minutes', '/task-completion-by-tech')];
+	  this.charts = [new _historicalMetricsHistoricalChartFactoriesHistoricalTimeLineChart2['default'](highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours'), new _historicalMetricsHistoricalChartFactoriesHistoricalAggregateChart2['default'](highChartService, $http, 'Task Completion Minutes By Technician', 'Expertise Level', 'Minutes', '/task-completion-by-tech'), new _historicalMetricsHistoricalChartFactoriesHistoricalCategoryChart2['default'](highChartService, $http, 'Jobs Completed By Product', 'Product Description', 'Job Count', '/jobs-completed')];
 	};
 	
 	exports['default'] = MetricsController;
@@ -75406,13 +75410,65 @@
 	  value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _historicalResourceChartTemplateHtml = __webpack_require__(58);
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _baseHistoricalChartFactory = __webpack_require__(55);
+	
+	var _baseHistoricalChartFactory2 = _interopRequireDefault(_baseHistoricalChartFactory);
+	
+	var historicalTimeLineChart = (function (_baseHistoricalChart) {
+	  _inherits(historicalTimeLineChart, _baseHistoricalChart);
+	
+	  function historicalTimeLineChart(highchartService, $http, title, xAxisLabel, yAxisLabel, resourceUrl) {
+	    _classCallCheck(this, historicalTimeLineChart);
+	
+	    _get(Object.getPrototypeOf(historicalTimeLineChart.prototype), 'constructor', this).call(this, highchartService, $http);
+	    this.resourceUrl = resourceUrl;
+	    this.title = title;
+	    this.xAxisLabel = xAxisLabel;
+	    this.yAxisLabel = yAxisLabel;
+	  }
+	
+	  _createClass(historicalTimeLineChart, [{
+	    key: 'getConfig',
+	    value: function getConfig() {
+	      this.config = this._chartService.getHistoricalAggregateConfig(this.title, this.xAxisLabel, this.yAxisLabel);
+	      this.config.series = this.series;
+	      this.config.xAxis.type = 'category';
+	    }
+	  }]);
+	
+	  return historicalTimeLineChart;
+	})(_baseHistoricalChartFactory2['default']);
+	
+	exports['default'] = historicalTimeLineChart;
+	module.exports = exports['default'];
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _historicalResourceChartTemplateHtml = __webpack_require__(59);
 	
 	var _historicalResourceChartTemplateHtml2 = _interopRequireDefault(_historicalResourceChartTemplateHtml);
 	
-	var _historicalResourceChartController = __webpack_require__(59);
+	var _historicalResourceChartController = __webpack_require__(60);
 	
 	var _historicalResourceChartController2 = _interopRequireDefault(_historicalResourceChartController);
 	
@@ -75426,7 +75482,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -75437,7 +75493,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 	"use strict";

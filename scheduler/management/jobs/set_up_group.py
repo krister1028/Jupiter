@@ -4,7 +4,7 @@ from scheduler.models import JobStatus, JobType
 
 
 def onboard_group(group_name):
-    default_statuses = ['Active', 'Inactive']
+    default_statuses = ['Active', 'Inactive', 'Complete']
     default_types = ['Standard']
     group = Group(name=group_name)
     group.save()
