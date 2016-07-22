@@ -144,29 +144,46 @@ class CustomHistoricalJobTask(models.Model):
     ADDED = '+'
 
     completion_status_change = models.BooleanField(default=False)
-    completed_by_name = models.CharField(max_length=255, null=True)
+    task_technician = models.ForeignKey(User, null=True)
     task_expertise_description = models.CharField(max_length=255)
     task_minutes = models.IntegerField()
-    completion_minutes = models.IntegerField(null=True)
+    completion_minutes_flow = models.IntegerField(null=True)
     job_status_description = models.CharField(max_length=255)
 
     def save(self, *args, **kwargs):
+        self._get_last_instance()
         self.completion_status_change = self._is_completion_status_change()
         self.task_expertise_description = Task.get_level_text(self.instance.product_task.task.expertise_level)
         self.task_minutes = self.instance.product_task.completion_time
         self.job_status_description = self.job.status.description
-        if self.completed_by:
-            self.completed_by_name = self.completed_by.first_name + ' ' + self.completed_by.last_name
-        self.completion_minutes = self._get_completion_minutes()
+        self.completion_minutes_flow = self._get_completion_minutes()
+        self.task_technician = self._get_task_tech()
         super(CustomHistoricalJobTask, self).save(*args, **kwargs)
 
-    def _is_completion_status_change(self):
+    def _get_last_instance(self):
         try:
-            last_completed_by = self.instance.history.most_recent().completed_by
+            self.last_instance = self.instance.history.most_recent()
         except JobTask.DoesNotExist:
-            return True  # if this is a new record, it's always a status change
+            self.last_instance = None
+
+    def _is_completion_status_change(self):
+        if not self.last_instance:
+            return True
+
         # compare presence of timestamp, not timestamp value
-        return bool(self.completed_by) != bool(last_completed_by) or self.history_type == self.DELETED
+        completion_change = bool(self.completed_by) != bool(self.last_instance.completed_by)
+        # if open tasks are deleted
+        deletion_change = (self.history_type == self.DELETED and not self.completed_by)
+
+        return completion_change or deletion_change
+
+    def _get_task_tech(self):
+        if self.completed_by:
+            return self.completed_by
+        else:
+            # if a task is being marked as incomplete
+            if self.completion_status_change and self.last_instance:
+                return self.last_instance.completed_by
 
     def _get_completion_minutes(self):
         if self.completion_status_change:
