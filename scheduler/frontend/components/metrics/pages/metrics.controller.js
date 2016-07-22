@@ -9,7 +9,7 @@ export default class MetricsController {
       new HistoricalAggregateChart(highChartService, $http, 'Task Completion Minutes By Technician', 'Expertise Level', 'Minutes', '/task-completion-by-tech'),
       new HistoricalCategoryChart(highChartService, $http, 'Jobs Completed By Product', 'Product Description', 'Job Count', '/jobs-completed-by-product'),
       new HistoricalCategoryChart(highChartService, $http, 'Jobs Completed By Type', 'Type Description', 'Job Count', '/jobs-completed-by-type'),
-      new HistoricalCategoryChart(highChartService, $http, 'Job Cycle Time', 'Job Description', 'Cycle Time', '/job-cycle-time')
+      new HistoricalCategoryChart(highChartService, $http, 'Job Cycle Time', 'Job Description', 'Cycle Time (days)', '/job-cycle-time')
     ];
   }
 }
