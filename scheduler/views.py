@@ -118,6 +118,23 @@ class JobsCompletedByProduct(APIView):
         return Response([{'name': 'Jobs Completed', 'data': transformed_data}])
 
 
+class JobsCompletedByType(APIView):
+
+    def get(self, request, *args, **kwargs):
+        primary_group = request.user.groups.all()[0]
+        # start/end dates are required - not checking for a possible KeyError is ok here
+        start_time = parse(request.query_params['start_date'])
+        end_time = parse(request.query_params['end_date'])
+
+        data = Job.history.filter(group=primary_group, completed_timestamp__range=(start_time, end_time)).values(
+            'type__description'
+        ).annotate(Count('id', distinct=True))
+
+        transformed_data = [[x['type__description'], x['id__count']] for x in data]
+
+        return Response([{'name': 'Jobs Completed', 'data': transformed_data}])
+
+
 class JobTaskCompletionByTechnician(APIView):
 
     def get(self, request, *args, **kwargs):
