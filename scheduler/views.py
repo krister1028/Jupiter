@@ -4,7 +4,7 @@ import time
 from dateutil.parser import parse
 
 from django.contrib.auth.models import User
-from django.db.models import Q, Count, F, Sum, Max, Variance
+from django.db.models import Q, Count, F, Sum, Max, Variance, Min
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
@@ -148,9 +148,10 @@ class JobCycleTime(APIView):
             started_timestamp__isnull=False,
             completed_timestamp__range=(start_time, end_time)).values(
             'id', 'description'
-        ).annotate(cycle_time=F('completed_timestamp') - F('started_timestamp'))
+        ).annotate(Max('completed_timestamp')).annotate(Max('started_timestamp')).order_by()
 
-        transformed_data = [[x['description'], x['cycle_time']] for x in data]
+        transformed_data = [[x['description'], (x['completed_timestamp__max'] - x['started_timestamp__max']).days]
+                            for x in data]
 
         return Response([{'name': 'Jobs Completed', 'data': transformed_data}])
 
