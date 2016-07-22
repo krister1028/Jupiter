@@ -1,7 +1,9 @@
 from collections import defaultdict
 from copy import deepcopy
 
-from scheduler.models import CustomHistoricalJobTask
+from django.contrib.auth.models import User
+
+from scheduler.models import CustomHistoricalJobTask, UserProfile
 
 
 def get_initial_task_backlog(start_time, group):
@@ -36,3 +38,28 @@ def get_record_key(historic_job_task):
     expertise_description = historic_job_task.task_expertise_description
     job_status = historic_job_task.job_status_description
     return '{} ({})'.format(expertise_description, job_status)
+
+
+def aggregate_task_completion(completion_data):
+    categories = set()
+    tech_ids = set()
+    data_map = {}
+    series = []
+
+    for record in completion_data:
+        category = record['task_expertise_description']
+        tech = record['task_technician']
+        categories.add(category)
+        tech_ids.add(tech)
+        data_map['{}__{}'.format(tech, category)] = record['completion_minutes_flow__sum']
+
+    categories = list(categories)
+    users = User.objects.filter(id__in=tech_ids)
+
+    for id in tech_ids:
+        data = []
+        series.append({'name': filter(lambda x: x.id == id, users)[0].get_full_name(), 'data': data})
+        for category in categories:
+            data.append(data_map.get('{}__{}'.format(id, category), 0))
+
+    return categories, series
