@@ -101,7 +101,7 @@ class BackLogHours(APIView):
         return Response(series_dict_to_series(series_dict))
 
 
-class JobsCompleted(APIView):
+class JobsCompletedByProduct(APIView):
 
     def get(self, request, *args, **kwargs):
         primary_group = request.user.groups.all()[0]
@@ -109,10 +109,13 @@ class JobsCompleted(APIView):
         start_time = parse(request.query_params['start_date'])
         end_time = parse(request.query_params['end_date'])
 
-        data = HistoricalJob.objects.filter(group=primary_group, completed_timestamp__range=(start_time, end_time)).values(
-            'started_timestamp', 'completed_timestamp', 'product__description', 'type__description', 'created')
+        data = Job.history.filter(group=primary_group, completed_timestamp__range=(start_time, end_time)).values(
+            'product__description'
+        ).annotate(Count('id', distinct=True))
 
-        return Response(data)
+        transformed_data = [[x['product__description'], x['id__count']] for x in data]
+
+        return Response([{'name': 'Jobs Completed', 'data': transformed_data}])
 
 
 class JobTaskCompletionByTechnician(APIView):

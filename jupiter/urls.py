@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^rest-auth/login/$', views.CustomLoginView.as_view()),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^backlog-hours/$', views.BackLogHours.as_view()),
-    url(r'^jobs-completed/$', views.JobsCompleted.as_view()),
+    url(r'^jobs-completed-by-product/$', views.JobsCompletedByProduct.as_view()),
+    url(r'^jobs-completed-by-type/$', views.JobsCompletedByType.as_view()),
     url(r'^task-completion-by-tech/$', views.JobTaskCompletionByTechnician.as_view())
 ]

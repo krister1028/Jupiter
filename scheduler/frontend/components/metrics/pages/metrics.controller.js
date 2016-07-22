@@ -7,7 +7,7 @@ export default class MetricsController {
     this.charts = [
       new HistoricalTimeLineChart(highChartService, $http, 'Backlog Minutes By Expertise Level', 'Minutes', '/backlog-hours'),
       new HistoricalAggregateChart(highChartService, $http, 'Task Completion Minutes By Technician', 'Expertise Level', 'Minutes', '/task-completion-by-tech'),
-      new HistoricalCategoryChart(highChartService, $http, 'Jobs Completed By Product', 'Product Description', 'Job Count', '/jobs-completed')
+      new HistoricalCategoryChart(highChartService, $http, 'Jobs Completed By Product', 'Product Description', 'Job Count', '/jobs-completed-by-product')
     ];
   }
 }
