@@ -4,7 +4,7 @@ import time
 from dateutil.parser import parse
 
 from django.contrib.auth.models import User
-from django.db.models import Q, Count, F, Sum, Max
+from django.db.models import Q, Count, F, Sum, Max, Variance
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_auth.views import LoginView, Response
@@ -131,6 +131,26 @@ class JobsCompletedByType(APIView):
         ).annotate(Count('id', distinct=True))
 
         transformed_data = [[x['type__description'], x['id__count']] for x in data]
+
+        return Response([{'name': 'Jobs Completed', 'data': transformed_data}])
+
+
+class JobCycleTime(APIView):
+
+    def get(self, request, *args, **kwargs):
+        primary_group = request.user.groups.all()[0]
+        # start/end dates are required - not checking for a possible KeyError is ok here
+        start_time = parse(request.query_params['start_date'])
+        end_time = parse(request.query_params['end_date'])
+
+        data = Job.history.filter(
+            group=primary_group,
+            started_timestamp__isnull=False,
+            completed_timestamp__range=(start_time, end_time)).values(
+            'id', 'description'
+        ).annotate(cycle_time=F('completed_timestamp') - F('started_timestamp'))
+
+        transformed_data = [[x['description'], x['cycle_time']] for x in data]
 
         return Response([{'name': 'Jobs Completed', 'data': transformed_data}])
 
