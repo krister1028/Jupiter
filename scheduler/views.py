@@ -124,9 +124,13 @@ class JobTaskCompletionByTechnician(APIView):
         end_time = parse(request.query_params['end_date'])
 
         completion_data = JobTask.history.filter(
-            completion_minutes__isnull=False, group=primary_group, history_date__range=(start_time, end_time)).values(
-            'completed_by_name', 'completed_by', 'task_expertise_description'
-        ).annotate(Sum('completion_minutes')).order_by()
+            task_technician__isnull=False,
+            completion_status_change=True,
+            group=primary_group,
+            history_date__range=(start_time, end_time)
+        ).values(
+            'task_technician', 'task_expertise_description'
+        ).annotate(Sum('completion_minutes_flow')).order_by()
 
         categories, series = aggregate_task_completion(completion_data)
 
