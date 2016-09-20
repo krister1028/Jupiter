@@ -11,8 +11,8 @@ from rest_auth.views import LoginView, Response
 from rest_framework.views import APIView
 
 from scheduler.metric_helpers import get_initial_task_backlog, update_backlog_series, series_dict_to_series, \
-    aggregate_task_completion
-from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask, HistoricalJob
+    aggregate_task_completion_by_task, aggregate_task_completion_by_tech
+from scheduler.models import Product, Task, Job, JobStatus, JobType, ProductTask, JobTask
 from scheduler.serializers import UserSerializer, ProductSerializer, TaskSerializer, JobSerializer, JobStatusSerializer, \
     JobTypeSerializer, ProductTaskSerializer, JobTaskSerializer
 
@@ -173,6 +173,28 @@ class JobTaskCompletionByTechnician(APIView):
             'task_technician', 'task_expertise_description'
         ).annotate(Sum('completion_minutes_flow')).order_by()
 
-        categories, series = aggregate_task_completion(completion_data)
+        categories, series = aggregate_task_completion_by_tech(completion_data)
+
+        return Response({'categories': categories, 'series': series})
+
+
+class JobTaskCompletionByTask(APIView):
+
+    def get(self, request, *args, **kwargs):
+        primary_group = request.user.groups.all()[0]
+        # start/end dates are required - not checking for a possible KeyError is ok here
+        start_time = parse(request.query_params['start_date'])
+        end_time = parse(request.query_params['end_date'])
+
+        completion_data = JobTask.history.filter(
+            task_technician__isnull=False,
+            completion_status_change=True,
+            group=primary_group,
+            history_date__range=(start_time, end_time)
+        ).values(
+            'task_id', 'task__description'
+        ).annotate(Sum('completion_minutes_flow')).order_by()
+
+        categories, series = aggregate_task_completion_by_task(completion_data)
 
         return Response({'categories': categories, 'series': series})

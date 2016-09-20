@@ -149,12 +149,14 @@ class CustomHistoricalJobTask(models.Model):
     task_minutes = models.IntegerField()
     completion_minutes_flow = models.IntegerField(null=True)
     job_status_description = models.CharField(max_length=255)
+    task = models.ForeignKey(HistoricalTask)
 
     def save(self, *args, **kwargs):
         self._get_last_instance()
         self.completion_status_change = self._is_completion_status_change()
         self.task_expertise_description = Task.get_level_text(self.instance.product_task.task.expertise_level)
         self.task_minutes = self.instance.product_task.completion_time
+        self.task_id = self.instance.product_task.task.history.latest().history_id
         self.job_status_description = self.job.status.description
         self.completion_minutes_flow = self._get_completion_minutes()
         self.task_technician = self._get_task_tech()

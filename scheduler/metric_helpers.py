@@ -40,7 +40,7 @@ def get_record_key(historic_job_task):
     return '{} ({})'.format(expertise_description, job_status)
 
 
-def aggregate_task_completion(completion_data):
+def aggregate_task_completion_by_tech(completion_data):
     categories = set()
     tech_ids = set()
     data_map = {}
@@ -49,6 +49,31 @@ def aggregate_task_completion(completion_data):
     for record in completion_data:
         category = record['task_expertise_description']
         tech = record['task_technician']
+        categories.add(category)
+        tech_ids.add(tech)
+        data_map['{}__{}'.format(tech, category)] = record['completion_minutes_flow__sum']
+
+    categories = list(categories)
+    users = User.objects.filter(id__in=tech_ids)
+
+    for id in tech_ids:
+        data = []
+        series.append({'name': filter(lambda x: x.id == id, users)[0].get_full_name(), 'data': data})
+        for category in categories:
+            data.append(data_map.get('{}__{}'.format(id, category), 0))
+
+    return categories, series
+
+
+def aggregate_task_completion_by_task(completion_data):
+    categories = set()
+    tech_ids = set()
+    data_map = {}
+    series = []
+
+    for record in completion_data:
+        category = record['task__description']
+        tech = record['task_id']
         categories.add(category)
         tech_ids.add(tech)
         data_map['{}__{}'.format(tech, category)] = record['completion_minutes_flow__sum']

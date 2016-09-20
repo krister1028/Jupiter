@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^jobs-completed-by-product/$', views.JobsCompletedByProduct.as_view()),
     url(r'^jobs-completed-by-type/$', views.JobsCompletedByType.as_view()),
     url(r'^job-cycle-time/$', views.JobCycleTime.as_view()),
-    url(r'^task-completion-by-tech/$', views.JobTaskCompletionByTechnician.as_view())
+    url(r'^task-completion-by-tech/$', views.JobTaskCompletionByTechnician.as_view()),
+    url(r'^task-completion-by-task/$', views.JobTaskCompletionByTask.as_view())
 ]
