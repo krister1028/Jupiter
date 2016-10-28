@@ -31,6 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'jupiter.sked',
+    'scheduler',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +43,6 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_auth',
     'rest_framework.authtoken',
-    'scheduler',
     'simple_history'
 )
 
@@ -122,9 +124,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
-
-if not os.environ.get('LOCAL'):
-    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = ('rest_framework.renderers.JSONRenderer', )
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'scheduler.serializers.UserSerializer'

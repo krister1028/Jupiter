@@ -4,6 +4,7 @@ from django.contrib import admin
 from rest_framework import routers
 
 from scheduler import views
+from sked import urls as sked_urls
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -19,6 +20,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(router.urls)),
+    url(r'^api/v1/', include(sked_urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^rest-auth/login/$', views.CustomLoginView.as_view()),
     url(r'^rest-auth/', include('rest_auth.urls')),
