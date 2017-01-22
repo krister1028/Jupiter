@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import uuid
 
+from django.conf import settings
 from django.db import models
 
 
@@ -10,6 +11,21 @@ class Organization(models.Model):
 
     def __unicode__(self):
         return self.description
+
+
+class OrgGroup(models.Model):
+    id = models.UUIDField(editable=False, default=uuid.uuid4, primary_key=True)
+    organization = models.ForeignKey(Organization)
+
+
+class OrgUsers(models.Model):
+    org_group = models.ForeignKey(OrgGroup)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+
+    class Meta:
+        unique_together = (
+            ('org_group', 'user'),
+        )
 
 
 class Dimension(models.Model):

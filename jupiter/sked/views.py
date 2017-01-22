@@ -1,7 +1,17 @@
 from django.utils import timezone
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
+from django.contrib.auth import models
 
 from . import models, serializers
+
+
+class OrgAccessPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user.is_active and models.OrgUsers.objects.filter(
+            user=request.user,
+            org_group__organization=view.kwargs['organization_id'],
+        ).exists()
 
 
 class OrganizationViewset(viewsets.ReadOnlyModelViewSet):
@@ -10,6 +20,7 @@ class OrganizationViewset(viewsets.ReadOnlyModelViewSet):
 
 
 class DimensionViewset(viewsets.ModelViewSet):
+    permission_classes = (OrgAccessPermission,)
 
     def perform_create(self, serializer):
         serializer.save(organization_id=self.kwargs['organization_id'])
